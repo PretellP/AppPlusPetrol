@@ -1013,24 +1013,33 @@ $(function() {
 
         /*--------- LOT TABLE -----------*/
 
-        var lotsTableEle = $('#lots-table');
-        var getDataLotsUrl = lotsTableEle.data('url');
-        var lotsTable =lotsTableEle.DataTable({
-            language: DataTableEs,
-            serverSide: true,
-            processing: true,
-            ajax: {
-                "url": getDataLotsUrl,
-                "data" : {
-                    "table": "lot"
-                }
-            },
-            columns:[
-                {data: 'id', name:'id'},
-                {data: 'name', name:'name'},
-                {data: 'action', name:'action', orderable: false, searchable: false},
-            ]
-        });
+
+        var lotsTable;
+
+        $('#lots-tab').on('click', function(){
+
+            if(!($('#lots-table_wrapper').length))
+            {
+                var lotsTableEle = $('#lots-table');
+                var getDataLotsUrl = lotsTableEle.data('url');
+                    lotsTable = lotsTableEle.DataTable({
+                    language: DataTableEs,
+                    serverSide: true,
+                    processing: true,
+                    ajax: {
+                        "url": getDataLotsUrl,
+                        "data" : {
+                            "table": "lot"
+                        }
+                    },
+                    columns:[
+                        {data: 'id', name:'id'},
+                        {data: 'name', name:'name'},
+                        {data: 'action', name:'action', orderable: false, searchable: false},
+                    ]
+                });
+            }
+        })
 
         $('#RegisterLotsModal').on('show.bs.modal', function(event){
             var button = $(event.relatedTarget)
@@ -1197,25 +1206,33 @@ $(function() {
 
         /* -------- STAGE TABLE -----------*/
 
-        var stageTableEle = $('#stage-table');
-        var getDataStagesUrl = stageTableEle.data('url');
-        var stagesTable = stageTableEle.DataTable({
-            language: DataTableEs,
-            serverSide: true,
-            processing: true,
-            ajax: {
-                "url": getDataStagesUrl,
-                "data" : {
-                    "table": "stage"
-                }
-            },
-            columns:[
-                {data: 'id', name:'id'},
-                {data: 'name', name:'name'},
-                {data: 'action', name:'action', orderable: false, searchable: false},
-            ]
-        });
+        var stagesTable;
 
+        $('#stages-tab').on('click', function(){
+
+            if(!($('#stage-table_wrapper').length))
+            {
+                var stageTableEle = $('#stage-table');
+                var getDataStagesUrl = stageTableEle.data('url');
+                    stagesTable = stageTableEle.DataTable({
+                    language: DataTableEs,
+                    serverSide: true,
+                    processing: true,
+                    ajax: {
+                        "url": getDataStagesUrl,
+                        "data" : {
+                            "table": "stage"
+                        }
+                    },
+                    columns:[
+                        {data: 'id', name:'id'},
+                        {data: 'name', name:'name'},
+                        {data: 'action', name:'action', orderable: false, searchable: false},
+                    ]
+                });
+            }
+        })  
+       
         $('#RegisterStagesModal').on('show.bs.modal', function(event){
             var button = $(event.relatedTarget)
             var url = button.data('url');
@@ -1227,6 +1244,7 @@ $(function() {
             modal.find('#txt-context-element').html(text);
             modal.find('#inputName').attr('placeholder', placeholder)
         })
+
         $('#registerStageForm').on('submit', function(e){
             e.preventDefault();
             var loadSpinner = $(this).find('.loadSpinner');
@@ -1380,24 +1398,34 @@ $(function() {
 
         /* ----------- LOCATION TABLE --------*/
 
-        var locationTableEle = $('#location-table');
-        var getDataLocationsUrl = locationTableEle.data('url');
-        var locationsTable = locationTableEle.DataTable({
-            language: DataTableEs,
-            serverSide: true,
-            processing: true,
-            ajax: {
-                "url": getDataLocationsUrl,
-                "data" : {
-                    "table": "location"
-                }
-            },
-            columns:[
-                {data: 'id', name:'id'},
-                {data: 'name', name:'name'},
-                {data: 'action', name:'action', orderable: false, searchable: false},
-            ]
-        });
+        var locationsTable;
+
+        $('#locations-tab').on('click', function(){
+
+            if(!($('#location-table_wrapper').length))
+            {
+                var locationTableEle = $('#location-table');
+                var getDataLocationsUrl = locationTableEle.data('url');
+                    locationsTable = locationTableEle.DataTable({
+                    language: DataTableEs,
+                    serverSide: true,
+                    processing: true,
+                    ajax: {
+                        "url": getDataLocationsUrl,
+                        "data" : {
+                            "table": "location"
+                        }
+                    },
+                    columns:[
+                        {data: 'id', name:'id'},
+                        {data: 'name', name:'name'},
+                        {data: 'action', name:'action', orderable: false, searchable: false},
+                    ]
+                });
+            }
+        })
+
+       
 
         $('#RegisterLocationsModal').on('show.bs.modal', function(event){
             var button = $(event.relatedTarget)
@@ -1563,24 +1591,32 @@ $(function() {
 
         /* ------------  PROJECT TABLE -------------*/
 
-        var projectTableEle = $('#project-table');
-        var getDataProjectsUrl = projectTableEle.data('url');
-        var projectTable = projectTableEle.DataTable({
-            language: DataTableEs,
-            serverSide: true,
-            processing: true,
-            ajax: {
-                "url": getDataProjectsUrl,
-                "data" : {
-                    "table": "project"
-                }
-            },
-            columns:[
-                {data: 'id', name:'id'},
-                {data: 'name', name:'name'},
-                {data: 'action', name:'action', orderable: false, searchable: false},
-            ]
-        });
+        var projectTable;
+
+        $('#projects-tab').on('click', function(){
+
+            if(!($('#project-table_wrapper').length))
+            {
+                var projectTableEle = $('#project-table');
+                var getDataProjectsUrl = projectTableEle.data('url');
+                    projectTable = projectTableEle.DataTable({
+                    language: DataTableEs,
+                    serverSide: true,
+                    processing: true,
+                    ajax: {
+                        "url": getDataProjectsUrl,
+                        "data" : {
+                            "table": "project"
+                        }
+                    },
+                    columns:[
+                        {data: 'id', name:'id'},
+                        {data: 'name', name:'name'},
+                        {data: 'action', name:'action', orderable: false, searchable: false},
+                    ]
+                });
+            }
+        })
 
         $('#RegisterProjectsModal').on('show.bs.modal', function(event){
             var button = $(event.relatedTarget)
@@ -1747,26 +1783,35 @@ $(function() {
 
         /* ------------ COMPANY TABLE -------------*/
 
-        var companyTableEle = $('#company-table');
-        var getDataCompanysUrl = companyTableEle.data('url');
-        var companyTable = companyTableEle.DataTable({
-            language: DataTableEs,
-            serverSide: true,
-            processing: true,
-            ajax: {
-                "url": getDataCompanysUrl,
-                "data" : {
-                    "table": "company"
-                }
-            },
-            columns:[
-                {data: 'id', name:'id'},
-                {data: 'name', name:'name'},
-                {data: 'ruc', name:'ruc'},
-                {data: 'action', name:'action', orderable: false, searchable: false},
-            ]
-        });
+        var companyTable;
 
+        $('#companies-tab').on('click', function(){
+
+            if(!($('#company-table_wrapper').length))
+            {
+                var companyTableEle = $('#company-table');
+                var getDataCompanysUrl = companyTableEle.data('url');
+                    companyTable = companyTableEle.DataTable({
+                    language: DataTableEs,
+                    serverSide: true,
+                    processing: true,
+                    ajax: {
+                        "url": getDataCompanysUrl,
+                        "data" : {
+                            "table": "company"
+                        }
+                    },
+                    columns:[
+                        {data: 'id', name:'id'},
+                        {data: 'name', name:'name'},
+                        {data: 'ruc', name:'ruc'},
+                        {data: 'action', name:'action', orderable: false, searchable: false},
+                    ]
+                });
+            }
+        })
+
+        
         $('#RegisterCompaniesModal').on('show.bs.modal', function(event){
             var button = $(event.relatedTarget)
             var url = button.data('url');
@@ -1931,24 +1976,32 @@ $(function() {
 
         /* ------- FRONT TABLE -----------*/
 
-        var frontTableEle = $('#front-table');
-        var getDataFrontsUrl = frontTableEle.data('url');
-        var frontTable = frontTableEle.DataTable({
-            language: DataTableEs,
-            serverSide: true,
-            processing: true,
-            ajax: {
-                "url": getDataFrontsUrl,
-                "data" : {
-                    "table": "front"
-                }
-            },
-            columns:[
-                {data: 'id', name:'id'},
-                {data: 'name', name:'name'},
-                {data: 'action', name:'action', orderable: false, searchable: false},
-            ]
-        });
+        var frontTable;
+
+        $('#fronts-tab').on('click', function(){
+
+            if(!($('#front-table_wrapper').length))
+            {
+                var frontTableEle = $('#front-table');
+                var getDataFrontsUrl = frontTableEle.data('url');
+                    frontTable = frontTableEle.DataTable({
+                    language: DataTableEs,
+                    serverSide: true,
+                    processing: true,
+                    ajax: {
+                        "url": getDataFrontsUrl,
+                        "data" : {
+                            "table": "front"
+                        }
+                    },
+                    columns:[
+                        {data: 'id', name:'id'},
+                        {data: 'name', name:'name'},
+                        {data: 'action', name:'action', orderable: false, searchable: false},
+                    ]
+                });
+            }
+        })
 
         $('#RegisterFrontsModal').on('show.bs.modal', function(event){
             var button = $(event.relatedTarget)
