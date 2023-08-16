@@ -77,9 +77,14 @@ Route::group(['middleware' => 'auth'], function(){
 
 
         Route::get('/administrador/residuos', [WasteController::class, 'index'])->name('wastes.index');
+        Route::post('/administrador/residuos/registrar', [WasteController::class, 'store'])->name('wastes.store');
         Route::get('/administrador/residuos/editar/{class}', [WasteController::class, 'edit'])->name('wastes.edit');
         Route::post('/administrador/residuos/actualizar/{class}', [WasteController::class, 'update'])->name('wastes.update');
         Route::delete('/administrador/residuos/eliminar/{class}', [WasteController::class, 'destroy'])->name('wastes.delete');
 
+        Route::post('/administrador/residuos/tipo/registrar', [WasteController::class, 'typeStore'])->name('wastesType.store');
+        Route::get('/administrador/residuos/tipo/editar/{type}', [WasteController::class, 'typeEdit'])->name('wastesType.edit');
+        Route::post('/administrador/residuos/tipo/actualizar/{type}', [WasteController::class, 'typeUpdate'])->name('wastesType.update');
+        Route::delete('/administrador/residuos/tipo/eliminar/{type}', [WasteController::class, 'typeDestroy'])->name('wastesType.delete');
     });
 });

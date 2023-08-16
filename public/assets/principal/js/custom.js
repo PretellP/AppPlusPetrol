@@ -432,7 +432,6 @@ $(function() {
         /* ------ DELETE -------*/
 
         $('body').on('click', '.deleteUser', function(){
-            var user_id = $(this).data('id');
             var url = $(this).data('url');
             Swal.fire({
                 title: '¿Estás seguro?',
@@ -504,6 +503,7 @@ $(function() {
                 placeholder: 'Selecciona un perfil'
             });
         }
+
 
         $('#edit-user-status-checkbox').change(function(){
             var txtDesc = $('#txt-edit-description-user');
@@ -2126,7 +2126,12 @@ $(function() {
             language: DataTableEs,
             serverSide: true,
             processing: true,
-            ajax: getDataUrl,
+            ajax: {
+                "url": getDataUrl,
+                "data": {
+                    "table" : "class"
+                }
+            },
             columns:[
                 {data: 'id', name:'id'},
                 {data: 'name', name:'name'},
@@ -2135,6 +2140,461 @@ $(function() {
                 {data: 'action', name:'action', orderable: false, searchable: false},
             ]
         });
+
+
+
+        if($('#registerWasteTypesSelect').length)
+        {
+            var registerWasteTypeSelect = $('#registerWasteTypesSelect');
+            registerWasteTypeSelect.select2({
+                dropdownParent: $("#RegisterClassModal"),
+                closeOnSelect: false,
+                placeholder: 'Selecciona uno o más tipos de residuo'
+            });
+        }
+
+        /*------------ REGISTER CLASS -----------*/
+
+        $('#registerWasteClassForm').on('submit', function(e){
+            e.preventDefault();
+            var form = $(this);
+            var loadSpinner = form.find('.loadSpinner');
+            loadSpinner.toggleClass('active');
+
+            $.ajax({
+                url: form.attr('action'),
+                method: form.attr('method'),
+                data: form.serialize(),
+                dataType: 'JSON',
+                success: function(data){
+                    Swal.fire({
+                        toast: true,
+                        icon: 'success',
+                        title: '¡Clase registrada exitosamente!',
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                          }
+                    });
+
+                    loadSpinner.toggleClass('active');
+                    $('#registerWasteClassForm').trigger('reset');
+                    $('#RegisterClassModal').modal('hide');
+                    $('#registerWasteTypesSelect').val([]).trigger('change');
+
+                    wasteClassTable.draw();
+                },
+                error: function(data){
+                    console.log(data)
+                }
+            })
+
+        })
+
+
+        /* ------------- DELETE ------------------*/
+
+        $('body').on('click', '.deleteClass', function(){
+            var url = $(this).data('url');
+
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡Esta acción no podrá ser revertida!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '¡Sí!',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+              }).then(function(e){
+
+                if(e.value === true){
+                    $.ajax({
+                        type: 'DELETE',
+                        url: url,
+                        dataType: 'JSON',
+                        success: function(result){
+                            if(result.success === true){
+                                wasteClassTable.draw();
+                                Swal.fire({
+                                    toast: true,
+                                    icon: 'success',
+                                    title: 'Registro eliminado',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                      }
+                                });
+                            }else{
+                                Swal.fire({
+                                    toast: true,
+                                    icon: 'error',
+                                    title: '¡Ocurrió un error inesperado!',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                      }
+                                });
+                            }
+                        },
+                        error: function(result){
+                            console.log('Error', result);
+                        }
+                    });
+                }else{
+                    e.dismiss;
+                }
+              }, function(dismiss){
+                return false;
+              })
+
+        })
+
+        if($('#editWasteTypesSelect').length)
+        {
+            var editWasteTypesSelect = $('#editWasteTypesSelect');
+            editWasteTypesSelect.select2({
+                dropdownParent: $("#EditClassModal"),
+                closeOnSelect: false,
+                placeholder: 'Selecciona uno o más tipos de residuo'
+            });
+        }
+
+
+        /* ------------- EDIT WASTE CLASS ---------------*/
+
+
+        $('body').on('click', '.editClass', function(){
+            var getDataUrl = $(this).data('send');
+            var url = $(this).data('url');
+            var modal = $('#EditClassModal');
+            var selectTypes = $('#editWasteTypesSelect');
+            
+            modal.find('#EditWasteClassForm').attr('action', url);
+
+            $.ajax({
+                type: 'GET',
+                url: getDataUrl,
+                dataType: 'JSON',
+                success: function(data){
+                    modal.find('#inputEditNameWasteClass').val(data.name);
+                    modal.find('#inputSymbolWasteClass').val(data.name);
+
+                    selectTypes.append('<option value=""></option>');
+                    $.each(data['types'], function(key, value){
+                        selectTypes.append('<option value="'+value.id+'">'+value.name+'</option>')
+                    })
+                    selectTypes.val(data['selectedTypes']).change();
+                },
+                error: function(data)
+                {
+                    console.log(data)
+                },
+                complete: function(data){
+                    modal.modal('show');
+                }
+            });
+        })
+
+        $('#EditClassModal').on('hidden.bs.modal', function(e){
+            $('#editWasteTypesSelect').html('');
+        })
+
+
+        $('#EditWasteClassForm').on('submit', function(e){
+            e.preventDefault();
+
+            var loadSpinner = $(this).find('.loadSpinner');
+            loadSpinner.toggleClass('active');
+            var form = $(this);
+
+            $.ajax({
+                url: form.attr('action'),
+                method: form.attr('method'),
+                data: form.serialize(),
+                dataType: 'JSON',
+                success: function(data){
+                    Swal.fire({
+                        toast: true,
+                        icon: 'success',
+                        title: '¡Clase actualizada exitosamente!',
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                    });
+
+                    loadSpinner.toggleClass('active');
+                    $('#EditClassModal').modal('hide');
+                    wasteClassTable.draw();
+                },
+                error: function(data){
+                    console.log(data);
+                }
+            })
+
+        })
+
+
+
+
+
+         /* ------------- WASTE TYPES -------------*/
+
+         var wasteTypeTableEle = $('#waste-type-table');
+         var getTypeUrl = wasteTypeTableEle.data('url');
+         var wasteTypeTable = wasteTypeTableEle.DataTable({
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax: {
+                "url": getTypeUrl,
+                "data": {
+                    "table": "type"
+                }
+            },
+            columns:[
+                {data: 'id', name:'id'},
+                {data: 'name', name:'name', className:"columnType"},
+                {data: 'action', name:'action', orderable: false, searchable: false, className:"btnWasteType"},
+            ]
+         })
+
+         /* ----------- REGISTER ------------*/
+
+         $('#registerWasteTypeForm').on('submit', function(e){
+            e.preventDefault();
+            
+            var loadSpinner = $(this).find('.loadSpinner');
+            loadSpinner.toggleClass('active');
+            var form = $(this);
+            $.ajax({
+                url: form.attr('action'),
+                method: form.attr('method'),
+                data: form.serialize(),
+                dataType: 'JSON',
+                success: function(data){
+                    Swal.fire({
+                        toast: true,
+                        icon: 'success',
+                        title: '¡Tipo de residuo registrado exitosamente!',
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                          }
+                    });
+
+                    loadSpinner.toggleClass('active');
+                    $('#registerWasteTypeForm').trigger('reset');
+
+                    wasteTypeTable.draw();
+                },
+                error: function(data)
+                {
+                    console.log(data);
+                }
+            })
+
+         })
+
+
+         /* -------------- EDIT ------------ */
+
+         $('body').on('click', '.editType', function(){
+            var column = $(this).closest('tr');
+            var buttons = column.find('.btnWasteType');
+            var tdText = column.find('.columnType');
+            var value = tdText.text();
+
+            column.addClass('edit-ready').siblings().removeClass('edit-ready');
+            column.siblings().find('#form-type-edit-container').remove();
+            column.siblings().find('.input-type-edit').remove();
+
+            buttons.before('<td class="input-type-edit"> \
+                                <input type="text" class="form-control" value="'+value+'" required> \
+                            </td>');
+ 
+            column.append('<td id="form-type-edit-container"> \
+                                <button type="button"\
+                                        class="me-3 edit btn btn-primary btn-sm btn-update-waste-type\
+                                        "> \
+                                        <i class="fa-solid fa-floppy-disk"></i> \
+                                </button> \
+                                <button id="resetWasteTypeEdit"\
+                                        class="ms-3 btn btn-danger btn-sm"> \
+                                        <i class="fa-solid fa-x"></i> \
+                                </button> \
+                            </td>');
+         })
+
+
+         $('body').on('click', '#resetWasteTypeEdit', function(){
+            var column = $(this).closest('tr');
+            column.toggleClass('edit-ready');
+
+            column.find('.input-type-edit').remove();
+            $('#form-type-edit-container').remove();
+         })
+
+         $('body').on('click', '.btn-update-waste-type', function(){
+            var column = $(this).closest('tr');
+            var value = column.find('.input-type-edit input').val();
+            var url = column.find('.editType').data('url');
+
+            if(value.length == 0)
+            {
+                Swal.fire({
+                    toast: true,
+                    icon: 'warning',
+                    title: '¡El campo está vacío!',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                      }
+                });
+            }
+            else{
+                $.ajax({
+                    url: url,
+                    method: 'POST',
+                    data: {
+                        "value": value
+                    },
+                    dataType: "JSON",
+                    success: function(result){
+                        Swal.fire({
+                            toast: true,
+                            icon: 'success',
+                            title: '¡Registrado exitosamente!',
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                              }
+                        });
+
+                        wasteTypeTable.draw();
+                    },
+                    error: function(result){
+                        console.log(result)
+                    }
+                });
+            }
+         });
+
+
+
+         /*-------------- DELETE --------------*/
+
+         $('body').on('click', '.deleteType', function(){
+            var url = $(this).data('url');
+
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡Esta acción no podrá ser revertida!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '¡Sí!',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+              }).then(function(e){
+
+                if(e.value === true){
+                    $.ajax({
+                        type: 'DELETE',
+                        url: url,
+                        dataType: 'JSON',
+                        success: function(result){
+                            if(result.success == true){
+                                wasteTypeTable.draw();
+                                Swal.fire({
+                                    toast: true,
+                                    icon: 'success',
+                                    title: 'Registro eliminado',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                      }
+                                });
+                            }
+                            else if(result.success == 'invalid')
+                            {
+                                Swal.fire({
+                                    toast: true,
+                                    icon: 'warning',
+                                    title: '¡Este registro está relacionado a una o más clases de residuo, no se puede eliminar!',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                      }
+                                });
+                            }
+                            else{
+                                Swal.fire({
+                                    toast: true,
+                                    icon: 'error',
+                                    title: '¡Ocurrió un error inesperado!',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                      }
+                                });
+                            }
+                        },
+                        error: function(result){
+                            console.log('Error', result);
+                        }
+                    });
+                }else{
+                    e.dismiss;
+                }
+              }, function(dismiss){
+                return false;
+              })
+         })
+
+
      }
+
+
+
 });
 

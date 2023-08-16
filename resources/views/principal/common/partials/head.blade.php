@@ -15,7 +15,9 @@
 	<!-- CSS Libraries -->
 	<link rel="stylesheet" href="{{asset('assets/principal/modules/jqvmap/dist/jqvmap.min.css')}}">
 	<link rel="stylesheet" href="{{asset('assets/principal/modules/summernote/summernote-bs4.css')}}">
-	<link rel="stylesheet" href="{{asset('assets/principal/modules/select2/dist/css/select2.min.css')}}">
+
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
 
 	<!-- Template CSS -->
 	<link rel="stylesheet" href="{{asset('assets/principal/css/style.css')}}">

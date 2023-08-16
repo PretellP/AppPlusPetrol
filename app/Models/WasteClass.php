@@ -15,6 +15,6 @@ class WasteClass extends Model
     public function classesWastes()
     {
         return $this->belongsToMany(WasteType::class, 'classes_has_wastes', 'id_class', 'id_waste')
-                    ->withPivot('id')->withTimestamps();
+                    ->withPivot(['id'])->withTimestamps();
     }
 }

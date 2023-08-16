@@ -1003,6 +1003,37 @@ i.loadSpinner.active
 
 
 
+/* ------------- WASTE TYPES --------------*/
+
+tr.edit-ready .columnType
+{
+    display: none;
+}
+
+tr .input-type-edit
+{
+    display: none;
+}
+
+tr.edit-ready .input-type-edit
+{
+    display: block;
+}
+
+tr.edit-ready .btnWasteType
+{
+    display: none;
+}
+
+/* .select2-container--default .select2-selection--multiple .select2-selection__rendered li
+{
+    width: 100% !important;
+} 
+
+.select2-search__field
+{
+    width: 100% !important;
+} */
 
 
 

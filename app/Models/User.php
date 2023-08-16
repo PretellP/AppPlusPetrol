@@ -45,12 +45,12 @@ class User extends Authenticatable
     public function approvings()
     {
         return $this->belongsToMany(User::class, 'users_has_approvings', 'id_user', 'id_approving')
-                    ->withPivot('id')->withTimestamps();
+                    ->withPivot(['id'])->withTimestamps();
     }
 
     public function applicants()
     {
         return $this->belongsToMany(User::class, 'users_has_approvings', 'id_approving', 'id_user')
-                    ->withPivot('id')->withTimestamps();
+                    ->withPivot(['id'])->withTimestamps();
     }
 }

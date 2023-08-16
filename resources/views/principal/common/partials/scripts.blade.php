@@ -26,10 +26,7 @@
 
 <script src="{{asset('assets/principal/modules/summernote/summernote-bs4.js')}}"></script>
 <script src="{{asset('assets/principal/modules/chocolat/dist/js/jquery.chocolat.min.js')}}"></script>
-
-<!----- DATATABLES ------>
-
-<script src="{{asset('assets/principal/modules/select2/dist/js/select2.full.min.js')}}"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <!-- Page Specific JS File -->
 
