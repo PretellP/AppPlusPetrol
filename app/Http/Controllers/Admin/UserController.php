@@ -61,7 +61,15 @@ class UserController extends Controller
         $approvings = null;
         $status = 'invalid';
 
-        $validApproving = UserType::where('id', $request['id'])->first()->name == 'SOLICITANTE' ? true : false;
+        $validApproving = false;
+
+        $usertype = UserType::where('id', $request['id'])->first()->name;
+
+        if($usertype == 'SOLICITANTE' || $usertype == 'ADMINISTRADOR')
+        {
+            $validApproving = true;
+        }
+
         if($validApproving)
         {
             $approvings = User::whereHas('userType', function($query){
@@ -125,7 +133,8 @@ class UserController extends Controller
         $validApplicant = false;
         $selectedApprovings = null;
         $approvings = null;
-        if($user->userType->name == 'SOLICITANTE')
+        $userType = $user->userType->name;
+        if($userType == 'SOLICITANTE' || $userType == 'ADMINISTRADOR')
         {
             $validApplicant = true;
             $selectedApprovings = $user->approvings()->get()->pluck('id')->toArray();
@@ -184,7 +193,9 @@ class UserController extends Controller
             'status' => $status
         ]);
 
-        if($user->userType->name == 'SOLICITANTE')
+        $userType = $user->userType->name;
+
+        if($userType == 'SOLICITANTE' || $userType == 'ADMINISTRADOR')
         {
             if($request->has('id_approvings'))
             {

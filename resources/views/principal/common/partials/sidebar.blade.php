@@ -22,31 +22,31 @@
                 </a>
             </li>
 
-            <li class="">
-                <a href="" class="nav-link">
+            <li class="{{setActive('guides.*')}}">
+                <a href="{{route('guides.index')}}" class="nav-link">
                     <i class="fa-solid fa-building-circle-check"></i>
-                    <span>Internamiento</span>
+                    <span>Crear Guía</span>
                 </a>
             </li>
 
             <li class="">
                 <a href="" class="nav-link">
-                    <i class="fa-solid fa-layer-group"></i>
-                    <span>Stock</span>
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span>Aprobados</span>
                 </a>
             </li>
 
             <li class="">
                 <a class="nav-link" href="">
-                    <i class="fa-solid fa-truck-moving"></i>
-                    <span>Transporte</span>
+                    <i class="fa-solid fa-clock-rotate-left fa-flip-vertical"></i>
+                    <span>Pendientes</span>
                 </a>
             </li>
 
             <li class="">
                 <a class="nav-link" href="">
-                    <i class="fa-solid fa-industry"></i>
-                    <span>Disposición final</span>
+                    <i class="fa-solid fa-ban"></i>
+                    <span>Rechazadas</span>
                 </a>
             </li>
 

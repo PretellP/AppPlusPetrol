@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-use App\Models\{UserType, User};
+use App\Models\{UserType, User, IntermentGuide};
 
 class User extends Authenticatable
 {
@@ -52,5 +52,25 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(User::class, 'users_has_approvings', 'id_approving', 'id_user')
                     ->withPivot(['id'])->withTimestamps();
+    }
+
+    public function applicantGuides()
+    {
+        return $this->hasMany(IntermentGuide::class, 'id_applicant', 'id');
+    }
+
+    public function approvantGuides()
+    {
+        return $this->hasMany(IntermentGuide::class, 'id_approvant', 'id');
+    }
+
+    public function receiverGuides()
+    {
+        return $this->hasMany(IntermentGuide::class, 'id_reciever', 'id');
+    }
+
+    public function checkerGuides()
+    {
+        return $this->hasMany(IntermentGuide::class, 'id_checker', 'id');
     }
 }

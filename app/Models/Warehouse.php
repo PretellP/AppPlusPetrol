@@ -10,7 +10,8 @@ use App\Models\{
     Location,
     Lot,
     ProjectArea,
-    Stage
+    Stage,
+    IntermentGuide
 };
 
 class Warehouse extends Model
@@ -47,5 +48,10 @@ class Warehouse extends Model
     public function stage()
     {
         return $this->belongsTo(Stage::class, 'id_stage', 'id');
+    }
+
+    public function guides()
+    {
+        return $this->hasMany(IntermentGuide::class, 'id_warehouse', 'id');
     }
 }

@@ -1,6 +1,7 @@
 "use strict";
 
 $(function() {
+
     var DataTableEs = {
         "processing": "Procesando...",
         "lengthMenu": "Mostrar _MENU_ registros",
@@ -299,23 +300,27 @@ $(function() {
                     success: function(data){
                         if(data.valid == 'valid')
                         {
-                            $('#selects-container-register').
-                            append('<div class="form-group col-md-12" id="selectApprovingsRegister"> \
-                                        <label> Aprobantes *</label> \
-                                        <select name="id_approvings[]" class="form-control select2" \
-                                            multiple="multiple" id="registerApprovingsSelect" required> \
-                                        </select> \
-                                    </div>');
-                            var selectApprovings = $('#registerApprovingsSelect')
-                            selectApprovings.select2({
-                                dropdownParent: $("#registerUserForm"),
-                                placeholder: 'Selecciona un aprobante',
-                                closeOnSelect: false
-                            })
-                            selectApprovings.append('<option value=""></option>');
-                            $.each( data['approvings'], function( key, value ) {
-                                selectApprovings.append('<option value="'+value['id']+'">'+value['name']+'</option>');
-                            })
+                            if(!($('#selectApprovingsRegister').length))
+                            {
+                                $('#selects-container-register').
+                                append('<div class="form-group col-md-12" id="selectApprovingsRegister"> \
+                                            <label> Aprobantes *</label> \
+                                            <select name="id_approvings[]" class="form-control select2" \
+                                                multiple="multiple" id="registerApprovingsSelect" required> \
+                                            </select> \
+                                        </div>');
+                                var selectApprovings = $('#registerApprovingsSelect')
+                                selectApprovings.select2({
+                                    dropdownParent: $("#registerUserForm"),
+                                    placeholder: 'Selecciona un aprobante',
+                                    closeOnSelect: false
+                                })
+                                selectApprovings.append('<option value=""></option>');
+                                $.each( data['approvings'], function( key, value ) {
+                                    selectApprovings.append('<option value="'+value['id']+'">'+value['name']+'</option>');
+                                })
+                            }
+                         
                         }else{
                             $('#selectApprovingsRegister').remove();
                         }
@@ -2646,6 +2651,169 @@ $(function() {
 
 
      }
+
+
+
+
+     /* ----------- GUIDES APPLICANTT -----------*/
+
+     if($('#registerGuideForm').length){
+
+
+        var guideWarehouseSelect = $('#guide-warehouse-select');
+        guideWarehouseSelect.select2({
+                placeholder: 'Selecciona un punto verde'
+            });
+
+
+        $('#guide-warehouse-select').on('change', function(){
+            var id = $(this).val();
+            var url = $(this).data('url');
+
+            $.ajax({
+                type: 'GET',
+                data: {
+                    'id': id,
+                    'type': 'warehouse'
+                },
+                url: url,
+                dataType: 'JSON',
+                success: function(data){
+                    
+                    $('#guide-lot-dis').val(data.lot);
+                    $('#guide-stage-dis').val(data.stage);
+                    $('#guide-location-dis').val(data.location);
+                    $('#guide-proyect-dis').val(data.proyect);
+                    $('#guide-company-dis').val(data.company);
+                    $('#guide-front-dis').val(data.front);
+
+                },
+                error: function(data){
+                    console.log(data)
+                }
+            });
+        })
+
+
+
+        var guideWasteClassSelect = $('#guide-wasteClass-select');
+        guideWasteClassSelect.select2({
+            placeholder: 'Selecciona una clase de residuo',
+        });
+
+
+        var guideWasteTypesSelect = $('#guide-wasteTypes-select');
+        guideWasteTypesSelect.select2({
+            placeholder: 'Selecciona uno o más tipos de residuo',
+            closeOnSelect: false
+        })
+
+
+        $('#guide-wasteClass-select').on('change', function(){
+            var url = $(this).data('url');
+            var id = $(this).val();
+            var selectWasteTypes = $('#guide-wasteTypes-select');
+
+            $.ajax({
+                url: url,
+                data: {
+                    "id": id,
+                    'type': 'wasteClass'
+                },
+                type: "GET",
+                dataType: "JSON",
+                success: function(data){
+                    selectWasteTypes.html('');
+                    selectWasteTypes.append('<option value=""></option>');
+                    $.each(data['wasteTypes'], function(key, value){
+                        selectWasteTypes.append('<option value="'+value.id+'">'+value.name+'</option>')
+                    })
+                },
+                error: function(data){
+                    console.log(data)
+                }
+            })
+        })
+
+        $('#btn-save-classWaste-guide').on('click', function(e){
+            e.preventDefault();
+            var selectTypes = $('#guide-wasteTypes-select');
+            var values = selectTypes.val();
+            var url = $(this).data('url');
+            var tablePrepend = $('#table-classTypes-body');
+
+            if(values.length == 0)
+            {
+                Swal.fire({
+                    toast: true,
+                    icon: 'warning',
+                    title: '¡Selecciona al menos un tipo de residuo para continuar!',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                      }
+                });
+            }
+            else{
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    data: {
+                        "values": values,
+                        "type" : 'wasteType'
+                    },
+                    dataType: 'JSON',
+                    success: function(data){
+
+                        $.each(data['wasteTypes'], function(key, value){
+
+                            if(!$('#rowClassType-'+value.id).length){
+                                tablePrepend.prepend('<tr id="rowClassType-'+value.id+'"> \
+                                                        <input type="hidden" name="wasteTypesId[]" value="'+value.id+'"> \
+                                                        <td>'+value['classes_wastes'][0].symbol+'</td> \
+                                                        <td>'+value['name']+'</td> \
+                                                        <td> \
+                                                            <input name="aproxWeightType-'+value.id+'" class="form-control col-6 select-weight" type="number" min="0" step="0.01" value="" required> \
+                                                        </td> \
+                                                        <td> <input name="packageQuantity-'+value.id+'" class="form-control col-6" type="number" min="0" step="1" value="" required> </td> \
+                                                        <td> <input name="packageType-'+value.id+'" class="form-control col-12" type="text" required> </td> \
+                                                        <td> \
+                                                            <button class="delete-row-wasteype-guide btn btn-danger">\
+                                                                <i class="fa-solid fa-trash-can"></i>\
+                                                            </button>\
+                                                        </td> \
+                                                    </tr>')
+                            }
+                        })
+                    },
+                    error: function(data){
+                        console.log(data)
+                    }
+                })
+            }
+        })
+
+        $('body').on('click', '.delete-row-wasteype-guide', function(){
+            $(this).closest('tr').remove();
+        })
+
+        $('body').on('input', '.select-weight', function(){
+            var totalWeight = 0
+
+            $('.select-weight').each(function(){
+                totalWeight += Number($(this).val());
+            })
+
+            $('#info-total-weight').html(totalWeight.toFixed(2));
+        })
+
+     }
+
+
 
 
 

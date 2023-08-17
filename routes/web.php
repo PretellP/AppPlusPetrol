@@ -7,7 +7,8 @@ use App\Http\Controllers\Admin\{
     AdminController,
     WarehouseController,
     WasteController,
-    UserController
+    UserController,
+    IntermentGuideController
 };
 
 use Illuminate\Support\Facades\Route;
@@ -22,9 +23,16 @@ Auth::routes(['register' => false]);
 
 Route::group(['middleware' => 'auth'], function(){
 
-        Route::get('/inicio', [AdminController::class, 'index'])->name('admin.index');
+    Route::get('/inicio', [AdminController::class, 'index'])->name('admin.index');
 
 // RUTAS DE LA INTERFAZ ADMINISTRADOR ------------------ 
+
+
+    Route::get('/solicitante/crear-guía-de-internamiento', [IntermentGuideController::class, 'index'])->name('guides.index');
+    Route::get('/solicitante/crear-guía-de-internamiento/getDataWarehouse', [IntermentGuideController::class, 'getDataWarehouse'])->name('guides.getDataWarehouse');
+    Route::get('/solicitante/crear-guía-de-internamiento/getDataClassType', [IntermentGuideController::class, 'getDataClassTypes'])->name('guides.getDataClassTypes');
+
+
     
     Route::group(['middleware' => 'check.role:ADMINISTRADOR'], function(){
         
