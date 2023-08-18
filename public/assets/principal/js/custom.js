@@ -501,15 +501,6 @@ $(function() {
         /* -------------- EDIT USER ------------*/
 
 
-        if($('#editProfileSelect').length)
-        {
-            $('#editProfileSelect').select2({
-                dropdownParent: $("#EditUserForm"),
-                placeholder: 'Selecciona un perfil'
-            });
-        }
-
-
         $('#edit-user-status-checkbox').change(function(){
             var txtDesc = $('#txt-edit-description-user');
             if(this.checked){
@@ -525,10 +516,10 @@ $(function() {
             var url = $(this).data('url');
             var getDataUrl = $(this).data('send');
             var modal = $('#EditUserModal');
-            var profileSelect = modal.find('#editProfileSelect');
+            var profileShow = modal.find('#profile-show-edit');
             modal.find('#image-signature-edit').remove();
             modal.find('#EditUserForm').attr('action', url);
-   
+            profileShow.html('');
             $.ajax({
                 type: 'GET',
                 url: getDataUrl,
@@ -572,7 +563,7 @@ $(function() {
                     modal.find('.img-signature-holder').html('<img class="img-fluid signature_img" id="image-signature-edit" src="'+data.url_signature+'"></img>');
                     modal.find('#image-upload-edit').attr('data-value', '<img scr="'+data.url_signature+'" class="img-fluid signature_img"');
                     modal.find('#image-upload-edit').val('');
-                    profileSelect.val(data.profile).change();
+                    profileShow.html(data.profile);
                    
                     if(status == 1)
                     {
@@ -2201,6 +2192,36 @@ $(function() {
 
 
 
+        $('#register-wasteClass-btn').on('click', function(e){
+            var button = $(this);
+            var url = button.data('url');
+            var modal = $('#RegisterClassModal');
+            var selectTypes = $('#registerWasteTypesSelect');
+            var spinner = button.find('.loadSpinner');
+            spinner.toggleClass('active');
+            selectTypes.html('');
+
+            $.ajax({
+                type: 'GET',
+                url: url,
+                dataType: 'JSON',
+                success: function(data){
+                    selectTypes.append('<option value=""></option>');
+                    $.each(data['wasteTypes'], function(key, values){
+                        selectTypes.append('<option value="'+values.id+'">'+values.name+'</option>')
+                    })
+                    spinner.toggleClass('active');
+                    modal.modal('show');
+                },
+                error: function(data){
+                    console.log(data);
+                }
+            })
+            
+        })
+
+
+
         if($('#registerWasteTypesSelect').length)
         {
             var registerWasteTypeSelect = $('#registerWasteTypesSelect');
@@ -2735,6 +2756,7 @@ $(function() {
             })
         })
 
+
         $('#btn-save-classWaste-guide').on('click', function(e){
             e.preventDefault();
             var selectTypes = $('#guide-wasteTypes-select');
@@ -2777,10 +2799,10 @@ $(function() {
                                                         <td>'+value['classes_wastes'][0].symbol+'</td> \
                                                         <td>'+value['name']+'</td> \
                                                         <td> \
-                                                            <input name="aproxWeightType-'+value.id+'" class="form-control col-6 select-weight" type="number" min="0" step="0.01" value="" required> \
+                                                            <input name="aproxWeightType-'+value.id+'" class="form-control col-6 selects-inputs-wasteType select-weight required-input" type="number" min="0" step="0.01" value=""> \
                                                         </td> \
-                                                        <td> <input name="packageQuantity-'+value.id+'" class="form-control col-6" type="number" min="0" step="1" value="" required> </td> \
-                                                        <td> <input name="packageType-'+value.id+'" class="form-control col-12" type="text" required> </td> \
+                                                        <td> <input name="packageQuantity-'+value.id+'" class="form-control col-6 selects-inputs-wasteType select-quantity required-input" onkeypress="return(event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" type="number" min="0" step="1" value=""> </td> \
+                                                        <td> <input name="packageType-'+value.id+'" class="form-control col-12 required-input" type="text"> </td> \
                                                         <td> \
                                                             <button class="delete-row-wasteype-guide btn btn-danger">\
                                                                 <i class="fa-solid fa-trash-can"></i>\
@@ -2797,9 +2819,25 @@ $(function() {
             }
         })
 
-        $('body').on('click', '.delete-row-wasteype-guide', function(){
+
+        $('body').on('click', '.delete-row-wasteype-guide', function(e){
+            e.preventDefault();
             $(this).closest('tr').remove();
+            var totalWeight = 0;
+            var totalQuantity = 0
+
+            $('.select-weight').each(function(){
+                totalWeight += Number($(this).val());
+            })
+
+            $('.select-quantity').each(function(){
+                totalQuantity += Number($(this).val());
+            })
+
+            $('#info-package-quantity').html(totalQuantity);
+            $('#info-total-weight').html(totalWeight.toFixed(2));
         })
+
 
         $('body').on('input', '.select-weight', function(){
             var totalWeight = 0
@@ -2811,11 +2849,303 @@ $(function() {
             $('#info-total-weight').html(totalWeight.toFixed(2));
         })
 
+        $('body').on('input', '.select-quantity', function(){
+            var totalQuantity = 0
+
+            $('.select-quantity').each(function(){
+                totalQuantity += Number($(this).val());
+            })
+
+            $('#info-package-quantity').html(totalQuantity);
+        })
+
+
+        var guideApprovingsSelect = $('#guide-approvings-select');
+        guideApprovingsSelect.select2({
+            placeholder: 'Selecciona un aprobante',
+        });
+
+        $('#guide-approvings-select').on('change', function(){
+            $('#info-type-user-guide').html('APROBANTE');
+        })
+
+
+        $('#registerGuideForm').on('submit', function(e){
+            e.preventDefault();
+            var form = $(this);
+            var selectInputsLen = $('.selects-inputs-wasteType').length;
+            var url = form.attr('action');
+            var button = $('#button-save-guide')
+            var spinner = button.find('.loadSpinner');
+            
+            var passValidation = true;
+
+            $('.required-input').each(function(){
+                $(this).removeClass('required');
+                if($(this).val() == '' || $(this).val().length == 0)
+                {
+                    $(this).addClass('required');
+                    passValidation = false
+                }
+            })
+            if(selectInputsLen == 0)
+            {
+                passValidation = false;
+            }
+
+            if(passValidation)
+            {
+                Swal.fire({
+                    title: 'Confirmar solicitud',
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonText: 'Confirmar',
+                    cancelButtonText: 'Cancelar',
+                    reverseButtons: true,
+                }).then(function(e){
+                    if(e.value === true){
+                        spinner.toggleClass('active');
+                        $.ajax({
+                            url: url,
+                            method: form.attr('method'),
+                            data: form.serialize(),
+                            dataType: 'JSON',
+                            success: function(data){
+        
+                                spinner.toggleClass('active');
+        
+                                localStorage.setItem("swal",
+                                        new swal({
+                                            toast: true,
+                                            icon: 'success',
+                                            position: 'top-end',
+                                            title: "¡Registrado!",
+                                            text:  "Guía de internamiento registrada",
+                                            showConfirmButton: false,
+                                            timer: 3000,
+                                        })
+                                );
+                                window.setTimeout(function(){ 
+                                    localStorage.getItem("swal");
+                                    location.reload();
+                                } , 500);
+                            },
+                            error: function(data){
+                                console.log(data)
+                            }
+                        })
+                    }else{
+                        e.dismiss;
+                    }
+                }, function(dismiss){
+                    return false;
+                })
+            }
+            else{
+                Swal.fire({
+                    toast: true,
+                    icon: 'warning',
+                    title: '¡Rellena el formulario para continuar!',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+            }
+        }
+        
+
+    )}
+
+
+
+
+
+
+
+
+
+
+     /* -------------- APPROVING --------------------*/
+     
+
+     if($('#guide-pending-table-approvant').length){
+        
+        var guidePendingTableEle = $('#guide-pending-table-approvant');
+        var getDataUrl = guidePendingTableEle.data('url');
+        var guidePendingTable = guidePendingTableEle.DataTable({
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax: {
+                "url": getDataUrl,
+                "data": {
+                    "table" : "pending"
+                }
+            },
+            columns:[
+                {data: 'code', name:'code'},
+                {data: 'date', name:'date'},
+                {data: 'lot', name:'lot'},
+                {data: 'stage', name:'stage'},
+                {data: 'location', name:'location'},
+                {data: 'proyect', name:'proyect'},
+                {data: 'company', name:'company'},
+                {data: 'front', name:'front'},
+                {data: 'action', name:'action', orderable: false, searchable: false},
+            ]
+        });
+
+     }  
+
+
+     if($('#register-approved-guide-form').length)
+     {
+        $('body').on('input', '.select-actual-weight', function(){
+            var totalWeight = 0
+    
+            $('.select-actual-weight').each(function(){
+                totalWeight += Number($(this).val());
+            })
+    
+            $('#info-actual-total-weight').html(totalWeight.toFixed(2));
+        })
+
+
+        $('#button-save-approved-guide').on('click', function(e){
+            e.preventDefault();
+            var form = $('#register-approved-guide-form');
+            var passValidation = true;
+
+            $('.required-input').each(function(){
+                $(this).removeClass('required');
+                if($(this).val() == ''){
+                    $(this).addClass('required');
+                    passValidation = false;
+                }
+            })
+
+            if(passValidation)
+            {
+                Swal.fire({
+                    title: 'Confirmar Aprobación',
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonText: 'Aprobar',
+                    cancelButtonText: 'Cancelar',
+                    reverseButtons: true,
+                  }).then((result)=>{
+                    if (result.isConfirmed) {
+                        form.submit();
+                      }
+                  }, function(dismiss){
+                    return false;
+                  })
+
+            }else{
+                Swal.fire({
+                    toast: true,
+                    icon: 'warning',
+                    title: 'Advertencia:',
+                    text: 'LLena todos los campos para continuar',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                      }
+                });
+            }
+        })
+
+
+
+        $('#button-rejected-guide').on('click', function(e){
+            e.preventDefault();
+            var form = $('#form-reject-guide');
+            Swal.fire({
+                title: 'Confirmar solicitud rechazada',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Rechazar',
+                cancelButtonText: 'atrás',
+                reverseButtons: true,
+              }).then((result)=>{
+                if (result.isConfirmed) {
+                    form.submit();
+                  }
+              }, function(dismiss){
+                return false;
+              })
+
+        })
      }
 
 
+     if($('#guide-approved-table-approvant').length)
+     {
+        var guideApprovedTableEle = $('#guide-approved-table-approvant');
+        var getDataUrl = guideApprovedTableEle.data('url');
+        var guideApprovedTable = guideApprovedTableEle.DataTable({
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax: {
+                "url": getDataUrl,
+                "data": {
+                    "table" : "approved"
+                }
+            },
+            columns:[
+                {data: 'code', name:'code'},
+                {data: 'date', name:'date'},
+                {data: 'lot', name:'lot'},
+                {data: 'stage', name:'stage'},
+                {data: 'location', name:'location'},
+                {data: 'proyect', name:'proyect'},
+                {data: 'company', name:'company'},
+                {data: 'front', name:'front'},
+                {data: 'action', name:'action', orderable: false, searchable: false},
+            ]
+        });
+     }
 
 
+     if($('#guide-rejected-table-approvant').length)
+     {
+        var guideRejectedTableEle = $('#guide-rejected-table-approvant');
+        var getDataUrl = guideRejectedTableEle.data('url');
+        var guideApprovedTable = guideRejectedTableEle.DataTable({
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax: {
+                "url": getDataUrl,
+                "data": {
+                    "table" : "rejected"
+                }
+            },
+            columns:[
+                {data: 'code', name:'code'},
+                {data: 'date', name:'date'},
+                {data: 'lot', name:'lot'},
+                {data: 'stage', name:'stage'},
+                {data: 'location', name:'location'},
+                {data: 'proyect', name:'proyect'},
+                {data: 'company', name:'company'},
+                {data: 'front', name:'front'},
+                {data: 'action', name:'action', orderable: false, searchable: false},
+            ]
+        });
+     }
+
+  
 
 });
 

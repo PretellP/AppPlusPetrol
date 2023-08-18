@@ -26,7 +26,13 @@ class RedirectIfAuthenticated
                 switch(Auth::user()->userType->name)
                 {
                     case 'ADMINISTRADOR':
-                        $verifiedRoute = route('admin.index');
+                        $verifiedRoute = route('warehouses.index');
+                        break;
+                    case 'SOLICITANTE':
+                        $verifiedRoute = route('guides.index');
+                        break;
+                    case 'APROBANTE':
+                        $verifiedRoute = route('approvingGuides.index');
                         break;
                     default:
                         $verifiedRoute = route('login');

@@ -15,21 +15,22 @@ class CheckRole
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle(Request $request, Closure $next, $role)
+    public function handle(Request $request, Closure $next, ...$roles)
     {
-        if(!Auth::check())
-        {
-            return redirect()->route('login');
-        }
-        else{
-            if(Auth::user()->userType->name == $role)
+
+            if(!Auth::check())
             {
-                return $next($request);
+                return redirect()->route('login');
             }
             else{
-                abort(403, 'Acceso denegado');
+                if(is_array($roles)){
+                    foreach ($roles as $role) {
+                        if (Auth::user()->userType->name == $role) {
+                            return $next($request);
+                        }
+                    }
+                    abort(403, 'Acceso denegado'); 
+                }                
             }
-        }
-
     }
 }

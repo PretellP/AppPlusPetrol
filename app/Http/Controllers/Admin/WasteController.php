@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\{WasteClass, WasteType};
 use DataTables;
 use Auth;
+use Validator;
 
 class WasteController extends Controller
 {
@@ -75,6 +76,18 @@ class WasteController extends Controller
         return view('principal.viewAdmin.wastes.index', [
             'wasteTypes' => $wasteTypes
         ]);
+    }
+
+    public function create(Request $request)
+    {
+        if($request->ajax())
+        {
+            $wasteTypes = WasteType::all();
+
+            return response()->json([
+                "wasteTypes" => $wasteTypes
+            ]);
+        }
     }
 
 

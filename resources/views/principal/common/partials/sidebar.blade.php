@@ -22,6 +22,8 @@
                 </a>
             </li>
 
+            @if (in_array(Auth::user()->userType->name, ['ADMINISTRADOR', 'SOLICITANTE']))
+
             <li class="{{setActive('guides.*')}}">
                 <a href="{{route('guides.index')}}" class="nav-link">
                     <i class="fa-solid fa-building-circle-check"></i>
@@ -29,26 +31,33 @@
                 </a>
             </li>
 
-            <li class="">
-                <a href="" class="nav-link">
+            @endif
+
+          @if (in_array(Auth::user()->userType->name, ['ADMINISTRADOR', 'APROBANTE']))
+
+            <li class="{{setActive('approvingApprovedGuides.*')}}">
+                <a href="{{route('approvingApprovedGuides.index')}}" class="nav-link">
                     <i class="fa-solid fa-circle-check"></i>
                     <span>Aprobados</span>
                 </a>
             </li>
 
-            <li class="">
-                <a class="nav-link" href="">
+            <li class="{{setActive('approvingGuides.*')}}">
+                <a class="nav-link" href="{{route('approvingGuides.index')}}">
                     <i class="fa-solid fa-clock-rotate-left fa-flip-vertical"></i>
                     <span>Pendientes</span>
                 </a>
             </li>
 
-            <li class="">
-                <a class="nav-link" href="">
+            <li class="{{setActive('approvingRejectedGuides.*')}}">
+                <a class="nav-link" href="{{route('approvingRejectedGuides.index')}}">
                     <i class="fa-solid fa-ban"></i>
                     <span>Rechazadas</span>
                 </a>
             </li>
+
+          @endif
+
 
         </ul>
 

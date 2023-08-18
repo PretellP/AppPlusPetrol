@@ -647,7 +647,55 @@ table.dataTable
     font-size: 1.1em !important;
 }
 
+.nav-tabs .nav-item .nav-link {
+    color: var(--first-color);
+}
 
+.btn-primary, .btn-primary.disabled {
+    box-shadow: 0 2px 6px #acebf6;
+    background-color: var(--first-color);
+    border-color: #67d4ef;
+}
+
+.btn-primary:active, .btn-primary:hover, .btn-primary.disabled:active, .btn-primary.disabled:hover {
+    background-color:  var(--first-color) !important;
+    filter: brightness(1.1);
+}
+
+.page-item.active .page-link {
+    background-color: var(--first-color);
+    border-color: var(--first-color);
+}
+
+.page-item.disabled .page-link {
+    border-color: transparent;
+    background-color: #f9fafe;
+    color: var(--first-color);
+    opacity: .6;
+}
+
+.page-item .page-link {
+    color: var(--first-color);
+    border-radius: 3px;
+    margin: 0 3px;
+}
+
+.page-link:hover {
+    background-color: var(--first-color);
+    filter: brightness(1.1);
+    color: #fff;
+    border-color: transparent;
+}
+
+.btn-primary:focus:active, .btn-primary.disabled:focus:active {
+    background-color: var(--first-color) !important;
+    filter: brightness(0.9);
+}
+
+.btn-primary:focus, .btn-primary.disabled:focus {
+    background-color: var(--first-color) !important;
+    filter: brightness(0.9);
+}
 
 
 /* ---------- NAVBAR STYLES -------*/
@@ -1026,9 +1074,15 @@ tr.edit-ready .btnWasteType
 }
 
 
-
-
-
+li.select2-selection__choice {
+    max-width: 100%;
+    overflow: hidden;
+    word-wrap: break-word !important;
+    white-space: break-spaces !important;
+}
+ul.select2-selection__rendered {
+    padding-right: 12px !important;
+}
 
 /* ---------- GUIDES CREATE ------------*/
 
@@ -1100,7 +1154,7 @@ tr.edit-ready .btnWasteType
 }
 
 
-#selects-container-register input
+#selects-container-register-guide input
 {
     text-align: center;
 }
@@ -1114,7 +1168,7 @@ tr.edit-ready .btnWasteType
 .divider-bottom-select
 {
     width: 100%;
-    height: 25px;
+    height: 18px;
     background-color: #4d4d4d;
     border-radius: 10px;
 }
@@ -1145,13 +1199,173 @@ tr.edit-ready .btnWasteType
     width: 100%;
 }
 
-
-
 .classSymbol-guide
 {
-    width: 200px;
-    min-width: 200px;
+    min-width: 50px !important;
 }
+
+#profile-show-edit
+{
+    font-size: 14px;
+    padding: 10px 15px;
+    height: 42px;
+    background-color: #e7e7e7;
+    border-radius: 0.25rem;
+}
+
+#table-classTypes-body
+.selects-inputs-wasteType
+{
+    min-width: 80px;
+}
+
+
+.info-sending-users
+{
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+}
+
+.info-sending-users > .info-user-box-guide
+{
+    width: 100%;
+    max-width: 500px;
+    border-radius: 0.25rem;
+    border: 1px solid rgb(236, 236, 236);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.img-signature-container
+{
+    height: 150px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+}
+
+.img-signature-container > img
+{
+    height: 100%;
+}
+
+.info-user-header-guide
+{
+    text-align: center;
+    background-color: #eeeeee;
+    padding: 1em;
+    font-weight: 700;
+}
+
+.row-user-info-guide
+{
+    display: flex;
+}
+
+.row-user-info-guide
+.row-user-info-label-guide
+{
+    background-color: #eeeeee;
+    font-weight: bolder;
+    min-width: 40%;
+    padding: 0.3em .7em;
+    display: flex;
+    align-items: center;
+}
+
+.row-user-info-txt
+{
+    width: 100%;
+    padding: 0.3em 0.7em;
+}
+
+.button-save-guide-container
+{
+    width: 100%;
+    text-align: center;
+}
+
+.info-sending-users
+{
+    overflow: hidden;
+}
+
+
+
+
+
+
+
+.required-input.required
+{
+    border-color: rgb(206, 0, 0) !important;
+}
+
+.required-input.required ~ .select2
+.select2-selection
+{
+    border-color: rgb(206, 0, 0) !important;
+}
+
+
+.return-btn
+{
+    width: fit-content !important;
+}
+
+
+/* -------- PENDING GUIDES STYLES --------*/
+
+
+.pending-guides-table-head
+{
+    background-color: rgb(233, 185, 52);
+}
+
+
+
+.pending-guides-table-head th
+{
+    color: white !important;
+    font-weight: bolder !important;
+}
+
+.rejected-guides-table-head
+{
+    background-color: rgb(216, 88, 71);
+}
+
+.rejected-guides-table-head th
+{
+    color: white !important;
+    font-weight: bolder !important;
+}
+
+.approved-guides-table-head
+{
+    background-color: var(--first-color);
+}
+
+.approved-guides-table-head th
+{
+    color: white !important;
+    font-weight: bolder !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

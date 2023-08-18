@@ -154,7 +154,7 @@ class UserController extends Controller
             "url_signature" => $url_signature,
             "status" => $user->status,
             "last_login" => $last_login,
-            "profile" => $user->id_user_type,
+            "profile" => $user->userType->name,
             "validApplicant" => $validApplicant,
             "selectedApprovings" => $selectedApprovings,
             'approvings' => $approvings

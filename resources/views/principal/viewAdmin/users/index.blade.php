@@ -144,6 +144,7 @@
                                 <option value="{{$userType->id}}"> {{$userType->name}} </option>
                                 @endforeach
                             </select>
+
                         </div>
                     </div>
 
@@ -270,13 +271,8 @@
                         <div class="form-group col-md-6">
                             <label for="inputProfile">Perfil *</label>
 
-                            <select disabled name="id_user_type" id="editProfileSelect" class="form-control select2" required>
-                                @foreach ($userTypes as $userType)
-                                <option value="{{$userType->id}}">
-                                    {{$userType->name}}
-                                </option>
-                                @endforeach
-                            </select>
+                            <div id="profile-show-edit">
+                            </div>
 
                         </div>
                     </div>

@@ -11,6 +11,10 @@ use App\Http\Controllers\Admin\{
     IntermentGuideController
 };
 
+use App\Http\Controllers\Aprobant\{
+    IntermentGuideControllerApproving
+};
+
 use Illuminate\Support\Facades\Route;
 
 
@@ -27,10 +31,22 @@ Route::group(['middleware' => 'auth'], function(){
 
 // RUTAS DE LA INTERFAZ ADMINISTRADOR ------------------ 
 
+    Route::group(['middleware' => 'check.role:ADMINISTRADOR,SOLICITANTE'], function(){
+        Route::get('/solicitante/crear-guía-de-internamiento', [IntermentGuideController::class, 'index'])->name('guides.index');
+        Route::get('/solicitante/crear-guía-de-internamiento/getDataWarehouse', [IntermentGuideController::class, 'getDataWarehouse'])->name('guides.getDataWarehouse');
+        Route::post('/solicitante/crear-guía-de-internamiento/registrar', [IntermentGuideController::class, 'store'])->name('guides.store');
+    });
 
-    Route::get('/solicitante/crear-guía-de-internamiento', [IntermentGuideController::class, 'index'])->name('guides.index');
-    Route::get('/solicitante/crear-guía-de-internamiento/getDataWarehouse', [IntermentGuideController::class, 'getDataWarehouse'])->name('guides.getDataWarehouse');
-    Route::get('/solicitante/crear-guía-de-internamiento/getDataClassType', [IntermentGuideController::class, 'getDataClassTypes'])->name('guides.getDataClassTypes');
+
+    Route::group(['middleware' => 'check.role:ADMINISTRADOR,APROBANTE'], function(){
+
+        Route::get('/aprobante/guias-pendientes', [IntermentGuideControllerApproving::class, 'index'])->name('approvingGuides.index');
+        Route::get('/aprobante/guias-aprobadas', [IntermentGuideControllerApproving::class, 'showApproved'])->name('approvingApprovedGuides.index');
+        Route::get('/aprobante/guias-rechazadas', [IntermentGuideControllerApproving::class, 'showRejected'])->name('approvingRejectedGuides.index');
+        Route::get('/aprobante/guias-pendientes/ver/{guide}', [IntermentGuideControllerApproving::class, 'show'])->name('approvingGuides.show');
+        Route::post('/aprobante/guias-pendientes/actualizar/{guide}', [IntermentGuideControllerApproving::class, 'update'])->name('approvedGuide.update');
+        Route::post('/aprobante/guias-pendientes/rechazar/{guide}', [IntermentGuideControllerApproving::class, 'updateReject'])->name('guides.rejected');
+    });
 
 
     
@@ -83,8 +99,8 @@ Route::group(['middleware' => 'auth'], function(){
         
 
 
-
         Route::get('/administrador/residuos', [WasteController::class, 'index'])->name('wastes.index');
+        Route::get('/administrador/residuos/crear-nuevo', [WasteController::class, 'create'])->name('wastes.create');
         Route::post('/administrador/residuos/registrar', [WasteController::class, 'store'])->name('wastes.store');
         Route::get('/administrador/residuos/editar/{class}', [WasteController::class, 'edit'])->name('wastes.edit');
         Route::post('/administrador/residuos/actualizar/{class}', [WasteController::class, 'update'])->name('wastes.update');

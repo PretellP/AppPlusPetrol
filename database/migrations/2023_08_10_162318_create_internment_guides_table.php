@@ -17,7 +17,7 @@ class CreateInternmentGuidesTable extends Migration
             $table->id();
             $table->string('code');
             $table->string('comment', 500)->nullable();
-            $table->date('date');
+            $table->boolean('stat_rejected');
             $table->boolean('stat_approved');
             $table->boolean('stat_recieved');
             $table->boolean('stat_verified');

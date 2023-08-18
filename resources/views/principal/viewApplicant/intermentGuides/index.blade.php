@@ -25,14 +25,14 @@
 
             <div class="mb-4">
 
-                <form action="" id="registerGuideForm">
-
+                <form action="{{route('guides.store')}}" method="POST" id="registerGuideForm">
+                    @csrf
                     <div class="select-warehouse-guide-container">
 
                         <div class="form-group col-md-12 inner-box-select-warehouse">
                             <label for="guide-warehouse-select">Punto verde *</label>
                             <select data-url="{{route('guides.getDataWarehouse')}}" name="select-warehouse"
-                                id="guide-warehouse-select" class="form-control select2" required>
+                                id="guide-warehouse-select" class="form-control select2 required-input">
                                 <option value=""></option>
                                 @foreach ($warehouses as $warehouse)
                                 <option value="{{$warehouse->id}}">{{$warehouse->id}} - {{$warehouse->front->name}}
@@ -47,7 +47,7 @@
                         Descripción de procedencia
                     </div>
 
-                    <div class="form-row" id="selects-container-register">
+                    <div class="form-row" id="selects-container-register-guide">
                         <div class="form-group col-md-2">
                             <span class="guide-warehouse-info-dis">LOTE</span>
 
@@ -120,7 +120,7 @@
 
 
                     <table class="table table-hover">
-                        <thead class="thead-dark">
+                        <thead>
                             <tr>
                                 <th class="classSymbol-guide" scope="col">CLASE</th>
                                 <th class="nameWasteType-guide" scope="col">NOMBRE/TIPO DE RESIDUO</th>
@@ -135,7 +135,7 @@
                             <tr id="row-info-total-guide">
                                 <td></td>
                                 <td class="text-right">Total Peso / Bultos:</td>
-                                <td id="info-total-weight">0</td>
+                                <td id="info-total-weight">0.00</td>
                                 <td id="info-package-quantity">0</td>
                                 <td></td>
                                 <td></td>
@@ -144,6 +144,90 @@
                         
                         
                     </table>
+
+                    <div class="divider-bottom-select">
+                    </div>
+
+                    <div class="guide-comment-container mt-3">
+                        <label for="guide-comment">Observaciones y/o aclaraciones (opcional): </label>
+                        <textarea class="form-control" name="guide-comment" id="guide-comment" cols="30" rows="10"></textarea>
+                    </div>
+
+                    <div class="info-sending-users mt-3">
+
+
+                        <div class="info-user-box-guide info-applicant-container">
+                            <div class="info-user-header-guide">
+                                Solicitado por:
+                            </div>
+                            <div class="img-signature-container">
+                                <img src="{{asset('storage/'.Auth::user()->url_signature)}}" alt="">
+                            </div>
+                            <div class="personal-info-user">
+                                <div class="row-user-info-guide">
+                                    <div class="row-user-info-label-guide">Nombre: </div>
+                                    <div class="row-user-info-txt"> {{Auth::user()->name}} </div> 
+                                </div>
+                                <div class="row-user-info-guide">
+                                    <div class="row-user-info-label-guide">
+                                        Tipo Usuario:
+                                    </div>
+                                    <div class="row-user-info-txt">
+                                        {{Auth::user()->userType->name}}
+                                    </div>
+                                </div>
+                                <div class="row-user-info-guide">
+                                    <div class="row-user-info-label-guide">Fecha de solicitud:</div>
+                                    <div class="row-user-info-txt">{{getCurrentDate()}}</div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="info-user-box-guide info-approvant-container">
+                            <div class="info-user-header-guide">
+                                Selecciona un aprobante: *
+                            </div>
+                            <div class="img-signature-container">
+                            </div>
+
+                            <div class="personal-info-user">
+                                <div class="row-user-info-guide">
+                                    <div class="row-user-info-label-guide">Nombre de aprobante * </div>
+                                    <div class="row-user-info-txt">
+
+                                        <select name="id_approvant-guide" id="guide-approvings-select"
+                                            class="form-control select2 required-input">
+                                            <option></option>
+                                            @foreach ($approvings as $approving)
+                                            <option value="{{$approving->id}}"> {{$approving->name}} </option>
+                                            @endforeach
+                                        </select>
+                     
+                                    </div> 
+                                </div>
+                                <div class="row-user-info-guide">
+                                    <div class="row-user-info-label-guide">
+                                        Tipo Usuario:
+                                    </div>
+                                    <div class="row-user-info-txt" id="info-type-user-guide">
+                                    </div>
+                                </div>
+                                <div class="row-user-info-guide">
+                                    <div class="row-user-info-label-guide">Fecha de Aprobación:</div>
+                                    <div class="row-user-info-txt"> - - - </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 button-save-guide-container">
+                        <button type="submit" id="button-save-guide" class="btn btn-primary">
+                            <i class="fa-solid fa-floppy-disk"></i> &nbsp;
+                            Guardar
+                            <i class="fa-solid fa-spinner fa-spin loadSpinner ms-1"></i>
+                        </button>
+                    </div>
 
                 </form>
 

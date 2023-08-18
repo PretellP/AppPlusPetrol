@@ -17,8 +17,9 @@
         <div class="principal-container card-body card z-index-2">
 
             <div class="mb-4">
-                <button class="btn btn-primary" data-toggle="modal" data-target="#RegisterClassModal">
+                <button id="register-wasteClass-btn" class="btn btn-primary" data-url='{{route('wastes.create')}}'>
                     <i class="fa-solid fa-circle-plus"></i> &nbsp; Nueva Clase
+                    <i class="fa-solid fa-spinner fa-spin loadSpinner ms-1"></i>
                 </button>
 
                 <button class="ms-3 btn btn-primary" data-toggle="modal" data-target="#RegisterWasteModal">
@@ -93,10 +94,6 @@
                             <label> Selecciona uno o más tipos de residuos *</label>
                             <select name="id_waste_types[]" class="form-control select2" multiple
                                 id="registerWasteTypesSelect" required>
-                                <option></option>
-                                @foreach ($wasteTypes as $wasteType)
-                                <option value="{{$wasteType->id}}"> {{$wasteType->name}}</option>
-                                @endforeach
                             </select>
                         </div>
                         
