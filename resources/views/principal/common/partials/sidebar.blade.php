@@ -27,13 +27,13 @@
             <li class="{{setActive('guides.*')}}">
                 <a href="{{route('guides.index')}}" class="nav-link">
                     <i class="fa-solid fa-building-circle-check"></i>
-                    <span>Crear Guía</span>
+                    <span>Guías de Internamiento</span>
                 </a>
             </li>
 
             @endif
 
-          @if (in_array(Auth::user()->userType->name, ['ADMINISTRADOR', 'APROBANTE']))
+          @if (in_array(Auth::user()->userType->name, ['APROBANTE']))
 
             <li class="{{setActive('approvingApprovedGuides.*')}}">
                 <a href="{{route('approvingApprovedGuides.index')}}" class="nav-link">
@@ -57,6 +57,52 @@
             </li>
 
           @endif
+
+          @if (in_array(Auth::user()->userType->name, ['RECEPTOR']))
+            <li class="{{setActive('recieverRecievedGuides.*')}}">
+                <a href="{{route('recieverRecievedGuides.index')}}" class="nav-link">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span>Recepcionadas</span>
+                </a>
+            </li>
+
+            <li class="{{setActive('recieverGuides.*')}}">
+                <a class="nav-link" href="{{route('recieverGuides.index')}}">
+                    <i class="fa-solid fa-clock-rotate-left fa-flip-vertical"></i>
+                    <span>Pendientes</span>
+                </a>
+            </li>
+
+            <li class="{{setActive('recieverRejectedGuides.*')}}">
+                <a class="nav-link" href="{{route('recieverRejectedGuides.index')}}">
+                    <i class="fa-solid fa-ban"></i>
+                    <span>Rechazadas</span>
+                </a>
+            </li>
+          @endif
+
+          @if (in_array(Auth::user()->userType->name, ['SUPERVISOR']))
+          <li class="{{setActive('verificatorVerifiedGuides.*')}}">
+              <a href="{{route('verificatorVerifiedGuides.index')}}" class="nav-link">
+                  <i class="fa-solid fa-circle-check"></i>
+                  <span>Verificadas</span>
+              </a>
+          </li>
+
+          <li class="{{setActive('verificatorGuides.*')}}">
+              <a class="nav-link" href="{{route('verificatorGuides.index')}}">
+                  <i class="fa-solid fa-clock-rotate-left fa-flip-vertical"></i>
+                  <span>Pendientes</span>
+              </a>
+          </li>
+
+          <li class="{{setActive('verificatorRejectedGuides.*')}}">
+              <a class="nav-link" href="{{route('verificatorRejectedGuides.index')}}">
+                  <i class="fa-solid fa-ban"></i>
+                  <span>Rechazadas</span>
+              </a>
+          </li>
+        @endif
 
 
         </ul>

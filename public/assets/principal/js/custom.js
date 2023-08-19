@@ -2678,6 +2678,32 @@ $(function() {
 
      /* ----------- GUIDES APPLICANTT -----------*/
 
+     if($('#guide-table-applicant').length){
+         var guideApplicantTableEle = $('#guide-table-applicant');
+        var getDataUrl = guideApplicantTableEle.data('url');
+        var guideApplicantTable = guideApplicantTableEle.DataTable({
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax: getDataUrl,
+            columns:[
+                {data: 'code', name:'code'},
+                {data: 'date', name:'date'},
+                {data: 'lot', name:'lot'},
+                {data: 'stage', name:'stage'},
+                {data: 'location', name:'location'},
+                {data: 'proyect', name:'proyect'},
+                {data: 'company', name:'company'},
+                {data: 'front', name:'front'},
+                {data: 'stat_approved', name:'stat_approved'},
+                {data: 'stat_recieved', name:'stat_recieved'},
+                {data: 'stat_verified', name:'stat_verified'},
+                {data: 'action', name:'action', orderable: false, searchable: false},
+            ]
+        });
+     }
+
+
      if($('#registerGuideForm').length){
 
 
@@ -2870,12 +2896,14 @@ $(function() {
         })
 
 
-        $('#registerGuideForm').on('submit', function(e){
+
+
+        $('#button-save-guide').on('click', function(e){
             e.preventDefault();
-            var form = $(this);
+
+            var form = $('#registerGuideForm');
             var selectInputsLen = $('.selects-inputs-wasteType').length;
-            var url = form.attr('action');
-            var button = $('#button-save-guide')
+            var button = $(this);
             var spinner = button.find('.loadSpinner');
             
             var passValidation = true;
@@ -2904,36 +2932,7 @@ $(function() {
                     reverseButtons: true,
                 }).then(function(e){
                     if(e.value === true){
-                        spinner.toggleClass('active');
-                        $.ajax({
-                            url: url,
-                            method: form.attr('method'),
-                            data: form.serialize(),
-                            dataType: 'JSON',
-                            success: function(data){
-        
-                                spinner.toggleClass('active');
-        
-                                localStorage.setItem("swal",
-                                        new swal({
-                                            toast: true,
-                                            icon: 'success',
-                                            position: 'top-end',
-                                            title: "¡Registrado!",
-                                            text:  "Guía de internamiento registrada",
-                                            showConfirmButton: false,
-                                            timer: 3000,
-                                        })
-                                );
-                                window.setTimeout(function(){ 
-                                    localStorage.getItem("swal");
-                                    location.reload();
-                                } , 500);
-                            },
-                            error: function(data){
-                                console.log(data)
-                            }
-                        })
+                        form.submit();
                     }else{
                         e.dismiss;
                     }
@@ -3147,5 +3146,280 @@ $(function() {
 
   
 
+
+     /* -------------- RECIEVER ---------------*/
+
+     if($('#guide-pending-table-reciever').length){
+        
+        var guideRecieverPendingTableEle = $('#guide-pending-table-reciever');
+        var getDataUrl = guideRecieverPendingTableEle.data('url');
+        var guideRecieverPendingTable = guideRecieverPendingTableEle.DataTable({
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax: {
+                "url": getDataUrl,
+                "data": {
+                    "table" : "pending"
+                }
+            },
+            columns:[
+                {data: 'code', name:'code'},
+                {data: 'date', name:'date'},
+                {data: 'lot', name:'lot'},
+                {data: 'stage', name:'stage'},
+                {data: 'location', name:'location'},
+                {data: 'proyect', name:'proyect'},
+                {data: 'company', name:'company'},
+                {data: 'front', name:'front'},
+                {data: 'action', name:'action', orderable: false, searchable: false},
+            ]
+        });
+
+     } 
+
+
+     if($('#register-recieved-guide-form').length)
+     {
+        
+        $('#button-save-reciever-guide').on('click', function(e){
+            e.preventDefault();
+
+            var form = $('#register-recieved-guide-form');
+
+            Swal.fire({
+                title: 'Confirmar Recepción',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+                }).then((result)=>{
+                if (result.isConfirmed) {
+                    form.submit();
+                    }
+                }, function(dismiss){
+                return false;
+                })
+        })
+
+
+
+        $('#button-rejected-reciever-guide').on('click', function(e){
+            e.preventDefault();
+            var form = $('#form-reject-reciever-guide');
+            Swal.fire({
+                title: '¿Rechazar guía de internamiento?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Rechazar',
+                cancelButtonText: 'cerrar',
+                reverseButtons: true,
+              }).then((result)=>{
+                if (result.isConfirmed) {
+                    form.submit();
+                  }
+              }, function(dismiss){
+                return false;
+              })
+
+        })
+     }
+
+     if($('#guide-recieved-table-reciever').length)
+     {
+        var guideRecieverTableEle = $('#guide-recieved-table-reciever');
+        var getDataUrl = guideRecieverTableEle.data('url');
+        var guideRecievedTable = guideRecieverTableEle.DataTable({
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax: {
+                "url": getDataUrl,
+                "data": {
+                    "table" : "recieved"
+                }
+            },
+            columns:[
+                {data: 'code', name:'code'},
+                {data: 'date', name:'date'},
+                {data: 'lot', name:'lot'},
+                {data: 'stage', name:'stage'},
+                {data: 'location', name:'location'},
+                {data: 'proyect', name:'proyect'},
+                {data: 'company', name:'company'},
+                {data: 'front', name:'front'},
+                {data: 'action', name:'action', orderable: false, searchable: false},
+            ]
+        });
+     }
+
+
+     if($('#guide-rejected-table-reciever').length){
+        var guideRejectedRecieverTableEle = $('#guide-rejected-table-reciever');
+        var getDataUrl = guideRejectedRecieverTableEle.data('url');
+        var guideApprovedTable = guideRejectedRecieverTableEle.DataTable({
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax: {
+                "url": getDataUrl,
+                "data": {
+                    "table" : "rejected"
+                }
+            },
+            columns:[
+                {data: 'code', name:'code'},
+                {data: 'date', name:'date'},
+                {data: 'lot', name:'lot'},
+                {data: 'stage', name:'stage'},
+                {data: 'location', name:'location'},
+                {data: 'proyect', name:'proyect'},
+                {data: 'company', name:'company'},
+                {data: 'front', name:'front'},
+                {data: 'action', name:'action', orderable: false, searchable: false},
+            ]
+        });
+     }
+
+
+
+
+
+     /* -------------  VERIFICATOR  -------------*/
+
+
+     if($('#guide-pending-table-verificator').length)
+     {
+        var guideVerificatorPendingTableEle = $('#guide-pending-table-verificator');
+        var getDataUrl = guideVerificatorPendingTableEle.data('url');
+        var guideVerificatorPendingTable = guideVerificatorPendingTableEle.DataTable({
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax: {
+                "url": getDataUrl,
+                "data": {
+                    "table" : "pending"
+                }
+            },
+            columns:[
+                {data: 'code', name:'code'},
+                {data: 'date', name:'date'},
+                {data: 'lot', name:'lot'},
+                {data: 'stage', name:'stage'},
+                {data: 'location', name:'location'},
+                {data: 'proyect', name:'proyect'},
+                {data: 'company', name:'company'},
+                {data: 'front', name:'front'},
+                {data: 'action', name:'action', orderable: false, searchable: false},
+            ]
+        });
+     }
+
+
+     if($('#register-verified-guide-form').length){
+
+
+        $('#button-save-verified-guide').on('click', function(e){
+            e.preventDefault();
+
+            var form = $('#register-verified-guide-form');
+
+            Swal.fire({
+                title: '¿Verificar Guía de Internamiento?',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Verificar',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+                }).then((result)=>{
+                if (result.isConfirmed) {
+                    form.submit();
+                    }
+                }, function(dismiss){
+                return false;
+                })
+        })
+
+
+        $('#button-rejected-verified-guide').on('click', function(e){
+            e.preventDefault();
+            var form = $('#form-reject-verified-guide');
+            Swal.fire({
+                title: '¿Rechazar guía de internamiento?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Rechazar',
+                cancelButtonText: 'cerrar',
+                reverseButtons: true,
+              }).then((result)=>{
+                if (result.isConfirmed) {
+                    form.submit();
+                  }
+              }, function(dismiss){
+                return false;
+              })
+
+        })
+
+
+     }
+
+
+     if($('#guide-verified-table-verificator').length)
+     {
+        var guideVerifiedTableEle = $('#guide-verified-table-verificator');
+        var getDataUrl = guideVerifiedTableEle.data('url');
+        var guideVerifiedTable = guideVerifiedTableEle.DataTable({
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax: {
+                "url": getDataUrl,
+                "data": {
+                    "table" : "verified"
+                }
+            },
+            columns:[
+                {data: 'code', name:'code'},
+                {data: 'date', name:'date'},
+                {data: 'lot', name:'lot'},
+                {data: 'stage', name:'stage'},
+                {data: 'location', name:'location'},
+                {data: 'proyect', name:'proyect'},
+                {data: 'company', name:'company'},
+                {data: 'front', name:'front'},
+                {data: 'action', name:'action', orderable: false, searchable: false},
+            ]
+        });
+     }
+
+     if($('#guide-rejected-table-verificator').length){
+        var guideRejectedVerificatorTableEle = $('#guide-rejected-table-verificator');
+        var getDataUrl = guideRejectedVerificatorTableEle.data('url');
+        var guideApprovedTable = guideRejectedVerificatorTableEle.DataTable({
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax: {
+                "url": getDataUrl,
+                "data": {
+                    "table" : "rejected"
+                }
+            },
+            columns:[
+                {data: 'code', name:'code'},
+                {data: 'date', name:'date'},
+                {data: 'lot', name:'lot'},
+                {data: 'stage', name:'stage'},
+                {data: 'location', name:'location'},
+                {data: 'proyect', name:'proyect'},
+                {data: 'company', name:'company'},
+                {data: 'front', name:'front'},
+                {data: 'action', name:'action', orderable: false, searchable: false},
+            ]
+        });
+     }
 });
 

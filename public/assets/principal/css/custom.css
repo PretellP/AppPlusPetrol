@@ -1224,7 +1224,7 @@ ul.select2-selection__rendered {
 {
     width: 100%;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-evenly;
 }
 
 .info-sending-users > .info-user-box-guide
@@ -1356,15 +1356,50 @@ ul.select2-selection__rendered {
 
 
 
+/* ------- REJECTED GUIDE STYLES ---------*/
+
+
+.rejected-info-guide
+{
+    width: 100%;
+    text-align: center;
+    margin-top: 2em;
+    padding: 0.6em;
+}
+
+.rejected-info-guide
+.title-rejected
+{
+    font-weight: bolder;
+    font-size: 1.3em;
+    color: rgb(199, 5, 5);
+}
+
+.rejected-info-guide
+.rejected-info-txt
+{
+    color: black;
+}
 
 
 
 
 
+.principal-container.applicant
+{
+    overflow-x: scroll !important;
+}
 
 
+.info-guide-pending
+{
+    background-color: rgb(243, 172, 39) !important;
+}
 
-
+.info-guide-checked
+{
+    background-color: #3ab636 !important; 
+}
 
 
 
@@ -2143,47 +2178,6 @@ a:hover
 /* -------- ONLINE LESSON STYLES --------*/
 
 
-.course-container.online-lessons
-{
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start !important;
-    gap: 40px !important;
-}
-
-.course-container.online-lessons
-.message-lesson-container
-{
-    width: 100%;
-}
-
-.course-container.online-lessons
-.message-lesson-container
-.message-title
-{
-    background-color: var(--first-color);
-    width: fit-content;
-    padding: 1em 2em;
-    color: white;
-    font-size: 1.2em;
-    border-radius: 3px 3px 0 0;
-    border-bottom: 1px solid rgb(173, 173, 173);
-    box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.137);
-    z-index: 1;
-}
-
-.course-container.online-lessons
-.message-lesson-container
-.message-content
-{
-    z-index: 2;
-    background-color: var(--light-gray);
-    padding: 2em;
-    color: rgb(105, 105, 105);
-    font-style: italic;
-    border-radius: 0 3px 3px 3px;
-    box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.137);
-}
 
 .course-container.online-lessons
 .rooms-general-container

@@ -9,7 +9,7 @@
         <div class="card page-title-container">
             <div class="card-header">
                 <div class="total-width-container">
-                    <h4>Revisar guía de Internamiento pendiente</h4>
+                    <h4>Revisar guía de Internamiento recepcionada</h4>
                 </div>
             </div>
         </div>
@@ -17,7 +17,7 @@
         
         <div class="principal-container container-create-guide card-body card z-index-2">
 
-            <a href="{{route('approvingGuides.index')}}" class="btn btn-primary return-btn mb-2">
+            <a href="{{route('verificatorGuides.index')}}" class="btn btn-primary return-btn mb-2">
                 <i class="fa-solid fa-circle-arrow-left fa-xl"></i> &nbsp;
                 Regresar
             </a>
@@ -32,7 +32,7 @@
 
             <div class="mb-4">
 
-                <form action="{{route('approvedGuide.update', $guide)}}" method="POST" id="register-approved-guide-form">
+                <form action="{{route('verifiedGuide.update', $guide)}}" method="POST" id="register-verified-guide-form">
                     @csrf
 
                     <div class="description-guide-title">
@@ -103,7 +103,7 @@
                                 <td> {{$wasteType->name}} </td>
                                 <td id="info-total-weight"> {{$wasteType->pivot->aprox_weight}} </td>
                                 <td> 
-                                    <input class="select-actual-weight form-control required-input" name="input-actual-weight-{{$wasteType->id}}" type="number" min="0" step="0.01">
+                                    {{$wasteType->pivot->actual_weight}} 
                                 </td>
                                 <td>{{$wasteType->pivot->package_quantity}}</td>
                                 <td>{{$wasteType->pivot->package_type}}</td>
@@ -114,8 +114,8 @@
                             <tr id="row-info-total-guide">
                                 <td></td>
                                 <td></td>
-                                <td class="text-right">Total Peso:</td>
-                                <td id="info-actual-total-weight">0.00</td>
+                                <td class="text-right">Peso Total:</td>
+                                <td id="info-actual-total-weight">{{$totalWeight}}</td>
                                 <td></td>
                                 <td></td>
                             </tr>
@@ -132,6 +132,8 @@
                         <span> {{$guide->comment}} </span>
                     </div>
 
+
+
                     <div class="info-sending-users mt-3">
 
 
@@ -143,6 +145,8 @@
                                 <img src="{{asset('storage/'.$guide->applicant->url_signature)}}" alt="">
                             </div>
                             <div class="personal-info-user">
+
+
                                 <div class="row-user-info-guide">
                                     <div class="row-user-info-label-guide">Nombre: </div>
                                     <div class="row-user-info-txt"> {{$guide->applicant->name}} </div> 
@@ -159,23 +163,97 @@
                                     <div class="row-user-info-label-guide">Fecha de solicitud:</div>
                                     <div class="row-user-info-txt">{{$guide->created_at}}</div>
                                 </div>
+
+
                             </div>
                         </div>
 
+                        <div class="info-user-box-guide info-approvant-container">
+                            <div class="info-user-header-guide">
+                                Aprobado por
+                            </div>
+                            <div class="img-signature-container">
+                                <img src="{{asset('storage/'.$guide->approvant->url_signature)}}" alt="">
+                            </div>
+
+
+                            <div class="personal-info-user">
+
+
+                                <div class="row-user-info-guide">
+                                    <div class="row-user-info-label-guide">Nombre de aprobante: </div>
+                                    <div class="row-user-info-txt">
+                                        {{$guide->approvant->name}}
+                                    </div> 
+                                </div>
+
+
+                                <div class="row-user-info-guide">
+                                    <div class="row-user-info-label-guide">
+                                        Tipo Usuario: 
+                                    </div>
+                                    <div class="row-user-info-txt" id="info-type-user-guide">
+
+                                        {{$guide->approvant->userType->name}}
+                                    </div>
+                                </div>
+                                <div class="row-user-info-guide">
+                                    <div class="row-user-info-label-guide">Fecha de Aprobación:</div>
+                                    <div class="row-user-info-txt"> {{$guide->date_approved}} </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="info-sending-users mt-4">
+
+                        <div class="info-user-box-guide info-applicant-container">
+                            <div class="info-user-header-guide">
+                                Recepcionado por:
+                            </div>
+                            <div class="img-signature-container">
+                                <img src="{{asset('storage/'.$guide->reciever->url_signature)}}" alt="">
+                            </div>
+                            <div class="personal-info-user">
+
+
+                                <div class="row-user-info-guide">
+                                    <div class="row-user-info-label-guide">Nombre: </div>
+                                    <div class="row-user-info-txt"> {{$guide->reciever->name}} </div> 
+                                </div>
+                                <div class="row-user-info-guide">
+                                    <div class="row-user-info-label-guide">
+                                        Tipo Usuario:
+                                    </div>
+                                    <div class="row-user-info-txt">
+                                        {{$guide->reciever->userType->name}}
+                                    </div>
+                                </div>
+                                <div class="row-user-info-guide">
+                                    <div class="row-user-info-label-guide">Fecha de solicitud:</div>
+                                    <div class="row-user-info-txt">{{$guide->date_recieved}}</div>
+                                </div>
+
+
+                            </div>
+                        </div>
 
                     </div>
 
                     <div class="mt-5 button-save-guide-container">
 
-                        <button id="button-rejected-guide" class="btn btn-danger me-5">
+                        <button id="button-rejected-verified-guide" class="btn btn-danger me-5">
                             <i class="fa-solid fa-circle-xmark fa-xl"></i> &nbsp;
                             Rechazar
                             <i class="fa-solid fa-spinner fa-spin loadSpinner ms-1"></i>
                         </button>
 
-                        <button type="submit" id="button-save-approved-guide" class="btn btn-primary ms-5">
+                        <button type="submit" id="button-save-verified-guide" class="btn btn-primary ms-5">
                             <i class="fa-solid fa-circle-check fa-xl"></i> &nbsp;
-                            Aprobar
+                            Verificar guía
                             <i class="fa-solid fa-spinner fa-spin loadSpinner ms-1"></i>
                         </button>
 
@@ -185,7 +263,8 @@
 
             </div>
 
-            <form action="{{route('guides.rejected', $guide)}}" id="form-reject-guide" method="POST">
+            
+            <form action="{{route('guides.verified.rejected', $guide)}}" id="form-reject-verified-guide" method="POST">
                 @csrf
             </form>
 

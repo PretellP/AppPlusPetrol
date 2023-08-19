@@ -34,6 +34,12 @@ class RedirectIfAuthenticated
                     case 'APROBANTE':
                         $verifiedRoute = route('approvingGuides.index');
                         break;
+                    case 'RECEPTOR':
+                        $verifiedRoute = route('recieverGuides.index');
+                        break;
+                    case 'SUPERVISOR':
+                        $verifiedRoute = route('verificatorGuides.index');
+                        break;
                     default:
                         $verifiedRoute = route('login');
                 }

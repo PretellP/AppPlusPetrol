@@ -47,6 +47,10 @@ class LoginController extends Controller
                 $this->redirectTo = route('approvingGuides.index');
                 return $this->redirectTo;
                 break;
+            case 'RECEPTOR':
+                $this->redirectTo = route('recieverGuides.index');
+                return $this->redirectTo;
+                break;
             default:
                 $this->redirectTo = '/';
                 return $this->redirectTo;
