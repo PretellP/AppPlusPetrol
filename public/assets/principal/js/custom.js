@@ -520,6 +520,7 @@ $(function() {
             modal.find('#image-signature-edit').remove();
             modal.find('#EditUserForm').attr('action', url);
             profileShow.html('');
+            modal.find('#inputPasswordEdit').val('');
             $.ajax({
                 type: 'GET',
                 url: getDataUrl,
@@ -2682,6 +2683,7 @@ $(function() {
          var guideApplicantTableEle = $('#guide-table-applicant');
         var getDataUrl = guideApplicantTableEle.data('url');
         var guideApplicantTable = guideApplicantTableEle.DataTable({
+            order: [[1, 'desc']],
             language: DataTableEs,
             serverSide: true,
             processing: true,
@@ -3032,6 +3034,7 @@ $(function() {
             {
                 Swal.fire({
                     title: 'Confirmar Aprobación',
+                    text: '¡Esta acción no se podrá deshacer!',
                     icon: 'info',
                     showCancelButton: true,
                     confirmButtonText: 'Aprobar',
@@ -3069,11 +3072,12 @@ $(function() {
             e.preventDefault();
             var form = $('#form-reject-guide');
             Swal.fire({
-                title: 'Confirmar solicitud rechazada',
+                title: 'Rechazar solicitud',
+                text: 'Luego se podrá deshacer esta acción',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Rechazar',
-                cancelButtonText: 'atrás',
+                cancelButtonText: 'Atrás',
                 reverseButtons: true,
               }).then((result)=>{
                 if (result.isConfirmed) {
@@ -3144,6 +3148,8 @@ $(function() {
         });
      }
 
+
+
   
 
 
@@ -3189,6 +3195,7 @@ $(function() {
 
             Swal.fire({
                 title: 'Confirmar Recepción',
+                text: '¡Esta acción no se podrá deshacer!',
                 icon: 'info',
                 showCancelButton: true,
                 confirmButtonText: 'Confirmar',
@@ -3204,12 +3211,12 @@ $(function() {
         })
 
 
-
         $('#button-rejected-reciever-guide').on('click', function(e){
             e.preventDefault();
             var form = $('#form-reject-reciever-guide');
             Swal.fire({
                 title: '¿Rechazar guía de internamiento?',
+                text: 'Luego se podrá deshacer esta acción',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Rechazar',
@@ -3328,6 +3335,7 @@ $(function() {
 
             Swal.fire({
                 title: '¿Verificar Guía de Internamiento?',
+                text: 'Esta acción no se podrá deshacer',
                 icon: 'info',
                 showCancelButton: true,
                 confirmButtonText: 'Verificar',
@@ -3348,6 +3356,7 @@ $(function() {
             var form = $('#form-reject-verified-guide');
             Swal.fire({
                 title: '¿Rechazar guía de internamiento?',
+                text: 'Luego se podrá deshacer esta acción.',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Rechazar',
@@ -3420,6 +3429,40 @@ $(function() {
                 {data: 'action', name:'action', orderable: false, searchable: false},
             ]
         });
+     }
+
+
+
+
+
+
+
+     /* ------------- UNDO REJECT GUIDE -------------*/    
+     
+     if($('#undoRejected-guide-form').length){
+
+        $('#button-undoReject-guide').on('click', function(e){
+            e.preventDefault();
+            var form = $('#undoRejected-guide-form');
+
+            Swal.fire({
+                title: 'Confirmar',
+                text: '¿Deshacer la acción?',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+              }).then((result)=>{
+                if (result.isConfirmed) {
+                    form.submit();
+                  }
+              }, function(dismiss){
+                return false;
+              })
+
+        });
+
      }
 });
 

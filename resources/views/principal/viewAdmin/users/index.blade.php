@@ -312,6 +312,20 @@
                             </div>
                         </span>
                     </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-12">
+                            <label for="inputPasswordEdit">Nueva contraseña: </label>
+                            <div class="input-group">
+                                <input type="password" id="inputPasswordEdit" name="password" class="form-control">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <i class="fa-solid fa-lock"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="modal-footer">

@@ -175,7 +175,21 @@
                         </div>
                     </div>
 
+                    <form action="{{route('approvingGuides.undoReject', $guide)}}" id="undoRejected-guide-form" method="POST">
+                        @csrf
+                        <div class="mt-5 button-save-guide-container">
 
+                            <button type="submit" id="button-undoReject-guide" class="btn btn-primary">
+                                <i class="fa-solid fa-circle-check fa-xl"></i> &nbsp;
+                                Deshacer
+                                <i class="fa-solid fa-spinner fa-spin loadSpinner ms-1"></i>
+                            </button>
+    
+                        </div>
+                    
+                    </form>
+
+                   
 
             </div>
 

@@ -208,6 +208,15 @@ class IntermentGuideControllerApproving extends Controller
         ]);
     }
 
+    public function undoReject(IntermentGuide $guide)
+    {
+        $guide->update([
+            'stat_rejected' => 0,
+        ]);
+
+        return redirect()->route('approvingGuides.index');
+    }
+
     /**
      * Show the form for editing the specified resource.
      *

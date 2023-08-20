@@ -57,6 +57,7 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('/aprobante/guias-aprobadas/ver/{guide}', [IntermentGuideControllerApproving::class, 'approvedShow'])->name('approvingApprovedGuides.show');
         Route::get('/aprobante/guias-rechazadas/ver/{guide}', [IntermentGuideControllerApproving::class, 'rejectedShow'])->name('approvingRejectedGuides.show');
         Route::get('/aprobante/guias-pendientes/ver/{guide}', [IntermentGuideControllerApproving::class, 'show'])->name('approvingGuides.show');
+        Route::post('/aprobante/guias-rechazadas/deshacer/{guide}', [IntermentGuideControllerApproving::class, 'undoReject'])->name('approvingGuides.undoReject');
         Route::post('/aprobante/guias-pendientes/actualizar/{guide}', [IntermentGuideControllerApproving::class, 'update'])->name('approvedGuide.update');
         Route::post('/aprobante/guias-pendientes/rechazar/{guide}', [IntermentGuideControllerApproving::class, 'updateReject'])->name('guides.rejected');
     });
@@ -69,6 +70,7 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('/receptor/guias-pendientes/ver/{guide}', [IntermentGuideControllerReciever::class, 'pendingShow'])->name('recieverGuides.show');
         Route::get('/receptor/guias-rechazadas/ver/{guide}', [IntermentGuideControllerReciever::class, 'rejectedShow'])->name('recieverRejectedGuides.show');
         Route::get('/receptor/guias-recepcionadas/ver/{guide}', [IntermentGuideControllerReciever::class, 'recievedShow'])->name('recieverRecievedGuides.show');
+        Route::post('/receptor/guias-rechazadas/deshacer/{guide}', [IntermentGuideControllerReciever::class, 'undoReject'])->name('recieverGuides.undoReject');
         Route::post('/receptor/guias-pendientes/recepcionar/{guide}', [IntermentGuideControllerReciever::class, 'updateRecieved'])->name('recievedGuide.update');
         Route::post('/receptor/guias-pendientes/rechazar/{guide}', [IntermentGuideControllerReciever::class, 'updateReject'])->name('guides.recieved.rejected');
     });
@@ -82,6 +84,7 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('/supervisor/guias-pendientes/ver/{guide}', [IntermentGuideControllerVerificator::class, 'pendingShow'])->name('verificatorGuides.show');
         Route::get('/supervisor/guias-verificadas/ver/{guide}', [IntermentGuideControllerVerificator::class, 'verifiedShow'])->name('verificatorVerifiedGuides.show');
         Route::post('/supervisor/guias-pendientes/verificar/{guide}', [IntermentGuideControllerVerificator::class, 'updateVerified'])->name('verifiedGuide.update');
+        Route::post('/supervisor/guias-rechazadas/deshacer/{guide}', [IntermentGuideControllerVerificator::class, 'undoReject'])->name('verificatorGuides.undoReject');
         Route::post('/supervisor/guias-pendientes/rechazar/{guide}', [IntermentGuideControllerVerificator::class, 'updateRejected'])->name('guides.verified.rejected');
 
     });

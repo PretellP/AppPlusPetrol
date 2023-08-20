@@ -259,6 +259,17 @@ class IntermentGuideControllerReciever extends Controller
         ]);
     }
 
+
+    public function undoReject(IntermentGuide $guide)
+    {
+        $guide->update([
+            'stat_rejected' => 0,
+            'id_reciever' => null
+        ]);
+        
+        return redirect()->route('recieverGuides.index');
+    }
+
     /**
      * Show the form for creating a new resource.
      *

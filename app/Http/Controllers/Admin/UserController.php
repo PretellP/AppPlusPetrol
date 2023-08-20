@@ -65,7 +65,7 @@ class UserController extends Controller
 
         $usertype = UserType::where('id', $request['id'])->first()->name;
 
-        if($usertype == 'SOLICITANTE' || $usertype == 'ADMINISTRADOR')
+        if($usertype == 'SOLICITANTE')
         {
             $validApproving = true;
         }
@@ -134,7 +134,7 @@ class UserController extends Controller
         $selectedApprovings = null;
         $approvings = null;
         $userType = $user->userType->name;
-        if($userType == 'SOLICITANTE' || $userType == 'ADMINISTRADOR')
+        if($userType == 'SOLICITANTE')
         {
             $validApplicant = true;
             $selectedApprovings = $user->approvings()->get()->pluck('id')->toArray();
@@ -182,9 +182,12 @@ class UserController extends Controller
         }else{
            $url_signature = $user->url_signature;
         }
-        
+
+        $password = $request['password'] == '' ? $user->password : Hash::make($request['password']);
+
         $user->update([
             'user_name' => $request['username'],
+            'password' => $password,
             'name' => $request['name'],
             'email' => $request['email'],
             'phone' => $request['phone'],
@@ -195,7 +198,7 @@ class UserController extends Controller
 
         $userType = $user->userType->name;
 
-        if($userType == 'SOLICITANTE' || $userType == 'ADMINISTRADOR')
+        if($userType == 'SOLICITANTE')
         {
             if($request->has('id_approvings'))
             {
