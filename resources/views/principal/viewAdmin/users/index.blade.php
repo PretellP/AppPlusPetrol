@@ -30,8 +30,9 @@
                         <th>Email</th>
                         <th>Nombre</th>
                         <th>Num. cel</th>
-                        <th>Estado</th>
                         <th>Perfil</th>
+                        <th>Empresa</th>
+                        <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -146,6 +147,18 @@
                             </select>
 
                         </div>
+
+                        <div class="form-group col-12">
+                            <label for="inputProfile">Empresa *</label>
+
+                            <select data-url="{{route('users.getApprovings')}}" name="id_user_company"
+                                class="form-control select2" id="registerCompanySelect" required>
+                                <option value=""></option>
+                              @foreach ($companies as $company)
+                                <option value="{{$company->id}}"> {{$company->name}} </option>
+                              @endforeach
+                            </select>
+                        </div>
                     </div>
 
                     <div class="form-row">
@@ -189,7 +202,6 @@
         </div>
     </div>
 </div>
-
 
 
 
@@ -274,6 +286,12 @@
                             <div id="profile-show-edit">
                             </div>
 
+                        </div>
+
+                        <div class="form-group col-12">
+                            <label>Empresa: </label>
+                            <div id="company-user-edit-txt" class="disabled-txt-input">
+                            </div>
                         </div>
                     </div>
 

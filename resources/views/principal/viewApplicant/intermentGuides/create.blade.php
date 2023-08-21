@@ -131,7 +131,7 @@
                                 <th class="nameWasteType-guide" scope="col">NOMBRE/TIPO DE RESIDUO</th>
                                 <th scope="col">PESO APROX (Kg)</th>
                                 <th scope="col">N° DE BULTOS</th>
-                                <th scope="col">TIPO DE EMBALAJE</th>
+                                <th scope="col" class="package-type-th">TIPO DE EMBALAJE</th>
                                 <th scope="col">Borrar</th>
                             </tr>
                         </thead>

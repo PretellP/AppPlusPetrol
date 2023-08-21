@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Auth;
 use DataTables;
 use Carbon\Carbon;
-use App\Models\IntermentGuide;
+use App\Models\{IntermentGuide, GuideWaste};
 
 class IntermentGuideControllerReciever extends Controller
 {
@@ -139,35 +139,50 @@ class IntermentGuideControllerReciever extends Controller
         return view('principal.viewReciever.internmentGuides.pending.index');
     }
 
-
+    
     public function pendingShow(IntermentGuide $guide)
     {
         $guide = $guide->with(['warehouse' => fn($query) =>
-        $query->with(['front','company','location','lot','projectArea','stage'])
-        ])
-        ->with('approvant.userType')
-        ->with('applicant.userType')
-        ->where('id', $guide->id)->first();
+                             $query->with(['front','company','location','lot','projectArea','stage'])
+                        ])
+                        ->with('approvant.userType')
+                        ->with('applicant.userType')
+                        ->with(['guideWastes' => fn($query) =>
+                            $query->with(['waste.classesWastes', 'package'])    
+                        ])
+                        ->where('id', $guide->id)->first();
 
-        $wasteTypes = $guide->wasteTypes()->with('classesWastes')->get();
-
-        $totalWeight = $wasteTypes->sum(function($waste){
-                            return $waste->pivot->actual_weight;
+        $totalWeight = $guide->guideWastes->sum(function($waste){
+                            return $waste->actual_weight;
                         });
+
+        $totalPackage = $guide->guideWastes->sum(function($waste){
+            return $waste->package_quantity;
+        });
 
         return view('principal.viewReciever.internmentGuides.pending.show', [
             "guide" => $guide,
-            "wasteTypes" => $wasteTypes,
-            "totalWeight" => $totalWeight
+            "totalWeight" => $totalWeight,
+            "totalPackage" => $totalPackage
         ]);
     }
 
-    public function updateRecieved(IntermentGuide $guide)
+    public function updateRecieved(Request $request, IntermentGuide $guide)
     {
         $user = Auth::user();
 
         if($guide->stat_recieved == 0 && $guide->stat_rejected == 0)
         {
+            foreach($request['waste-types-recieved'] as $id)
+            {
+                GuideWaste::where('id_guide', $guide->id)
+                            ->where('id_wasteType', $id)
+                            ->first()
+                            ->update([
+                                "actual_weight" => $request['input-actual-weight-'.$id]
+                            ]);
+            }
+
             $guide->update([
                 "stat_recieved" => 1,
                 "date_recieved" => Carbon::now()->toDateTimeString(),
@@ -205,23 +220,28 @@ class IntermentGuideControllerReciever extends Controller
     public function recievedShow(IntermentGuide $guide)
     {
         $guide = $guide->with(['warehouse' => fn($query) =>
-        $query->with(['front','company','location','lot','projectArea','stage'])
-        ])
-        ->with('approvant.userType')
-        ->with('applicant.userType')
-        ->with('reciever.userType')
-        ->where('id', $guide->id)->first();
+                            $query->with(['front','company','location','lot','projectArea','stage'])
+                        ])
+                        ->with('approvant.userType')
+                        ->with('applicant.userType')
+                        ->with('reciever.userType')
+                        ->with(['guideWastes' => fn($query) =>
+                            $query->with(['waste.classesWastes', 'package'])    
+                        ])
+                        ->where('id', $guide->id)->first();
 
-        $wasteTypes = $guide->wasteTypes()->with('classesWastes')->get();
+        $totalWeight = $guide->guideWastes->sum(function($waste){
+                            return $waste->actual_weight;
+                        });
 
-        $totalWeight = $wasteTypes->sum(function($waste){
-                            return $waste->pivot->actual_weight;
+        $totalPackage = $guide->guideWastes->sum(function($waste){
+                            return $waste->package_quantity;
                         });
         
         return view('principal.viewReciever.internmentGuides.recieved.show', [
             "guide" => $guide,
-            "wasteTypes" => $wasteTypes,
-            "totalWeight" => $totalWeight
+            "totalWeight" => $totalWeight,
+            "totalPackage" => $totalPackage
         ]);
     }
 
@@ -238,27 +258,25 @@ class IntermentGuideControllerReciever extends Controller
                                 ])
                         ->with('approvant.userType')
                         ->with('applicant.userType')
+                        ->with(['guideWastes' => fn($query) =>
+                            $query->with(['waste.classesWastes', 'package'])    
+                        ])
                         ->where('id', $guide->id)->first();
 
+        $totalWeight = $guide->guideWastes->sum(function($waste){
+                            return $waste->actual_weight;
+                        });
 
-        $wasteTypes = $guide->wasteTypes()->with('classesWastes')->get();
-
-        $totalWeight = $wasteTypes->sum(function($waste){
-        return $waste->pivot->actual_weight;
-        });
-
-        $totalPackage = $wasteTypes->sum(function($waste){
-        return $waste->pivot->package_quantity;
-        });
+        $totalPackage = $guide->guideWastes->sum(function($waste){
+                            return $waste->package_quantity;
+                        });
 
         return view('principal.viewReciever.internmentGuides.rejected.show',[
             "guide" => $guide,
-            "wasteTypes" => $wasteTypes,
             "totalWeight" => $totalWeight,
             "totalPackage" => $totalPackage
         ]);
     }
-
 
     public function undoReject(IntermentGuide $guide)
     {
@@ -270,69 +288,5 @@ class IntermentGuideControllerReciever extends Controller
         return redirect()->route('recieverGuides.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

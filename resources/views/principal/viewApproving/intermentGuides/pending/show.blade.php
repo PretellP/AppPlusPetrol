@@ -22,7 +22,6 @@
                 Regresar
             </a>
 
-
             <div class="code-container mb-4">
                 GUÍA DE INTERNAMIENTO Nro:
                 <span class="code-txt">
@@ -88,35 +87,29 @@
                                 <th class="classSymbol-guide" scope="col">CLASE</th>
                                 <th class="nameWasteType-guide" scope="col">NOMBRE/TIPO DE RESIDUO</th>
                                 <th scope="col">PESO APROX (Kg)</th>
-                                <th scope="col">PESO REAL (Kg)</th>
                                 <th scope="col">N° DE BULTOS</th>
                                 <th scope="col">TIPO DE EMBALAJE</th>
                             </tr>
                         </thead>
                         <tbody id="table-classTypes-body">
 
-                            @foreach ($wasteTypes as $wasteType)
+                            @foreach ($guide->guideWastes as $wasteType)
 
                             <tr id="row-info-total-guide">
-                                <input type="hidden" name="waste-types-approved[]" value="{{$wasteType->id}}">
-                                <td>{{$wasteType->classesWastes->first()->symbol}}</td>
-                                <td> {{$wasteType->name}} </td>
-                                <td id="info-total-weight"> {{$wasteType->pivot->aprox_weight}} </td>
-                                <td> 
-                                    <input class="select-actual-weight form-control required-input" name="input-actual-weight-{{$wasteType->id}}" type="number" min="0" step="0.01">
-                                </td>
-                                <td>{{$wasteType->pivot->package_quantity}}</td>
-                                <td>{{$wasteType->pivot->package_type}}</td>
+                                <td>{{$wasteType->waste->classesWastes->first()->symbol}}</td>
+                                <td> {{$wasteType->waste->name}} </td>
+                                <td id="info-total-weight"> {{$wasteType->aprox_weight}} </td>
+                                <td>{{$wasteType->package_quantity}}</td>
+                                <td>{{$wasteType->package->name}}</td>
                             </tr>
 
                             @endforeach
 
                             <tr id="row-info-total-guide">
                                 <td></td>
-                                <td></td>
-                                <td class="text-right">Total Peso:</td>
-                                <td id="info-actual-total-weight">0.00</td>
-                                <td></td>
+                                <td class="text-right">Peso Total aproximado:</td>
+                                <td id="info-actual-total-weight"> {{$aprox_weight}} </td>
+                                <td> {{$totalPackage}} </td>
                                 <td></td>
                             </tr>
                         </tbody>

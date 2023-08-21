@@ -95,18 +95,18 @@
                         </thead>
                         <tbody id="table-classTypes-body">
 
-                            @foreach ($wasteTypes as $wasteType)
+                            @foreach ($guide->guideWastes as $wasteType)
 
                             <tr id="row-info-total-guide">
-                                <input type="hidden" name="waste-types-approved[]" value="{{$wasteType->id}}">
-                                <td>{{$wasteType->classesWastes->first()->symbol}}</td>
-                                <td> {{$wasteType->name}} </td>
-                                <td id="info-total-weight"> {{$wasteType->pivot->aprox_weight}} </td>
+                                <input type="hidden" name="waste-types-recieved[]" value="{{$wasteType->id_wasteType}}">
+                                <td>{{$wasteType->waste->classesWastes->first()->symbol}}</td>
+                                <td> {{$wasteType->waste->name}} </td>
+                                <td id="info-total-weight"> {{$wasteType->aprox_weight}} </td>
                                 <td> 
-                                    {{$wasteType->pivot->actual_weight}} 
+                                    <input class="select-actual-weight form-control required-input" name="input-actual-weight-{{$wasteType->id_wasteType}}" type="number" min="0" step="0.01">
                                 </td>
-                                <td>{{$wasteType->pivot->package_quantity}}</td>
-                                <td>{{$wasteType->pivot->package_type}}</td>
+                                <td>{{$wasteType->package_quantity}}</td>
+                                <td>{{$wasteType->package->name}}</td>
                             </tr>
 
                             @endforeach
@@ -115,8 +115,8 @@
                                 <td></td>
                                 <td></td>
                                 <td class="text-right">Peso Total:</td>
-                                <td id="info-actual-total-weight">{{$totalWeight}}</td>
-                                <td></td>
+                                <td id="info-actual-total-weight">0.00</td>
+                                <td> {{$totalPackage}}</td>
                                 <td></td>
                             </tr>
                         </tbody>
@@ -229,8 +229,6 @@
             <form action="{{route('guides.recieved.rejected', $guide)}}" id="form-reject-reciever-guide" method="POST">
                 @csrf
             </form>
-
-
 
         </div>
     </div>

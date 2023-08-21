@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\{Warehouse, User, WasteType};
+use App\Models\{Warehouse, User, GuideWaste};
 
 class IntermentGuide extends Model
 {
@@ -37,10 +37,9 @@ class IntermentGuide extends Model
         return $this->belongsTo(User::class, 'id_checker', 'id');
     }
 
-    public function wasteTypes()
+    public function guideWastes()
     {
-        return $this->belongsToMany(WasteType::class, 'guide_has_wastes', 'id_guide', 'id_wasteType')
-                    ->withPivot(['id', 'aprox_weight', 'actual_weight', 'package_quantity', 'package_type'])
-                    ->withTimestamps();
+        return $this->hasMany(GuideWaste::class, 'id_guide', 'id');
     }
+
 }

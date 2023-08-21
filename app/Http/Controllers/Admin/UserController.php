@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use App\Models\{User, UserType};
+use App\Models\{User, UserType, Company};
 use DataTables;
 use Auth;
 
@@ -16,6 +16,7 @@ class UserController extends Controller
     {
         $users = User::with('userType')->get();
         $userTypes = UserType::all();
+        $companies = Company::all();
 
         if($request->ajax())
         {
@@ -23,6 +24,13 @@ class UserController extends Controller
                 ->addIndexColumn()
                 ->addColumn('profile', function($user){
                     return $user->userType->name;
+                })
+                ->addColumn('company', function($user){
+                    $company = '';
+                    if($user->company != null){
+                        $company = $user->company->name;
+                    }
+                    return $company;
                 })
                 ->addColumn('status-btn', function($user){
                     $status = $user->status == 1 ? 'Activo': 'Inactivo';
@@ -51,37 +59,49 @@ class UserController extends Controller
 
         return view('principal.viewAdmin.users.index', [
             'users' => $users,
-            'userTypes' => $userTypes
+            'userTypes' => $userTypes,
+            'companies' => $companies
         ]);
     }
 
 
     public function getApprovings(Request $request)
     {
-        $approvings = null;
-        $status = 'invalid';
-
-        $validApproving = false;
-
-        $usertype = UserType::where('id', $request['id'])->first()->name;
-
-        if($usertype == 'SOLICITANTE')
+        if($request['type'] == 'approving')
         {
-            $validApproving = true;
-        }
+            $status = 'invalid';
+            $usertype = UserType::where('id', $request['id'])->first()->name;
+            $approvings = null;
 
-        if($validApproving)
+            if($usertype == 'SOLICITANTE'){
+                $status = 'valid';
+
+                if($request['company_id'] != '')
+                {
+                    $approvings = User::whereHas('userType', function($query){
+                                    $query->where('name', 'APROBANTE');
+                                })
+                                ->where('id_company', $request['company_id'])->get();
+                }
+            }
+           
+            return response()->json([
+                'valid' => $status,
+                'approvings' => $approvings
+            ]);
+        }
+        elseif($request['type'] == 'company')
         {
             $approvings = User::whereHas('userType', function($query){
-                                $query->where('name', 'APROBANTE');
-                            })->get();
-            $status = 'valid';
-        };
+                                    $query->where('name', 'APROBANTE');
+                                })
+                                ->where('id_company', $request['id'])->get();
 
-        return response()->json([
-            'valid' => $status,
-            'approvings' => $approvings
-        ]);
+            return response()->json([
+                "approvings" => $approvings
+            ]);
+        }
+   
     }
 
 
@@ -98,6 +118,7 @@ class UserController extends Controller
         $user = User::create(
                     [
                         "id_user_type" => $request['id_user_type'],
+                        "id_company" => $request['id_user_company'],
                         'user_name' => $request['username'],
                         'password' => Hash::make($request['password']),
                         'name' => $request['name'],
@@ -140,7 +161,9 @@ class UserController extends Controller
             $selectedApprovings = $user->approvings()->get()->pluck('id')->toArray();
             $approvings = User::whereHas('userType', function($query){
                                         $query->where('name', 'APROBANTE');
-                                })->get();
+                                })
+                                ->where('id_company', $user->id_company)
+                                ->get();
         }   
 
         $last_login = $user->last_login_at == null ? '- -' : getDiffForHumansFromTimestamp($user->last_login_at);
@@ -155,6 +178,7 @@ class UserController extends Controller
             "status" => $user->status,
             "last_login" => $last_login,
             "profile" => $user->userType->name,
+            "company" => $user->company->name,
             "validApplicant" => $validApplicant,
             "selectedApprovings" => $selectedApprovings,
             'approvings' => $approvings

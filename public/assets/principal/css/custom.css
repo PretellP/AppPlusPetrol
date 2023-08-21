@@ -1053,6 +1053,8 @@ i.loadSpinner.active
 
 /* ------------- WASTE TYPES --------------*/
 
+
+
 tr.edit-ready .columnType
 {
     display: none;
@@ -1068,10 +1070,14 @@ tr.edit-ready .input-type-edit
     display: block;
 }
 
-tr.edit-ready .btnWasteType
+tr.edit-ready .btnWasteType,
+tr.edit-ready .btnPackageType
 {
     display: none;
 }
+
+
+
 
 
 li.select2-selection__choice {
@@ -1204,19 +1210,28 @@ ul.select2-selection__rendered {
     min-width: 50px !important;
 }
 
-#profile-show-edit
+#profile-show-edit,
+.disabled-txt-input
 {
     font-size: 14px;
     padding: 10px 15px;
     height: 42px;
     background-color: #e7e7e7;
     border-radius: 0.25rem;
+    text-align: center;
 }
 
 #table-classTypes-body
 .selects-inputs-wasteType
 {
     min-width: 80px;
+}
+
+
+
+.package-type-th
+{
+    min-width: 300px !important;
 }
 
 
@@ -1301,12 +1316,14 @@ ul.select2-selection__rendered {
 .required-input.required
 {
     border-color: rgb(206, 0, 0) !important;
+    outline: rgba(206, 0, 0, 0.15) solid 3px;
 }
 
 .required-input.required ~ .select2
 .select2-selection
 {
     border-color: rgb(206, 0, 0) !important;
+    outline: rgba(206, 0, 0, 0.15) solid 3px;
 }
 
 

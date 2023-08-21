@@ -141,23 +141,28 @@ class IntermentGuideControllerVerificator extends Controller
     public function pendingShow(IntermentGuide $guide)
     {
         $guide = $guide->with(['warehouse' => fn($query) =>
-        $query->with(['front','company','location','lot','projectArea','stage'])
-        ])
-        ->with('approvant.userType')
-        ->with('applicant.userType')
-        ->with('reciever.userType')
-        ->where('id', $guide->id)->first();
+                            $query->with(['front','company','location','lot','projectArea','stage'])
+                        ])
+                        ->with('approvant.userType')
+                        ->with('applicant.userType')
+                        ->with('reciever.userType')
+                        ->with(['guideWastes' => fn($query) =>
+                            $query->with(['waste.classesWastes', 'package'])    
+                        ])
+                        ->where('id', $guide->id)->first();
 
-        $wasteTypes = $guide->wasteTypes()->with('classesWastes')->get();
+        $totalWeight = $guide->guideWastes->sum(function($waste){
+                            return $waste->actual_weight;
+                        });
 
-        $totalWeight = $wasteTypes->sum(function($waste){
-                            return $waste->pivot->actual_weight;
+        $totalPackage = $guide->guideWastes->sum(function($waste){
+                            return $waste->package_quantity;
                         });
 
         return view('principal.viewVerificator.internmentGuides.pending.show', [
             "guide" => $guide,
-            "wasteTypes" => $wasteTypes,
-            "totalWeight" => $totalWeight
+            "totalWeight" => $totalWeight,
+            "totalPackage" => $totalPackage
         ]);
     }
 
@@ -207,25 +212,25 @@ class IntermentGuideControllerVerificator extends Controller
         $guide = $guide->with(['warehouse' => fn($query) =>
                                 $query->with(['front','company','location','lot','projectArea','stage'])
                                         ])
-                                ->with('approvant.userType')
-                                ->with('applicant.userType')
-                                ->with('reciever.userType')
-                                ->with('checker.userType')
-                                ->where('id', $guide->id)->first();
+                            ->with('approvant.userType')
+                            ->with('applicant.userType')
+                            ->with('reciever.userType')
+                            ->with('checker.userType')
+                            ->with(['guideWastes' => fn($query) =>
+                                    $query->with(['waste.classesWastes', 'package'])    
+                            ])
+                            ->where('id', $guide->id)->first();
 
-        $wasteTypes = $guide->wasteTypes()->with('classesWastes')->get();
+        $totalWeight = $guide->guideWastes->sum(function($waste){
+                        return $waste->actual_weight;
+                    });
 
-        $totalWeight = $wasteTypes->sum(function($waste){
-                        return $waste->pivot->actual_weight;
-                        });
-
-        $totalPackage = $wasteTypes->sum(function($waste){
-                        return $waste->pivot->package_quantity;
-                        });
+        $totalPackage = $guide->guideWastes->sum(function($waste){
+                        return $waste->package_quantity;
+                    });
 
         return view('principal.viewVerificator.internmentGuides.verified.show', [
             "guide" => $guide,
-            "wasteTypes" => $wasteTypes,
             "totalWeight" => $totalWeight,
             "totalPackage" => $totalPackage
         ]);
@@ -246,21 +251,21 @@ class IntermentGuideControllerVerificator extends Controller
                                 ->with('approvant.userType')
                                 ->with('applicant.userType')
                                 ->with('reciever.userType')
+                                ->with(['guideWastes' => fn($query) =>
+                                        $query->with(['waste.classesWastes', 'package'])    
+                                    ])
                                 ->where('id', $guide->id)->first();
 
-        $wasteTypes = $guide->wasteTypes()->with('classesWastes')->get();
-
-        $totalWeight = $wasteTypes->sum(function($waste){
-                        return $waste->pivot->actual_weight;
+        $totalWeight = $guide->guideWastes->sum(function($waste){
+                            return $waste->actual_weight;
                         });
-
-        $totalPackage = $wasteTypes->sum(function($waste){
-                        return $waste->pivot->package_quantity;
+        
+        $totalPackage = $guide->guideWastes->sum(function($waste){
+                            return $waste->package_quantity;
                         });
 
         return view('principal.viewVerificator.internmentGuides.rejected.show', [
             "guide" => $guide,
-            "wasteTypes" => $wasteTypes,
             "totalWeight" => $totalWeight,
             "totalPackage" => $totalPackage
         ]);

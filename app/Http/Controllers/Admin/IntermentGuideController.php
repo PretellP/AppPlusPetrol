@@ -9,7 +9,13 @@ use DataTables;
 use DB;
 use Carbon\Carbon;
 use Validator;
-use App\Models\{Warehouse, WasteClass, WasteType, IntermentGuide};
+use App\Models\{Warehouse,
+                WasteClass,
+                WasteType,
+                IntermentGuide,
+                PackageType,
+                GuideWaste
+            };
 
 class IntermentGuideController extends Controller
 {
@@ -120,7 +126,8 @@ class IntermentGuideController extends Controller
             $guide_code.='0';
         }
 
-        $warehouses = Warehouse::with('front')->get();
+        $warehouses = Warehouse::with('front')
+                                ->where('id_company', $user->id_company)->get();
         $wasteClasses = WasteClass::all();
 
         $guide_code = Carbon::now()->format('Y').'-'.$guide_code.$id_str;
@@ -167,9 +174,11 @@ class IntermentGuideController extends Controller
             elseif($request['type'] == 'wasteType')
             {
                 $wasteTypes = WasteType::whereIn('id', $request['values'])->with('classesWastes')->get();
+                $packageTypes = PackageType::all();
 
                 return response()->json([
-                    "wasteTypes" => $wasteTypes
+                    "wasteTypes" => $wasteTypes,
+                    "packageTypes" => $packageTypes
                 ]);
             }
         }
@@ -178,7 +187,6 @@ class IntermentGuideController extends Controller
 
     public function store(Request $request)
     {
-        $success = false;
         $user = Auth::user();
         
         $lastGuide =  IntermentGuide::latest()->first();
@@ -209,10 +217,12 @@ class IntermentGuideController extends Controller
         ]);
 
         foreach($request['wasteTypesId'] as $id){
-            $guide->wasteTypes()->attach($id, [
+            GuideWaste::create([
                 "aprox_weight" => $request['aproxWeightType-'.$id],
                 "package_quantity" => $request['packageQuantity-'.$id],
-                "package_type" => $request['packageType-'.$id]
+                "id_guide" => $guide->id,
+                "id_wasteType" => $id,
+                "id_packageType" => $request['packageType-'.$id]
             ]);
         }
 
@@ -223,28 +233,27 @@ class IntermentGuideController extends Controller
     public function show(IntermentGuide $guide)
     {
         $guide = $guide->with(['warehouse' => fn($query) =>
-                                    $query->with(['front','company','location','lot','projectArea','stage'])
-                                    ])
-                                    ->with('approvant.userType')
-                                    ->with('applicant.userType')
-                                    ->with('reciever.userType')
-                                    ->with('checker.userType')
-                                    ->where('id', $guide->id)->first();
+                            $query->with(['front','company','location','lot','projectArea','stage'])
+                        ])
+                        ->with('approvant.userType')
+                        ->with('applicant.userType')
+                        ->with('reciever.userType')
+                        ->with('checker.userType')
+                        ->with(['guideWastes' => fn($query) =>
+                            $query->with(['waste.classesWastes', 'package'])    
+                        ])
+                        ->where('id', $guide->id)->first();
 
-
-        $wasteTypes = $guide->wasteTypes()->with('classesWastes')->get();
-
-        $totalWeight = $wasteTypes->sum(function($waste){
-                            return $waste->pivot->actual_weight;
+        $totalWeight = $guide->guideWastes->sum(function($waste){
+                            return $waste->actual_weight;
                         });
 
-        $totalPackage = $wasteTypes->sum(function($waste){
-                            return $waste->pivot->package_quantity;
+        $totalPackage = $guide->guideWastes->sum(function($waste){
+                            return $waste->package_quantity;
                         });
 
         return view('principal.viewApplicant.intermentGuides.show', [
             "guide" => $guide,
-            "wasteTypes" => $wasteTypes,
             "totalWeight" => $totalWeight,
             "totalPackage" => $totalPackage
         ]);

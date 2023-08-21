@@ -1,5 +1,7 @@
 "use strict";
 
+
+
 $(function() {
 
     var DataTableEs = {
@@ -253,6 +255,37 @@ $(function() {
         }
     });
 
+    function validateInput(){
+        var passValidation = true;
+    
+        $('.required-input').each(function(){
+            $(this).removeClass('required');
+            if($(this).val() == ''){
+                $(this).addClass('required');
+                passValidation = false;
+            }
+        })
+    
+        return passValidation;
+    }
+
+    function showInvalidateMessage(){
+        Swal.fire({
+            toast: true,
+            icon: 'warning',
+            title: 'Advertencia',
+            text: '¡Rellena el formulario para continuar!',
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+    }
+
 
     /*--------------- USERS ---------------*/
 
@@ -270,8 +303,9 @@ $(function() {
                 {data: 'email', name:'email'},
                 {data: 'name', name:'name'},
                 {data: 'phone', name:'phone'},
-                {data: 'status-btn', name:'status-btn'},
                 {data: 'profile', name:'profile'},
+                {data: 'company', name:'company'},
+                {data: 'status-btn', name:'status-btn'},
                 {data: 'action', name:'action', orderable: false, searchable: false},
             ]
         });
@@ -286,6 +320,12 @@ $(function() {
                 placeholder: 'Selecciona un perfil'
             });
 
+            var userCompanySelect = $('#registerCompanySelect');
+            userCompanySelect.select2({
+                dropdownParent: $("#registerUserForm"),
+                placeholder: 'Selecciona una empresa'
+            })
+
             userRegisterSelect.on('change', function(){
                 var value_id  = $(this).val();
                 var url = $(this).data('url');
@@ -294,7 +334,9 @@ $(function() {
                     type: 'GET',
                     url: url,
                     data: {
-                        id: value_id
+                        id: value_id,
+                        company_id: userCompanySelect.val(),
+                        type: 'approving'
                     },
                     dataType: 'JSON',
                     success: function(data){
@@ -316,9 +358,12 @@ $(function() {
                                     closeOnSelect: false
                                 })
                                 selectApprovings.append('<option value=""></option>');
-                                $.each( data['approvings'], function( key, value ) {
-                                    selectApprovings.append('<option value="'+value['id']+'">'+value['name']+'</option>');
-                                })
+                                if(data['approvings'] != null)
+                                {
+                                    $.each( data['approvings'], function( key, value ) {
+                                        selectApprovings.append('<option value="'+value['id']+'">'+value['name']+'</option>');
+                                    })
+                                }
                             }
                          
                         }else{
@@ -330,6 +375,36 @@ $(function() {
                     }
                 });
 
+            })
+
+            userCompanySelect.on('change', function(){
+
+                if($('#selectApprovingsRegister').length)
+                {
+                    var company_id = $(this).val();
+                    var url = $(this).data('url');
+                    var selectApprovings = $('#registerApprovingsSelect')
+                    selectApprovings.html('');
+                    $.ajax({
+                        type: 'GET',
+                        url: url,
+                        data: {
+                            id: company_id,
+                            type: 'company'
+                        },
+                        dataType: 'JSON',
+                        success: function(data){
+                            
+                            selectApprovings.append('<option value=""></option>');
+                            $.each( data['approvings'], function( key, value ) {
+                                selectApprovings.append('<option value="'+value['id']+'">'+value['name']+'</option>');
+                            })
+                        },
+                        error: function(data){
+                            console.log(data);
+                        }
+                    });
+                }
             })
         }
 
@@ -380,6 +455,7 @@ $(function() {
                     $('#registerUserForm').trigger('reset');
                     $('#RegisterUserModal').modal('hide');
                     $('#registerProfileSelect').val('').trigger('change');
+                    $('#registerCompanySelect').val('').trigger('change');
 
                     if($('#selectApprovingsRegister').length)
                     {
@@ -561,6 +637,7 @@ $(function() {
                     modal.find('#inputPhone').val(data.phone);
                     modal.find('#inputComment').val(data.comment);
                     modal.find('#txt-last-login').html(data.last_login);
+                    modal.find('#company-user-edit-txt').html(data.company)
                     modal.find('.img-signature-holder').html('<img class="img-fluid signature_img" id="image-signature-edit" src="'+data.url_signature+'"></img>');
                     modal.find('#image-upload-edit').attr('data-value', '<img scr="'+data.url_signature+'" class="img-fluid signature_img"');
                     modal.find('#image-upload-edit').val('');
@@ -671,164 +748,175 @@ $(function() {
         
     }
 
-    
+
+    /* --------- WAREHOUSES GENERAL -------*/
 
 
-     /* --------- WAREHOUSES GENERAL -------*/
+    if($('#warehouses-table').length){
 
+    /* ----- WAREHOUSE TABLE ------*/
 
-     if($('#warehouses-table').length){
-
-        /* ----- WAREHOUSE TABLE ------*/
-
-        if($('#registerLotSelect').length)
-        {
-            $('#registerLotSelect').select2({
-                dropdownParent: $("#registerWarehouseForm"),
-                placeholder: 'Selecciona un lote'
-            });
-
-            $('#registerStageSelect').select2({
-                dropdownParent: $("#registerWarehouseForm"),
-                placeholder: 'Selecciona una etapa'
-            });
-
-            $('#registerLocationSelect').select2({
-                dropdownParent: $("#registerWarehouseForm"),
-                placeholder: 'Selecciona una locación'
-            });
-
-            $('#registerProjectSelect').select2({
-                dropdownParent: $("#registerWarehouseForm"),
-                placeholder: 'Selecciona una área de proyecto'
-            });
-
-            $('#registerCompanySelect').select2({
-                dropdownParent: $("#registerWarehouseForm"),
-                placeholder: 'Selecciona una empresa'
-            });
-
-            $('#registerFrontSelect').select2({
-                dropdownParent: $("#registerWarehouseForm"),
-                placeholder: 'Selecciona un frente'
-            });
-
-            $('#editLotSelect').select2({
-                dropdownParent: $("#editWarehouseForm"),
-                placeholder: 'Selecciona un lote'
-            });
-
-            $('#editStageSelect').select2({
-                dropdownParent: $("#editWarehouseForm"),
-                placeholder: 'Selecciona una etapa'
-            });
-
-            $('#editLocationSelect').select2({
-                dropdownParent: $("#editWarehouseForm"),
-                placeholder: 'Selecciona una locación'
-            });
-
-            $('#editProjectSelect').select2({
-                dropdownParent: $("#editWarehouseForm"),
-                placeholder: 'Selecciona una área de proyecto'
-            });
-
-            $('#editCompanySelect').select2({
-                dropdownParent: $("#editWarehouseForm"),
-                placeholder: 'Selecciona una empresa'
-            });
-
-            $('#editFrontSelect').select2({
-                dropdownParent: $("#editWarehouseForm"),
-                placeholder: 'Selecciona un frente'
-            });
-        }
-
-        var warehousesTableEle = $('#warehouses-table');
-        var getDataWarehouseUrl = warehousesTableEle.data('url');
-        var warehousesTable = warehousesTableEle.DataTable({
-            language: DataTableEs,
-            serverSide: true,
-            processing: true,
-            ajax: {
-                "url": getDataWarehouseUrl,
-                "data" : {
-                    "table": "warehouse"
-                }
-            },
-            columns:[
-                {data: 'id', name:'id'},
-                {data: 'lot', name:'lot'},
-                {data: 'stage', name:'stage'},
-                {data: 'location', name:'location'},
-                {data: 'project', name:'project'},
-                {data: 'company', name:'company'},
-                {data: 'front', name:'front'},
-                {data: 'action', name:'action', orderable: false, searchable: false},
-            ]
+    if($('#registerLotSelect').length)
+    {
+        $('#registerLotSelect').select2({
+            dropdownParent: $("#registerWarehouseForm"),
+            placeholder: 'Selecciona un lote'
         });
 
-        $('#registerWarehouseBtn').on('click', function(e){
-            var modal = $('#RegisterWarehouseModal');
-            var lotSelect = modal.find('#registerLotSelect');
-            var stageSelect = modal.find('#registerStageSelect');
-            var locationSelect = modal.find('#registerLocationSelect');
-            var projectSelect =  modal.find('#registerProjectSelect');
-            var companySelect =  modal.find('#registerCompanySelect');
-            var frontSelect = modal.find('#registerFrontSelect');
-            var button = $(this);
-            var url = button.data('url');
-            var spinner = button.find('.loadSpinner');
-            spinner.toggleClass('active');
-            lotSelect.html('');
-            stageSelect.html('');
-            locationSelect.html('');
-            projectSelect.html('');
-            companySelect.html('');
-            frontSelect.html('');
-            $.ajax({
-                type: 'GET',
-                url: url,
-                dataType: 'JSON',
-                success: function(data){
-                    lotSelect.append('<option value=""></option>')
-                    $.each( data['lots'], function( key, value ) {
-                        lotSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
-                    });
-                    stageSelect.append('<option value=""></option>')
-                    $.each( data['stages'], function( key, value ) {
-                        stageSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
-                    });
-                    locationSelect.append('<option value=""></option>')
-                    $.each( data['locations'], function( key, value ) {
-                        locationSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
-                    });
-                    projectSelect.append('<option value=""></option>')
-                    $.each( data['projects'], function( key, value ) {
-                        projectSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
-                    });
-                    companySelect.append('<option value=""></option>')
-                    $.each( data['companies'], function( key, value ) {
-                        companySelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
-                    });
-                    frontSelect.append('<option value=""></option>')
-                    $.each( data['fronts'], function( key, value ) {
-                        frontSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
-                    });
-                    spinner.toggleClass('active');
-                    modal.modal('show');
-                }
-            })
+        $('#registerStageSelect').select2({
+            dropdownParent: $("#registerWarehouseForm"),
+            placeholder: 'Selecciona una etapa'
+        });
+
+        $('#registerLocationSelect').select2({
+            dropdownParent: $("#registerWarehouseForm"),
+            placeholder: 'Selecciona una locación'
+        });
+
+        $('#registerProjectSelect').select2({
+            dropdownParent: $("#registerWarehouseForm"),
+            placeholder: 'Selecciona una área de proyecto'
+        });
+
+        $('#registerCompanySelect').select2({
+            dropdownParent: $("#registerWarehouseForm"),
+            placeholder: 'Selecciona una empresa'
+        });
+
+        $('#registerFrontSelect').select2({
+            dropdownParent: $("#registerWarehouseForm"),
+            placeholder: 'Selecciona un frente'
+        });
+
+        $('#editLotSelect').select2({
+            dropdownParent: $("#editWarehouseForm"),
+            placeholder: 'Selecciona un lote'
+        });
+
+        $('#editStageSelect').select2({
+            dropdownParent: $("#editWarehouseForm"),
+            placeholder: 'Selecciona una etapa'
+        });
+
+        $('#editLocationSelect').select2({
+            dropdownParent: $("#editWarehouseForm"),
+            placeholder: 'Selecciona una locación'
+        });
+
+        $('#editProjectSelect').select2({
+            dropdownParent: $("#editWarehouseForm"),
+            placeholder: 'Selecciona una área de proyecto'
+        });
+
+        $('#editCompanySelect').select2({
+            dropdownParent: $("#editWarehouseForm"),
+            placeholder: 'Selecciona una empresa'
+        });
+
+        $('#editFrontSelect').select2({
+            dropdownParent: $("#editWarehouseForm"),
+            placeholder: 'Selecciona un frente'
+        });
+    }
+
+    var warehousesTableEle = $('#warehouses-table');
+    var getDataWarehouseUrl = warehousesTableEle.data('url');
+    var warehousesTable = warehousesTableEle.DataTable({
+        language: DataTableEs,
+        serverSide: true,
+        processing: true,
+        ajax: {
+            "url": getDataWarehouseUrl,
+            "data" : {
+                "table": "warehouse"
+            }
+        },
+        columns:[
+            {data: 'id', name:'id'},
+            {data: 'lot', name:'lot'},
+            {data: 'stage', name:'stage'},
+            {data: 'location', name:'location'},
+            {data: 'project', name:'project'},
+            {data: 'company', name:'company'},
+            {data: 'front', name:'front'},
+            {data: 'action', name:'action', orderable: false, searchable: false},
+        ]
+    });
+
+    $('#registerWarehouseBtn').on('click', function(e){
+        var modal = $('#RegisterWarehouseModal');
+        var lotSelect = modal.find('#registerLotSelect');
+        var stageSelect = modal.find('#registerStageSelect');
+        var locationSelect = modal.find('#registerLocationSelect');
+        var projectSelect =  modal.find('#registerProjectSelect');
+        var companySelect =  modal.find('#registerCompanySelect');
+        var frontSelect = modal.find('#registerFrontSelect');
+        var button = $(this);
+        var url = button.data('url');
+        var spinner = button.find('.loadSpinner');
+        spinner.toggleClass('active');
+        lotSelect.html('');
+        stageSelect.html('');
+        locationSelect.html('');
+        projectSelect.html('');
+        companySelect.html('');
+        frontSelect.html('');
+        $.ajax({
+            type: 'GET',
+            url: url,
+            dataType: 'JSON',
+            success: function(data){
+                lotSelect.append('<option value=""></option>')
+                $.each( data['lots'], function( key, value ) {
+                    lotSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
+                });
+                stageSelect.append('<option value=""></option>')
+                $.each( data['stages'], function( key, value ) {
+                    stageSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
+                });
+                locationSelect.append('<option value=""></option>')
+                $.each( data['locations'], function( key, value ) {
+                    locationSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
+                });
+                projectSelect.append('<option value=""></option>')
+                $.each( data['projects'], function( key, value ) {
+                    projectSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
+                });
+                companySelect.append('<option value=""></option>')
+                $.each( data['companies'], function( key, value ) {
+                    companySelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
+                });
+                frontSelect.append('<option value=""></option>')
+                $.each( data['fronts'], function( key, value ) {
+                    frontSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
+                });
+                spinner.toggleClass('active');
+                modal.modal('show');
+            }
+        })
+    })
+
+    $('#btn-save-warehouse').on('click', function(e){
+        e.preventDefault();
+        var form = $('#registerWarehouseForm');
+        var passValidation = true;
+
+        form.find('.required-input').each(function(){
+            $(this).removeClass('required');
+            if($(this).val() == ''){
+                $(this).addClass('required');
+                passValidation = false;
+            }
         })
 
-        $('#registerWarehouseForm').on('submit', function(e){
-            e.preventDefault();
-            var loadSpinner = $(this).find('.loadSpinner');
+        if(passValidation)
+        {
+            var loadSpinner = form.find('.loadSpinner');
             loadSpinner.toggleClass('active');
-            var formData = $(this).serialize();
+            var formData = form.serialize();
             $.ajax({
-                url: $(this).attr('action'),
-                method: $(this).attr('method'),
+                url: form.attr('action'),
+                method: form.attr('method'),
                 data: formData,
                 dataType: 'JSON',
                 success: function(e){
@@ -843,221 +931,241 @@ $(function() {
                         didOpen: (toast) => {
                             toast.addEventListener('mouseenter', Swal.stopTimer)
                             toast.addEventListener('mouseleave', Swal.resumeTimer)
-                          }
+                        }
                     });
                     loadSpinner.toggleClass('active');
                     $('#RegisterWarehouseModal').modal('hide')
                     warehousesTable.draw();
                 }
             })
-        })
-
-        $('body').on('click', '.editWarehouse', function(){
-            var getDataUrl = $(this).data('send');
-            var url = $(this).data('url');
-            var modal = $('#EditWarehouseModal');
-            var lotSelect = modal.find('#editLotSelect');
-            var stageSelect = modal.find('#editStageSelect');
-            var locationSelect = modal.find('#editLocationSelect');
-            var projectSelect =  modal.find('#editProjectSelect');
-            var companySelect =  modal.find('#editCompanySelect');
-            var frontSelect = modal.find('#editFrontSelect');
-            lotSelect.html('');
-            stageSelect.html('');
-            locationSelect.html('');
-            projectSelect.html('');
-            companySelect.html('');
-            frontSelect.html('');
-
-            $.ajax({
-                type: 'GET',
-                url: getDataUrl,
-                dataType: 'JSON',
-                success: function(data){
-                    lotSelect.append('<option value=""></option>')
-                    $.each( data['lots'], function( key, value ) {
-                        lotSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
-                    });
-                    stageSelect.append('<option value=""></option>')
-                    $.each( data['stages'], function( key, value ) {
-                        stageSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
-                    });
-                    locationSelect.append('<option value=""></option>')
-                    $.each( data['locations'], function( key, value ) {
-                        locationSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
-                    });
-                    projectSelect.append('<option value=""></option>')
-                    $.each( data['projects'], function( key, value ) {
-                        projectSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
-                    });
-                    companySelect.append('<option value=""></option>')
-                    $.each( data['companies'], function( key, value ) {
-                        companySelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
-                    });
-                    frontSelect.append('<option value=""></option>')
-                    $.each( data['fronts'], function( key, value ) {
-                        frontSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
-                    });
-
-                    lotSelect.val(data.selecLot).change();
-                    stageSelect.val(data.selectStage).change();
-                    locationSelect.val(data.selectLocation).change();
-                    projectSelect.val(data.selectProject).change();
-                    companySelect.val(data.selectCompany).change();
-                    frontSelect.val(data.selectFront).change();
-
-                    modal.modal('show');
-                }
-            });
-
-            $('#editWarehouseForm').attr('action', url)
-        });
-
-        $('#editWarehouseForm').on('submit', function(e){
-            e.preventDefault();
-            var loadSpinner = $(this).find('.loadSpinner')
-            loadSpinner.toggleClass('active');
-            var form = $(this);
-
-            $.ajax({
-                url: $(this).attr('action'),
-                method: $(this).attr('method'),
-                data: $(form).serialize(),
-                dataType: 'JSON',
-                success: function(data){
-                    Swal.fire({
-                        toast: true,
-                        icon: 'success',
-                        title: '¡Punto verde actualizado exitosamente!',
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                          }
-                    });
-                    loadSpinner.toggleClass('active');
-                    $('#EditWarehouseModal').modal('hide');
-                    warehousesTable.draw();
-                },
-                error: function(data){
-                    console.log('Error', data)
-                }
-            })
-        })
-
-        $('body').on('click', '.deleteWarehouse', function(){
-            var url = $(this).data('url');
-            Swal.fire({
-                title: '¿Estás seguro?',
-                text: "¡Esta acción no podrá ser revertida!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: '¡Sí!',
-                cancelButtonText: 'Cancelar',
-                reverseButtons: true,
-              }).then(function(e){
-                if(e.value === true){
-                    $.ajax({
-                        type: 'DELETE',
-                        url: url,
-                        dataType: 'JSON',
-                        success: function(result){
-                            if(result.success == true){
-                                warehousesTable.draw();
-                                Swal.fire({
-                                    toast: true,
-                                    icon: 'success',
-                                    title: 'Registro eliminado',
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 3000,
-                                    timerProgressBar: true,
-                                    didOpen: (toast) => {
-                                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                    }
-                                });
-                            }else if(result.success == 'invalid'){
-                                Swal.fire({
-                                    toast: true,
-                                    icon: 'error',
-                                    title: 'Error: Este punto de acopio está relacionado a una guía de internamiento',
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 3000,
-                                    timerProgressBar: true,
-                                    didOpen: (toast) => {
-                                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                      }
-                                });
-                            }   
-                        },
-                        error: function(result){
-                            console.log('Error', result);
-                        }
-                    });
-                }else{
-                    e.dismiss;
-                }
-              }, function(dismiss){
-                return false;
-              })
-        });
-
-        /*--------- LOT TABLE -----------*/
+        }
+        else{
+            showInvalidateMessage();
+        }
+    })
 
 
-        var lotsTable;
+    $('body').on('click', '.editWarehouse', function(){
+        var getDataUrl = $(this).data('send');
+        var url = $(this).data('url');
+        var modal = $('#EditWarehouseModal');
+        var lotSelect = modal.find('#editLotSelect');
+        var stageSelect = modal.find('#editStageSelect');
+        var locationSelect = modal.find('#editLocationSelect');
+        var projectSelect =  modal.find('#editProjectSelect');
+        var companySelect =  modal.find('#editCompanySelect');
+        var frontSelect = modal.find('#editFrontSelect');
+        lotSelect.html('');
+        stageSelect.html('');
+        locationSelect.html('');
+        projectSelect.html('');
+        companySelect.html('');
+        frontSelect.html('');
 
-        $('#lots-tab').on('click', function(){
-
-            if(!($('#lots-table_wrapper').length))
-            {
-                var lotsTableEle = $('#lots-table');
-                var getDataLotsUrl = lotsTableEle.data('url');
-                    lotsTable = lotsTableEle.DataTable({
-                    language: DataTableEs,
-                    serverSide: true,
-                    processing: true,
-                    ajax: {
-                        "url": getDataLotsUrl,
-                        "data" : {
-                            "table": "lot"
-                        }
-                    },
-                    columns:[
-                        {data: 'id', name:'id'},
-                        {data: 'name', name:'name'},
-                        {data: 'action', name:'action', orderable: false, searchable: false},
-                    ]
+        $.ajax({
+            type: 'GET',
+            url: getDataUrl,
+            dataType: 'JSON',
+            success: function(data){
+                lotSelect.append('<option value=""></option>')
+                $.each( data['lots'], function( key, value ) {
+                    lotSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
                 });
+                stageSelect.append('<option value=""></option>')
+                $.each( data['stages'], function( key, value ) {
+                    stageSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
+                });
+                locationSelect.append('<option value=""></option>')
+                $.each( data['locations'], function( key, value ) {
+                    locationSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
+                });
+                projectSelect.append('<option value=""></option>')
+                $.each( data['projects'], function( key, value ) {
+                    projectSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
+                });
+                companySelect.append('<option value=""></option>')
+                $.each( data['companies'], function( key, value ) {
+                    companySelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
+                });
+                frontSelect.append('<option value=""></option>')
+                $.each( data['fronts'], function( key, value ) {
+                    frontSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
+                });
+
+                lotSelect.val(data.selecLot).change();
+                stageSelect.val(data.selectStage).change();
+                locationSelect.val(data.selectLocation).change();
+                projectSelect.val(data.selectProject).change();
+                companySelect.val(data.selectCompany).change();
+                frontSelect.val(data.selectFront).change();
+
+                modal.modal('show');
+            }
+        });
+
+        $('#editWarehouseForm').attr('action', url)
+    });
+
+    
+
+    $('#editWarehouseForm').on('submit', function(e){
+        e.preventDefault();
+        var loadSpinner = $(this).find('.loadSpinner')
+        loadSpinner.toggleClass('active');
+        var form = $(this);
+
+        $.ajax({
+            url: $(this).attr('action'),
+            method: $(this).attr('method'),
+            data: $(form).serialize(),
+            dataType: 'JSON',
+            success: function(data){
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: '¡Punto verde actualizado exitosamente!',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                });
+                loadSpinner.toggleClass('active');
+                $('#EditWarehouseModal').modal('hide');
+                warehousesTable.draw();
+            },
+            error: function(data){
+                console.log('Error', data)
+            }
+        })
+    })
+
+    $('body').on('click', '.deleteWarehouse', function(){
+        var url = $(this).data('url');
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡Esta acción no podrá ser revertida!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '¡Sí!',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true,
+            }).then(function(e){
+            if(e.value === true){
+                $.ajax({
+                    type: 'DELETE',
+                    url: url,
+                    dataType: 'JSON',
+                    success: function(result){
+                        if(result.success == true){
+                            warehousesTable.draw();
+                            Swal.fire({
+                                toast: true,
+                                icon: 'success',
+                                title: 'Registro eliminado',
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                            });
+                        }else if(result.success == 'invalid'){
+                            Swal.fire({
+                                toast: true,
+                                icon: 'error',
+                                title: 'Error: Este punto de acopio está relacionado a una guía de internamiento',
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                            });
+                        }   
+                    },
+                    error: function(result){
+                        console.log('Error', result);
+                    }
+                });
+            }else{
+                e.dismiss;
+            }
+            }, function(dismiss){
+            return false;
+            })
+    });
+
+    /*--------- LOT TABLE -----------*/
+
+
+    var lotsTable;
+
+    $('#lots-tab').on('click', function(){
+
+        if(!($('#lots-table_wrapper').length))
+        {
+            var lotsTableEle = $('#lots-table');
+            var getDataLotsUrl = lotsTableEle.data('url');
+                lotsTable = lotsTableEle.DataTable({
+                language: DataTableEs,
+                serverSide: true,
+                processing: true,
+                ajax: {
+                    "url": getDataLotsUrl,
+                    "data" : {
+                        "table": "lot"
+                    }
+                },
+                columns:[
+                    {data: 'id', name:'id'},
+                    {data: 'name', name:'name'},
+                    {data: 'action', name:'action', orderable: false, searchable: false},
+                ]
+            });
+        }
+    })
+
+    $('#RegisterLotsModal').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget)
+        var url = button.data('url');
+        var text = button.data('text');
+        var placeholder = button.data('placeholder');
+        var modal = $(this);
+        var form =  modal.find('#registerLotForm');
+        form.attr('action', url);
+        modal.find('#txt-context-element').html(text);
+        modal.find('#inputName').attr('placeholder', placeholder)
+    })
+
+    $('#btn-save-lot').on('click', function(e){
+        e.preventDefault();
+        var form = $('#registerLotForm');
+
+        var passValidation = true;
+        form.find('.required-input').each(function(){
+            $(this).removeClass('required');
+            if($(this).val() == ''){
+                $(this).addClass('required');
+                passValidation = false;
             }
         })
 
-        $('#RegisterLotsModal').on('show.bs.modal', function(event){
-            var button = $(event.relatedTarget)
-            var url = button.data('url');
-            var text = button.data('text');
-            var placeholder = button.data('placeholder');
-            var modal = $(this);
-            var form =  modal.find('#registerLotForm');
-            form.attr('action', url);
-            modal.find('#txt-context-element').html(text);
-            modal.find('#inputName').attr('placeholder', placeholder)
-        })
-        $('#registerLotForm').on('submit', function(e){
-            e.preventDefault();
-            var loadSpinner = $(this).find('.loadSpinner');
+        if(passValidation)
+        {
+            var loadSpinner = form.find('.loadSpinner');
             loadSpinner.toggleClass('active');
-            var form = this;
-            var formData = $(form).serialize();
+            var formData = form.serialize();
             $.ajax({
-                url: $(form).attr('action'),
-                method: $(form).attr('method'),
+                url: form.attr('action'),
+                method: form.attr('method'),
                 data: formData,
                 dataType: 'JSON',
                 success: function(data){
@@ -1076,7 +1184,7 @@ $(function() {
                     });
 
                     loadSpinner.toggleClass('active');
-                    $('#registerLotForm').trigger('reset');
+                    form.trigger('reset');
                     $('#RegisterLotsModal').modal('hide');
 
                     lotsTable.draw();
@@ -1085,172 +1193,187 @@ $(function() {
                     console.log('Error', data)
                 }
             })
+        }
+        else{
+            showInvalidateMessage();
+        }
+    })
 
-        })
+    $('#EditLotModal').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget)
+        var url = button.data('url');
+        var getDataUrl = button.data('send');
+        var modal = $(this);
 
-        $('#EditLotModal').on('show.bs.modal', function(event){
-            var button = $(event.relatedTarget)
-            var url = button.data('url');
-            var getDataUrl = button.data('send');
-            var modal = $(this);
-
-            $.ajax({
-                type: 'GET',
-                url: getDataUrl,
-                dataType: 'JSON',
-                success: function(data)
-                {
-                    modal.find('#inputName').val(data.name);
-                }
-            });
-
-            modal.find('#editLotsForm').attr('action', url);
-        })
-        $('#editLotsForm').on('submit', function(e){
-            e.preventDefault();
-            var loadSpinner = $(this).find('.loadSpinner')
-            loadSpinner.toggleClass('active');
-            var form = this;
-
-            $.ajax({
-                url: $(this).attr('action'),
-                method: $(this).attr('method'),
-                data: $(form).serialize(),
-                dataType: 'JSON',
-                success: function(data){
-                    Swal.fire({
-                        toast: true,
-                        icon: 'success',
-                        title: '¡Lote actualizado exitosamente!',
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                          }
-                    });
-                    loadSpinner.toggleClass('active');
-                    $('#EditLotModal').modal('hide');
-                    lotsTable.draw();
-                },
-                error: function(data){
-                    console.log('Error', data)
-                }
-            })
-        })
-        
-        $('body').on('click', '.deleteLot', function(){
-            var url = $(this).data('url');
-            Swal.fire({
-                title: '¿Estás seguro?',
-                text: "¡Esta acción no podrá ser revertida!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: '¡Sí!',
-                cancelButtonText: 'Cancelar',
-                reverseButtons: true,
-              }).then(function(e){
-                if(e.value === true){
-                    $.ajax({
-                        type: 'DELETE',
-                        url: url,
-                        dataType: 'JSON',
-                        success: function(result){
-                            if(result.success == true){
-                                lotsTable.draw();
-                                Swal.fire({
-                                    toast: true,
-                                    icon: 'success',
-                                    title: 'Registro eliminado',
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 3000,
-                                    timerProgressBar: true,
-                                    didOpen: (toast) => {
-                                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                      }
-                                });
-                            }else if(result.success == 'invalid'){
-                                Swal.fire({
-                                    toast: true,
-                                    icon: 'error',
-                                    title: 'Error: Este Lote está relacionado a un punto de acopio',
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 3000,
-                                    timerProgressBar: true,
-                                    didOpen: (toast) => {
-                                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                      }
-                                });
-                            }   
-                        },
-                        error: function(result){
-                            console.log('Error', result);
-                        }
-                    });
-                }else{
-                    e.dismiss;
-                }
-              }, function(dismiss){
-                return false;
-              })
-        })
-
-        /* -------- STAGE TABLE -----------*/
-
-        var stagesTable;
-
-        $('#stages-tab').on('click', function(){
-
-            if(!($('#stage-table_wrapper').length))
+        $.ajax({
+            type: 'GET',
+            url: getDataUrl,
+            dataType: 'JSON',
+            success: function(data)
             {
-                var stageTableEle = $('#stage-table');
-                var getDataStagesUrl = stageTableEle.data('url');
-                    stagesTable = stageTableEle.DataTable({
-                    language: DataTableEs,
-                    serverSide: true,
-                    processing: true,
-                    ajax: {
-                        "url": getDataStagesUrl,
-                        "data" : {
-                            "table": "stage"
-                        }
-                    },
-                    columns:[
-                        {data: 'id', name:'id'},
-                        {data: 'name', name:'name'},
-                        {data: 'action', name:'action', orderable: false, searchable: false},
-                    ]
-                });
+                modal.find('#inputName').val(data.name);
             }
-        })  
-       
-        $('#RegisterStagesModal').on('show.bs.modal', function(event){
-            var button = $(event.relatedTarget)
-            var url = button.data('url');
-            var text = button.data('text');
-            var placeholder = button.data('placeholder');
-            var modal = $(this);
-            var form =  modal.find('#registerStageForm');
-            form.attr('action', url);
-            modal.find('#txt-context-element').html(text);
-            modal.find('#inputName').attr('placeholder', placeholder)
+        });
+
+        modal.find('#editLotsForm').attr('action', url);
+    })
+    $('#editLotsForm').on('submit', function(e){
+        e.preventDefault();
+        var loadSpinner = $(this).find('.loadSpinner')
+        loadSpinner.toggleClass('active');
+        var form = this;
+
+        $.ajax({
+            url: $(this).attr('action'),
+            method: $(this).attr('method'),
+            data: $(form).serialize(),
+            dataType: 'JSON',
+            success: function(data){
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: '¡Lote actualizado exitosamente!',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                });
+                loadSpinner.toggleClass('active');
+                $('#EditLotModal').modal('hide');
+                lotsTable.draw();
+            },
+            error: function(data){
+                console.log('Error', data)
+            }
+        })
+    })
+    
+    $('body').on('click', '.deleteLot', function(){
+        var url = $(this).data('url');
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡Esta acción no podrá ser revertida!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '¡Sí!',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true,
+            }).then(function(e){
+            if(e.value === true){
+                $.ajax({
+                    type: 'DELETE',
+                    url: url,
+                    dataType: 'JSON',
+                    success: function(result){
+                        if(result.success == true){
+                            lotsTable.draw();
+                            Swal.fire({
+                                toast: true,
+                                icon: 'success',
+                                title: 'Registro eliminado',
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                            });
+                        }else if(result.success == 'invalid'){
+                            Swal.fire({
+                                toast: true,
+                                icon: 'error',
+                                title: 'Error: Este Lote está relacionado a un punto de acopio',
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                            });
+                        }   
+                    },
+                    error: function(result){
+                        console.log('Error', result);
+                    }
+                });
+            }else{
+                e.dismiss;
+            }
+            }, function(dismiss){
+            return false;
+            })
+    })
+
+    /* -------- STAGE TABLE -----------*/
+
+    var stagesTable;
+
+    $('#stages-tab').on('click', function(){
+
+        if(!($('#stage-table_wrapper').length))
+        {
+            var stageTableEle = $('#stage-table');
+            var getDataStagesUrl = stageTableEle.data('url');
+                stagesTable = stageTableEle.DataTable({
+                language: DataTableEs,
+                serverSide: true,
+                processing: true,
+                ajax: {
+                    "url": getDataStagesUrl,
+                    "data" : {
+                        "table": "stage"
+                    }
+                },
+                columns:[
+                    {data: 'id', name:'id'},
+                    {data: 'name', name:'name'},
+                    {data: 'action', name:'action', orderable: false, searchable: false},
+                ]
+            });
+        }
+    })  
+    
+    $('#RegisterStagesModal').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget)
+        var url = button.data('url');
+        var text = button.data('text');
+        var placeholder = button.data('placeholder');
+        var modal = $(this);
+        var form =  modal.find('#registerStageForm');
+        form.attr('action', url);
+        modal.find('#txt-context-element').html(text);
+        modal.find('#inputName').attr('placeholder', placeholder)
+    })
+
+    $('#btn-save-stage').on('click', function(e){
+        e.preventDefault();
+        var form = $('#registerStageForm');
+
+        var passValidation = true;
+        form.find('.required-input').each(function(){
+            $(this).removeClass('required');
+            if($(this).val() == ''){
+                $(this).addClass('required');
+                passValidation = false;
+            }
         })
 
-        $('#registerStageForm').on('submit', function(e){
-            e.preventDefault();
-            var loadSpinner = $(this).find('.loadSpinner');
+        if(passValidation)
+        {
+            var loadSpinner = form.find('.loadSpinner');
             loadSpinner.toggleClass('active');
-            var form = this;
-            var formData = $(form).serialize();
+            var formData = form.serialize();
             $.ajax({
-                url: $(form).attr('action'),
-                method: $(form).attr('method'),
+                url: form.attr('action'),
+                method: form.attr('method'),
                 data: formData,
                 dataType: 'JSON',
                 success: function(data){
@@ -1269,7 +1392,7 @@ $(function() {
                     });
 
                     loadSpinner.toggleClass('active');
-                    $('#registerStageForm').trigger('reset');
+                    form.trigger('reset');
                     $('#RegisterStagesModal').modal('hide');
 
                     stagesTable.draw();
@@ -1278,172 +1401,187 @@ $(function() {
                     console.log('Error', data)
                 }
             })
-        })
+        }
+        else{
+            showInvalidateMessage();
+        }
+    })
 
-        $('#EditStageModal').on('show.bs.modal', function(event){
-            var button = $(event.relatedTarget)
-            var url = button.data('url');
-            var getDataUrl = button.data('send');
-            var modal = $(this);
+    $('#EditStageModal').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget)
+        var url = button.data('url');
+        var getDataUrl = button.data('send');
+        var modal = $(this);
 
-            $.ajax({
-                type: 'GET',
-                url: getDataUrl,
-                dataType: 'JSON',
-                success: function(data)
-                {
-                    modal.find('#inputStageName').val(data.name);
-                }
-            });
-
-            modal.find('#editStageForm').attr('action', url);
-        })
-        $('#editStageForm').on('submit', function(e){
-            e.preventDefault();
-            var loadSpinner = $(this).find('.loadSpinner')
-            loadSpinner.toggleClass('active');
-            var form = this;
-
-            $.ajax({
-                url: $(this).attr('action'),
-                method: $(this).attr('method'),
-                data: $(form).serialize(),
-                dataType: 'JSON',
-                success: function(data){
-                    Swal.fire({
-                        toast: true,
-                        icon: 'success',
-                        title: '¡Etapa actualizada exitosamente!',
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                          }
-                    });
-                    loadSpinner.toggleClass('active');
-                    $('#EditStageModal').modal('hide');
-                    stagesTable.draw();
-                },
-                error: function(data){
-                    console.log('Error', data)
-                }
-            })
-        })
-
-        $('body').on('click', '.deleteStage', function(){
-            var url = $(this).data('url');
-            Swal.fire({
-                title: '¿Estás seguro?',
-                text: "¡Esta acción no podrá ser revertida!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: '¡Sí!',
-                cancelButtonText: 'Cancelar',
-                reverseButtons: true,
-              }).then(function(e){
-                if(e.value === true){
-                    $.ajax({
-                        type: 'DELETE',
-                        url: url,
-                        dataType: 'JSON',
-                        success: function(result){
-                            if(result.success == true){
-                                stagesTable.draw();
-                                Swal.fire({
-                                    toast: true,
-                                    icon: 'success',
-                                    title: 'Registro eliminado',
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 3000,
-                                    timerProgressBar: true,
-                                    didOpen: (toast) => {
-                                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                      }
-                                });
-                            }else if(result.success == 'invalid'){
-                                Swal.fire({
-                                    toast: true,
-                                    icon: 'error',
-                                    title: 'Error: Este registro está relacionado a un punto de acopio',
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 3000,
-                                    timerProgressBar: true,
-                                    didOpen: (toast) => {
-                                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                      }
-                                });
-                            }   
-                        },
-                        error: function(result){
-                            console.log('Error', result);
-                        }
-                    });
-                }else{
-                    e.dismiss;
-                }
-              }, function(dismiss){
-                return false;
-              })
-        })
-
-        /* ----------- LOCATION TABLE --------*/
-
-        var locationsTable;
-
-        $('#locations-tab').on('click', function(){
-
-            if(!($('#location-table_wrapper').length))
+        $.ajax({
+            type: 'GET',
+            url: getDataUrl,
+            dataType: 'JSON',
+            success: function(data)
             {
-                var locationTableEle = $('#location-table');
-                var getDataLocationsUrl = locationTableEle.data('url');
-                    locationsTable = locationTableEle.DataTable({
-                    language: DataTableEs,
-                    serverSide: true,
-                    processing: true,
-                    ajax: {
-                        "url": getDataLocationsUrl,
-                        "data" : {
-                            "table": "location"
+                modal.find('#inputStageName').val(data.name);
+            }
+        });
+
+        modal.find('#editStageForm').attr('action', url);
+    })
+    $('#editStageForm').on('submit', function(e){
+        e.preventDefault();
+        var loadSpinner = $(this).find('.loadSpinner')
+        loadSpinner.toggleClass('active');
+        var form = this;
+
+        $.ajax({
+            url: $(this).attr('action'),
+            method: $(this).attr('method'),
+            data: $(form).serialize(),
+            dataType: 'JSON',
+            success: function(data){
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: '¡Etapa actualizada exitosamente!',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
                         }
-                    },
-                    columns:[
-                        {data: 'id', name:'id'},
-                        {data: 'name', name:'name'},
-                        {data: 'action', name:'action', orderable: false, searchable: false},
-                    ]
                 });
+                loadSpinner.toggleClass('active');
+                $('#EditStageModal').modal('hide');
+                stagesTable.draw();
+            },
+            error: function(data){
+                console.log('Error', data)
+            }
+        })
+    })
+
+    $('body').on('click', '.deleteStage', function(){
+        var url = $(this).data('url');
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡Esta acción no podrá ser revertida!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '¡Sí!',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true,
+            }).then(function(e){
+            if(e.value === true){
+                $.ajax({
+                    type: 'DELETE',
+                    url: url,
+                    dataType: 'JSON',
+                    success: function(result){
+                        if(result.success == true){
+                            stagesTable.draw();
+                            Swal.fire({
+                                toast: true,
+                                icon: 'success',
+                                title: 'Registro eliminado',
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                            });
+                        }else if(result.success == 'invalid'){
+                            Swal.fire({
+                                toast: true,
+                                icon: 'error',
+                                title: 'Error: Este registro está relacionado a un punto de acopio',
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                            });
+                        }   
+                    },
+                    error: function(result){
+                        console.log('Error', result);
+                    }
+                });
+            }else{
+                e.dismiss;
+            }
+            }, function(dismiss){
+            return false;
+            })
+    })
+
+    /* ----------- LOCATION TABLE --------*/
+
+    var locationsTable;
+
+    $('#locations-tab').on('click', function(){
+
+        if(!($('#location-table_wrapper').length))
+        {
+            var locationTableEle = $('#location-table');
+            var getDataLocationsUrl = locationTableEle.data('url');
+                locationsTable = locationTableEle.DataTable({
+                language: DataTableEs,
+                serverSide: true,
+                processing: true,
+                ajax: {
+                    "url": getDataLocationsUrl,
+                    "data" : {
+                        "table": "location"
+                    }
+                },
+                columns:[
+                    {data: 'id', name:'id'},
+                    {data: 'name', name:'name'},
+                    {data: 'action', name:'action', orderable: false, searchable: false},
+                ]
+            });
+        }
+    })
+
+    $('#RegisterLocationsModal').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget)
+        var url = button.data('url');
+        var text = button.data('text');
+        var placeholder = button.data('placeholder');
+        var modal = $(this);
+        var form =  modal.find('#registerLocationForm');
+        form.attr('action', url);
+        modal.find('#txt-context-element').html(text);
+        modal.find('#inputName').attr('placeholder', placeholder)
+    })
+
+    $('#btn-save-location').on('click', function(e){
+        e.preventDefault();
+        var form = $('#registerLocationForm');
+
+        var passValidation = true;
+        form.find('.required-input').each(function(){
+            $(this).removeClass('required');
+            if($(this).val() == ''){
+                $(this).addClass('required');
+                passValidation = false;
             }
         })
 
-       
-
-        $('#RegisterLocationsModal').on('show.bs.modal', function(event){
-            var button = $(event.relatedTarget)
-            var url = button.data('url');
-            var text = button.data('text');
-            var placeholder = button.data('placeholder');
-            var modal = $(this);
-            var form =  modal.find('#registerLocationForm');
-            form.attr('action', url);
-            modal.find('#txt-context-element').html(text);
-            modal.find('#inputName').attr('placeholder', placeholder)
-        })
-        $('#registerLocationForm').on('submit', function(e){
-            e.preventDefault();
-            var loadSpinner = $(this).find('.loadSpinner');
+        if(passValidation)
+        {
+            var loadSpinner = form.find('.loadSpinner');
             loadSpinner.toggleClass('active');
-            var form = this;
-            var formData = $(form).serialize();
+            var formData = form.serialize();
             $.ajax({
-                url: $(form).attr('action'),
-                method: $(form).attr('method'),
+                url: form.attr('action'),
+                method: form.attr('method'),
                 data: formData,
                 dataType: 'JSON',
                 success: function(data){
@@ -1462,7 +1600,7 @@ $(function() {
                     });
 
                     loadSpinner.toggleClass('active');
-                    $('#registerLocationForm').trigger('reset');
+                    form.trigger('reset');
                     $('#RegisterLocationsModal').modal('hide');
 
                     locationsTable.draw();
@@ -1471,170 +1609,187 @@ $(function() {
                     console.log('Error', data)
                 }
             })
-        })
+        }
+        else{
+            showInvalidateMessage();
+        }
+    })
 
-        $('#EditLocationModal').on('show.bs.modal', function(event){
-            var button = $(event.relatedTarget)
-            var url = button.data('url');
-            var getDataUrl = button.data('send');
-            var modal = $(this);
+    $('#EditLocationModal').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget)
+        var url = button.data('url');
+        var getDataUrl = button.data('send');
+        var modal = $(this);
 
-            $.ajax({
-                type: 'GET',
-                url: getDataUrl,
-                dataType: 'JSON',
-                success: function(data)
-                {
-                    modal.find('#inputLocationName').val(data.name);
-                }
-            });
-
-            modal.find('#editLocationForm').attr('action', url);
-        })
-        $('#editLocationForm').on('submit', function(e){
-            e.preventDefault();
-            var loadSpinner = $(this).find('.loadSpinner')
-            loadSpinner.toggleClass('active');
-            var form = this;
-
-            $.ajax({
-                url: $(this).attr('action'),
-                method: $(this).attr('method'),
-                data: $(form).serialize(),
-                dataType: 'JSON',
-                success: function(data){
-                    Swal.fire({
-                        toast: true,
-                        icon: 'success',
-                        title: '¡Locación actualizada exitosamente!',
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                          }
-                    });
-                    loadSpinner.toggleClass('active');
-                    $('#EditLocationModal').modal('hide');
-                    locationsTable.draw();
-                },
-                error: function(data){
-                    console.log('Error', data)
-                }
-            })
-        })
-
-        $('body').on('click', '.deleteLocation', function(){
-            var url = $(this).data('url');
-            Swal.fire({
-                title: '¿Estás seguro?',
-                text: "¡Esta acción no podrá ser revertida!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: '¡Sí!',
-                cancelButtonText: 'Cancelar',
-                reverseButtons: true,
-              }).then(function(e){
-                if(e.value === true){
-                    $.ajax({
-                        type: 'DELETE',
-                        url: url,
-                        dataType: 'JSON',
-                        success: function(result){
-                            if(result.success == true){
-                                locationsTable.draw();
-                                Swal.fire({
-                                    toast: true,
-                                    icon: 'success',
-                                    title: 'Registro eliminado',
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 3000,
-                                    timerProgressBar: true,
-                                    didOpen: (toast) => {
-                                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                      }
-                                });
-                            }else if(result.success == 'invalid'){
-                                Swal.fire({
-                                    toast: true,
-                                    icon: 'error',
-                                    title: 'Error: Este registro está relacionado a un punto de acopio',
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 3000,
-                                    timerProgressBar: true,
-                                    didOpen: (toast) => {
-                                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                      }
-                                });
-                            }   
-                        },
-                        error: function(result){
-                            console.log('Error', result);
-                        }
-                    });
-                }else{
-                    e.dismiss;
-                }
-              }, function(dismiss){
-                return false;
-              })
-        })
-
-        /* ------------  PROJECT TABLE -------------*/
-
-        var projectTable;
-
-        $('#projects-tab').on('click', function(){
-
-            if(!($('#project-table_wrapper').length))
+        $.ajax({
+            type: 'GET',
+            url: getDataUrl,
+            dataType: 'JSON',
+            success: function(data)
             {
-                var projectTableEle = $('#project-table');
-                var getDataProjectsUrl = projectTableEle.data('url');
-                    projectTable = projectTableEle.DataTable({
-                    language: DataTableEs,
-                    serverSide: true,
-                    processing: true,
-                    ajax: {
-                        "url": getDataProjectsUrl,
-                        "data" : {
-                            "table": "project"
+                modal.find('#inputLocationName').val(data.name);
+            }
+        });
+
+        modal.find('#editLocationForm').attr('action', url);
+    })
+    $('#editLocationForm').on('submit', function(e){
+        e.preventDefault();
+        var loadSpinner = $(this).find('.loadSpinner')
+        loadSpinner.toggleClass('active');
+        var form = this;
+
+        $.ajax({
+            url: $(this).attr('action'),
+            method: $(this).attr('method'),
+            data: $(form).serialize(),
+            dataType: 'JSON',
+            success: function(data){
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: '¡Locación actualizada exitosamente!',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
                         }
-                    },
-                    columns:[
-                        {data: 'id', name:'id'},
-                        {data: 'name', name:'name'},
-                        {data: 'action', name:'action', orderable: false, searchable: false},
-                    ]
                 });
+                loadSpinner.toggleClass('active');
+                $('#EditLocationModal').modal('hide');
+                locationsTable.draw();
+            },
+            error: function(data){
+                console.log('Error', data)
+            }
+        })
+    })
+
+    $('body').on('click', '.deleteLocation', function(){
+        var url = $(this).data('url');
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡Esta acción no podrá ser revertida!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '¡Sí!',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true,
+            }).then(function(e){
+            if(e.value === true){
+                $.ajax({
+                    type: 'DELETE',
+                    url: url,
+                    dataType: 'JSON',
+                    success: function(result){
+                        if(result.success == true){
+                            locationsTable.draw();
+                            Swal.fire({
+                                toast: true,
+                                icon: 'success',
+                                title: 'Registro eliminado',
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                            });
+                        }else if(result.success == 'invalid'){
+                            Swal.fire({
+                                toast: true,
+                                icon: 'error',
+                                title: 'Error: Este registro está relacionado a un punto de acopio',
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                            });
+                        }   
+                    },
+                    error: function(result){
+                        console.log('Error', result);
+                    }
+                });
+            }else{
+                e.dismiss;
+            }
+            }, function(dismiss){
+            return false;
+            })
+    })
+
+    /* ------------  PROJECT TABLE -------------*/
+
+    var projectTable;
+
+    $('#projects-tab').on('click', function(){
+
+        if(!($('#project-table_wrapper').length))
+        {
+            var projectTableEle = $('#project-table');
+            var getDataProjectsUrl = projectTableEle.data('url');
+                projectTable = projectTableEle.DataTable({
+                language: DataTableEs,
+                serverSide: true,
+                processing: true,
+                ajax: {
+                    "url": getDataProjectsUrl,
+                    "data" : {
+                        "table": "project"
+                    }
+                },
+                columns:[
+                    {data: 'id', name:'id'},
+                    {data: 'name', name:'name'},
+                    {data: 'action', name:'action', orderable: false, searchable: false},
+                ]
+            });
+        }
+    })
+
+    $('#RegisterProjectsModal').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget)
+        var url = button.data('url');
+        var text = button.data('text');
+        var placeholder = button.data('placeholder');
+        var modal = $(this);
+        var form =  modal.find('#registerProjectForm');
+        form.attr('action', url);
+        modal.find('#txt-context-element').html(text);
+        modal.find('#inputName').attr('placeholder', placeholder)
+    })
+
+    $('#btn-save-project').on('click', function(e){
+        e.preventDefault();
+        var form = $('#registerProjectForm');
+
+        var passValidation = true;
+        form.find('.required-input').each(function(){
+            $(this).removeClass('required');
+            if($(this).val() == ''){
+                $(this).addClass('required');
+                passValidation = false;
             }
         })
 
-        $('#RegisterProjectsModal').on('show.bs.modal', function(event){
-            var button = $(event.relatedTarget)
-            var url = button.data('url');
-            var text = button.data('text');
-            var placeholder = button.data('placeholder');
-            var modal = $(this);
-            var form =  modal.find('#registerProjectForm');
-            form.attr('action', url);
-            modal.find('#txt-context-element').html(text);
-            modal.find('#inputName').attr('placeholder', placeholder)
-        })
-        $('#registerProjectForm').on('submit', function(e){
-            e.preventDefault();
-            var loadSpinner = $(this).find('.loadSpinner');
+        if(passValidation)
+        {
+            var loadSpinner = form.find('.loadSpinner');
             loadSpinner.toggleClass('active');
-            var form = this;
-            var formData = $(form).serialize();
+            var formData = form.serialize();
             $.ajax({
-                url: $(form).attr('action'),
-                method: $(form).attr('method'),
+                url: form.attr('action'),
+                method: form.attr('method'),
                 data: formData,
                 dataType: 'JSON',
                 success: function(data){
@@ -1653,7 +1808,7 @@ $(function() {
                     });
 
                     loadSpinner.toggleClass('active');
-                    $('#registerProjectForm').trigger('reset');
+                    form.trigger('reset');
                     $('#RegisterProjectsModal').modal('hide');
 
                     projectTable.draw();
@@ -1662,173 +1817,191 @@ $(function() {
                     console.log('Error', data)
                 }
             })
-        })
-
-        $('#EditProjectModal').on('show.bs.modal', function(event){
-            var button = $(event.relatedTarget)
-            var url = button.data('url');
-            var getDataUrl = button.data('send');
-            var modal = $(this);
-
-            $.ajax({
-                type: 'GET',
-                url: getDataUrl,
-                dataType: 'JSON',
-                success: function(data)
-                {
-                    modal.find('#inputProjectName').val(data.name);
-                }
-            });
-
-            modal.find('#editProjectForm').attr('action', url);
-        })
-        $('#editProjectForm').on('submit', function(e){
-            e.preventDefault();
-            var loadSpinner = $(this).find('.loadSpinner')
-            loadSpinner.toggleClass('active');
-            var form = this;
-
-            $.ajax({
-                url: $(this).attr('action'),
-                method: $(this).attr('method'),
-                data: $(form).serialize(),
-                dataType: 'JSON',
-                success: function(data){
-                    Swal.fire({
-                        toast: true,
-                        icon: 'success',
-                        title: '¡Área de proyecto actualizada exitosamente!',
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                          }
-                    });
-                    loadSpinner.toggleClass('active');
-                    $('#EditProjectModal').modal('hide');
-                    projectTable.draw();
-                },
-                error: function(data){
-                    console.log('Error', data)
-                }
-            })
-        })
-
-        $('body').on('click', '.deleteProject', function(){
-            var url = $(this).data('url');
-            Swal.fire({
-                title: '¿Estás seguro?',
-                text: "¡Esta acción no podrá ser revertida!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: '¡Sí!',
-                cancelButtonText: 'Cancelar',
-                reverseButtons: true,
-              }).then(function(e){
-                if(e.value === true){
-                    $.ajax({
-                        type: 'DELETE',
-                        url: url,
-                        dataType: 'JSON',
-                        success: function(result){
-                            if(result.success == true){
-                                projectTable.draw();
-                                Swal.fire({
-                                    toast: true,
-                                    icon: 'success',
-                                    title: 'Registro eliminado',
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 3000,
-                                    timerProgressBar: true,
-                                    didOpen: (toast) => {
-                                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                      }
-                                });
-                            }else if(result.success == 'invalid'){
-                                Swal.fire({
-                                    toast: true,
-                                    icon: 'error',
-                                    title: 'Error: Este registro está relacionado a un punto de acopio',
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 3000,
-                                    timerProgressBar: true,
-                                    didOpen: (toast) => {
-                                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                      }
-                                });
-                            }   
-                        },
-                        error: function(result){
-                            console.log('Error', result);
-                        }
-                    });
-                }else{
-                    e.dismiss;
-                }
-              }, function(dismiss){
-                return false;
-              })
-        })
+        }
+        else{
+            showInvalidateMessage();
+        }
+    })
 
 
-        /* ------------ COMPANY TABLE -------------*/
+    $('#EditProjectModal').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget)
+        var url = button.data('url');
+        var getDataUrl = button.data('send');
+        var modal = $(this);
 
-        var companyTable;
-
-        $('#companies-tab').on('click', function(){
-
-            if(!($('#company-table_wrapper').length))
+        $.ajax({
+            type: 'GET',
+            url: getDataUrl,
+            dataType: 'JSON',
+            success: function(data)
             {
-                var companyTableEle = $('#company-table');
-                var getDataCompanysUrl = companyTableEle.data('url');
-                    companyTable = companyTableEle.DataTable({
-                    language: DataTableEs,
-                    serverSide: true,
-                    processing: true,
-                    ajax: {
-                        "url": getDataCompanysUrl,
-                        "data" : {
-                            "table": "company"
+                modal.find('#inputProjectName').val(data.name);
+            }
+        });
+
+        modal.find('#editProjectForm').attr('action', url);
+    })
+    $('#editProjectForm').on('submit', function(e){
+        e.preventDefault();
+        var loadSpinner = $(this).find('.loadSpinner')
+        loadSpinner.toggleClass('active');
+        var form = this;
+
+        $.ajax({
+            url: $(this).attr('action'),
+            method: $(this).attr('method'),
+            data: $(form).serialize(),
+            dataType: 'JSON',
+            success: function(data){
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: '¡Área de proyecto actualizada exitosamente!',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
                         }
-                    },
-                    columns:[
-                        {data: 'id', name:'id'},
-                        {data: 'name', name:'name'},
-                        {data: 'ruc', name:'ruc'},
-                        {data: 'action', name:'action', orderable: false, searchable: false},
-                    ]
                 });
+                loadSpinner.toggleClass('active');
+                $('#EditProjectModal').modal('hide');
+                projectTable.draw();
+            },
+            error: function(data){
+                console.log('Error', data)
+            }
+        })
+    })
+
+    $('body').on('click', '.deleteProject', function(){
+        var url = $(this).data('url');
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡Esta acción no podrá ser revertida!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '¡Sí!',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true,
+            }).then(function(e){
+            if(e.value === true){
+                $.ajax({
+                    type: 'DELETE',
+                    url: url,
+                    dataType: 'JSON',
+                    success: function(result){
+                        if(result.success == true){
+                            projectTable.draw();
+                            Swal.fire({
+                                toast: true,
+                                icon: 'success',
+                                title: 'Registro eliminado',
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                            });
+                        }else if(result.success == 'invalid'){
+                            Swal.fire({
+                                toast: true,
+                                icon: 'error',
+                                title: 'Error: Este registro está relacionado a un punto de acopio',
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                            });
+                        }   
+                    },
+                    error: function(result){
+                        console.log('Error', result);
+                    }
+                });
+            }else{
+                e.dismiss;
+            }
+            }, function(dismiss){
+            return false;
+            })
+    })
+
+
+    /* ------------ COMPANY TABLE -------------*/
+
+    var companyTable;
+
+    $('#companies-tab').on('click', function(){
+
+        if(!($('#company-table_wrapper').length))
+        {
+            var companyTableEle = $('#company-table');
+            var getDataCompanysUrl = companyTableEle.data('url');
+                companyTable = companyTableEle.DataTable({
+                language: DataTableEs,
+                serverSide: true,
+                processing: true,
+                ajax: {
+                    "url": getDataCompanysUrl,
+                    "data" : {
+                        "table": "company"
+                    }
+                },
+                columns:[
+                    {data: 'id', name:'id'},
+                    {data: 'name', name:'name'},
+                    {data: 'ruc', name:'ruc'},
+                    {data: 'action', name:'action', orderable: false, searchable: false},
+                ]
+            });
+        }
+    })
+
+    
+    $('#RegisterCompaniesModal').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget)
+        var url = button.data('url');
+        var text = button.data('text');
+        var placeholder = button.data('placeholder');
+        var modal = $(this);
+        var form =  modal.find('#registerCompanyForm');
+        form.attr('action', url);
+        modal.find('#txt-context-element').html(text);
+        modal.find('#inputName').attr('placeholder', placeholder)
+    })
+
+    $('#btn-save-company').on('click', function(e){
+        e.preventDefault();
+        var form = $('#registerCompanyForm');
+
+        var passValidation = true;
+        form.find('.required-input').each(function(){
+            $(this).removeClass('required');
+            if($(this).val() == ''){
+                $(this).addClass('required');
+                passValidation = false;
             }
         })
 
-        
-        $('#RegisterCompaniesModal').on('show.bs.modal', function(event){
-            var button = $(event.relatedTarget)
-            var url = button.data('url');
-            var text = button.data('text');
-            var placeholder = button.data('placeholder');
-            var modal = $(this);
-            var form =  modal.find('#registerCompanyForm');
-            form.attr('action', url);
-            modal.find('#txt-context-element').html(text);
-            modal.find('#inputName').attr('placeholder', placeholder)
-        })
-        $('#registerCompanyForm').on('submit', function(e){
-            e.preventDefault();
-            var loadSpinner = $(this).find('.loadSpinner');
+        if(passValidation)
+        {
+            var loadSpinner = form.find('.loadSpinner');
             loadSpinner.toggleClass('active');
-            var form = this;
-            var formData = $(form).serialize();
+            var formData = form.serialize();
             $.ajax({
-                url: $(form).attr('action'),
-                method: $(form).attr('method'),
+                url: form.attr('action'),
+                method: form.attr('method'),
                 data: formData,
                 dataType: 'JSON',
                 success: function(data){
@@ -1847,7 +2020,7 @@ $(function() {
                     });
 
                     loadSpinner.toggleClass('active');
-                    $('#registerCompanyForm').trigger('reset');
+                    form.trigger('reset');
                     $('#RegisterCompaniesModal').modal('hide');
 
                     companyTable.draw();
@@ -1856,170 +2029,187 @@ $(function() {
                     console.log('Error', data)
                 }
             })
-        })
+        }
+        else{
+            showInvalidateMessage();
+        }
+    })
 
-        $('#EditCompanyModal').on('show.bs.modal', function(event){
-            var button = $(event.relatedTarget)
-            var url = button.data('url');
-            var getDataUrl = button.data('send');
-            var modal = $(this);
+    $('#EditCompanyModal').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget)
+        var url = button.data('url');
+        var getDataUrl = button.data('send');
+        var modal = $(this);
 
-            $.ajax({
-                type: 'GET',
-                url: getDataUrl,
-                dataType: 'JSON',
-                success: function(data)
-                {
-                    modal.find('#inputCompanyName').val(data.name);
-                    modal.find('#inputCompanyRuc').val(data.ruc);
-                }
-            });
-            modal.find('#editCompanyForm').attr('action', url);
-        })
-        $('#editCompanyForm').on('submit', function(e){
-            e.preventDefault();
-            var loadSpinner = $(this).find('.loadSpinner')
-            loadSpinner.toggleClass('active');
-            var form = this;
-
-            $.ajax({
-                url: $(this).attr('action'),
-                method: $(this).attr('method'),
-                data: $(form).serialize(),
-                dataType: 'JSON',
-                success: function(data){
-                    Swal.fire({
-                        toast: true,
-                        icon: 'success',
-                        title: '¡Empresa actualizada exitosamente!',
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                          }
-                    });
-                    loadSpinner.toggleClass('active');
-                    $('#EditCompanyModal').modal('hide');
-                    companyTable.draw();
-                },
-                error: function(data){
-                    console.log('Error', data)
-                }
-            })
-        })
-
-        $('body').on('click', '.deleteCompany', function(){
-            var url = $(this).data('url');
-            Swal.fire({
-                title: '¿Estás seguro?',
-                text: "¡Esta acción no podrá ser revertida!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: '¡Sí!',
-                cancelButtonText: 'Cancelar',
-                reverseButtons: true,
-              }).then(function(e){
-                if(e.value === true){
-                    $.ajax({
-                        type: 'DELETE',
-                        url: url,
-                        dataType: 'JSON',
-                        success: function(result){
-                            if(result.success == true){
-                                companyTable.draw();
-                                Swal.fire({
-                                    toast: true,
-                                    icon: 'success',
-                                    title: 'Registro eliminado',
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 3000,
-                                    timerProgressBar: true,
-                                    didOpen: (toast) => {
-                                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                      }
-                                });
-                            }else if(result.success == 'invalid'){
-                                Swal.fire({
-                                    toast: true,
-                                    icon: 'error',
-                                    title: 'Error: Este registro está relacionado a un punto de acopio',
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 3000,
-                                    timerProgressBar: true,
-                                    didOpen: (toast) => {
-                                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                      }
-                                });
-                            }   
-                        },
-                        error: function(result){
-                            console.log('Error', result);
-                        }
-                    });
-                }else{
-                    e.dismiss;
-                }
-              }, function(dismiss){
-                return false;
-              })
-        })
-
-        /* ------- FRONT TABLE -----------*/
-
-        var frontTable;
-
-        $('#fronts-tab').on('click', function(){
-
-            if(!($('#front-table_wrapper').length))
+        $.ajax({
+            type: 'GET',
+            url: getDataUrl,
+            dataType: 'JSON',
+            success: function(data)
             {
-                var frontTableEle = $('#front-table');
-                var getDataFrontsUrl = frontTableEle.data('url');
-                    frontTable = frontTableEle.DataTable({
-                    language: DataTableEs,
-                    serverSide: true,
-                    processing: true,
-                    ajax: {
-                        "url": getDataFrontsUrl,
-                        "data" : {
-                            "table": "front"
+                modal.find('#inputCompanyName').val(data.name);
+                modal.find('#inputCompanyRuc').val(data.ruc);
+            }
+        });
+        modal.find('#editCompanyForm').attr('action', url);
+    })
+    $('#editCompanyForm').on('submit', function(e){
+        e.preventDefault();
+        var loadSpinner = $(this).find('.loadSpinner')
+        loadSpinner.toggleClass('active');
+        var form = this;
+
+        $.ajax({
+            url: $(this).attr('action'),
+            method: $(this).attr('method'),
+            data: $(form).serialize(),
+            dataType: 'JSON',
+            success: function(data){
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: '¡Empresa actualizada exitosamente!',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
                         }
-                    },
-                    columns:[
-                        {data: 'id', name:'id'},
-                        {data: 'name', name:'name'},
-                        {data: 'action', name:'action', orderable: false, searchable: false},
-                    ]
                 });
+                loadSpinner.toggleClass('active');
+                $('#EditCompanyModal').modal('hide');
+                companyTable.draw();
+            },
+            error: function(data){
+                console.log('Error', data)
+            }
+        })
+    })
+
+    $('body').on('click', '.deleteCompany', function(){
+        var url = $(this).data('url');
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡Esta acción no podrá ser revertida!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '¡Sí!',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true,
+            }).then(function(e){
+            if(e.value === true){
+                $.ajax({
+                    type: 'DELETE',
+                    url: url,
+                    dataType: 'JSON',
+                    success: function(result){
+                        if(result.success == true){
+                            companyTable.draw();
+                            Swal.fire({
+                                toast: true,
+                                icon: 'success',
+                                title: 'Registro eliminado',
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                            });
+                        }else if(result.success == 'invalid'){
+                            Swal.fire({
+                                toast: true,
+                                icon: 'error',
+                                title: 'Error: Este registro está relacionado a un punto de acopio',
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                            });
+                        }   
+                    },
+                    error: function(result){
+                        console.log('Error', result);
+                    }
+                });
+            }else{
+                e.dismiss;
+            }
+            }, function(dismiss){
+            return false;
+            })
+    })
+
+    /* ------- FRONT TABLE -----------*/
+
+    var frontTable;
+
+    $('#fronts-tab').on('click', function(){
+
+        if(!($('#front-table_wrapper').length))
+        {
+            var frontTableEle = $('#front-table');
+            var getDataFrontsUrl = frontTableEle.data('url');
+                frontTable = frontTableEle.DataTable({
+                language: DataTableEs,
+                serverSide: true,
+                processing: true,
+                ajax: {
+                    "url": getDataFrontsUrl,
+                    "data" : {
+                        "table": "front"
+                    }
+                },
+                columns:[
+                    {data: 'id', name:'id'},
+                    {data: 'name', name:'name'},
+                    {data: 'action', name:'action', orderable: false, searchable: false},
+                ]
+            });
+        }
+    })
+
+    $('#RegisterFrontsModal').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget)
+        var url = button.data('url');
+        var text = button.data('text');
+        var placeholder = button.data('placeholder');
+        var modal = $(this);
+        var form =  modal.find('#registerFrontForm');
+        form.attr('action', url);
+        modal.find('#txt-context-element').html(text);
+        modal.find('#inputName').attr('placeholder', placeholder)
+    })
+
+    $('#btn-save-front').on('click', function(e){
+        e.preventDefault();
+        var form = $('#registerFrontForm');
+
+        var passValidation = true;
+        form.find('.required-input').each(function(){
+            $(this).removeClass('required');
+            if($(this).val() == ''){
+                $(this).addClass('required');
+                passValidation = false;
             }
         })
 
-        $('#RegisterFrontsModal').on('show.bs.modal', function(event){
-            var button = $(event.relatedTarget)
-            var url = button.data('url');
-            var text = button.data('text');
-            var placeholder = button.data('placeholder');
-            var modal = $(this);
-            var form =  modal.find('#registerFrontForm');
-            form.attr('action', url);
-            modal.find('#txt-context-element').html(text);
-            modal.find('#inputName').attr('placeholder', placeholder)
-        })
-        $('#registerFrontForm').on('submit', function(e){
-            e.preventDefault();
-            var loadSpinner = $(this).find('.loadSpinner');
+        if(passValidation)
+        {
+            var loadSpinner = form.find('.loadSpinner');
             loadSpinner.toggleClass('active');
-            var form = this;
-            var formData = $(form).serialize();
+            var formData = form.serialize();
             $.ajax({
-                url: $(form).attr('action'),
-                method: $(form).attr('method'),
+                url: form.attr('action'),
+                method: form.attr('method'),
                 data: formData,
                 dataType: 'JSON',
                 success: function(data){
@@ -2038,7 +2228,7 @@ $(function() {
                     });
 
                     loadSpinner.toggleClass('active');
-                    $('#registerFrontForm').trigger('reset');
+                    form.trigger('reset');
                     $('#RegisterFrontsModal').modal('hide');
 
                     frontTable.draw();
@@ -2047,663 +2237,902 @@ $(function() {
                     console.log('Error', data)
                 }
             })
-        })
-
-        $('#EditFrontModal').on('show.bs.modal', function(event){
-            var button = $(event.relatedTarget)
-            var url = button.data('url');
-            var getDataUrl = button.data('send');
-            var modal = $(this);
-
-            $.ajax({
-                type: 'GET',
-                url: getDataUrl,
-                dataType: 'JSON',
-                success: function(data)
-                {
-                    modal.find('#inputFrontName').val(data.name);
-                }
-            });
-            modal.find('#editFrontForm').attr('action', url);
-        })
-        $('#editFrontForm').on('submit', function(e){
-            e.preventDefault();
-            var loadSpinner = $(this).find('.loadSpinner')
-            loadSpinner.toggleClass('active');
-            var form = this;
-
-            $.ajax({
-                url: $(this).attr('action'),
-                method: $(this).attr('method'),
-                data: $(form).serialize(),
-                dataType: 'JSON',
-                success: function(data){
-                    Swal.fire({
-                        toast: true,
-                        icon: 'success',
-                        title: '¡Frente actualizado exitosamente!',
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                          }
-                    });
-                    loadSpinner.toggleClass('active');
-                    $('#EditFrontModal').modal('hide');
-                    frontTable.draw();
-                },
-                error: function(data){
-                    console.log('Error', data)
-                }
-            })
-        })
-
-        $('body').on('click', '.deleteFront', function(){
-            var url = $(this).data('url');
-            Swal.fire({
-                title: '¿Estás seguro?',
-                text: "¡Esta acción no podrá ser revertida!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: '¡Sí!',
-                cancelButtonText: 'Cancelar',
-                reverseButtons: true,
-              }).then(function(e){
-                if(e.value === true){
-                    $.ajax({
-                        type: 'DELETE',
-                        url: url,
-                        dataType: 'JSON',
-                        success: function(result){
-                            if(result.success == true){
-                                frontTable.draw();
-                                Swal.fire({
-                                    toast: true,
-                                    icon: 'success',
-                                    title: 'Registro eliminado',
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 3000,
-                                    timerProgressBar: true,
-                                    didOpen: (toast) => {
-                                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                      }
-                                });
-                            }else if(result.success == 'invalid'){
-                                Swal.fire({
-                                    toast: true,
-                                    icon: 'error',
-                                    title: 'Error: Este registro está relacionado a un punto de acopio',
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 3000,
-                                    timerProgressBar: true,
-                                    didOpen: (toast) => {
-                                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                      }
-                                });
-                            }   
-                        },
-                        error: function(result){
-                            console.log('Error', result);
-                        }
-                    });
-                }else{
-                    e.dismiss;
-                }
-              }, function(dismiss){
-                return false;
-              })
-        })
-     }
-
-
-
-
-
-     /* ------------- WASTE CLASSES --------*/
-
-     if($('#waste-class-table').length)
-     {
-        var wasteClassTableEle = $('#waste-class-table');
-        var getDataUrl = wasteClassTableEle.data('url');
-        var wasteClassTable = wasteClassTableEle.DataTable({
-            language: DataTableEs,
-            serverSide: true,
-            processing: true,
-            ajax: {
-                "url": getDataUrl,
-                "data": {
-                    "table" : "class"
-                }
-            },
-            columns:[
-                {data: 'id', name:'id'},
-                {data: 'name', name:'name'},
-                {data: 'symbol', name:'symbol'},
-                {data: 'types', name:'types'},
-                {data: 'action', name:'action', orderable: false, searchable: false},
-            ]
-        });
-
-
-
-        $('#register-wasteClass-btn').on('click', function(e){
-            var button = $(this);
-            var url = button.data('url');
-            var modal = $('#RegisterClassModal');
-            var selectTypes = $('#registerWasteTypesSelect');
-            var spinner = button.find('.loadSpinner');
-            spinner.toggleClass('active');
-            selectTypes.html('');
-
-            $.ajax({
-                type: 'GET',
-                url: url,
-                dataType: 'JSON',
-                success: function(data){
-                    selectTypes.append('<option value=""></option>');
-                    $.each(data['wasteTypes'], function(key, values){
-                        selectTypes.append('<option value="'+values.id+'">'+values.name+'</option>')
-                    })
-                    spinner.toggleClass('active');
-                    modal.modal('show');
-                },
-                error: function(data){
-                    console.log(data);
-                }
-            })
-            
-        })
-
-
-
-        if($('#registerWasteTypesSelect').length)
-        {
-            var registerWasteTypeSelect = $('#registerWasteTypesSelect');
-            registerWasteTypeSelect.select2({
-                dropdownParent: $("#RegisterClassModal"),
-                closeOnSelect: false,
-                placeholder: 'Selecciona uno o más tipos de residuo'
-            });
         }
-
-        /*------------ REGISTER CLASS -----------*/
-
-        $('#registerWasteClassForm').on('submit', function(e){
-            e.preventDefault();
-            var form = $(this);
-            var loadSpinner = form.find('.loadSpinner');
-            loadSpinner.toggleClass('active');
-
-            $.ajax({
-                url: form.attr('action'),
-                method: form.attr('method'),
-                data: form.serialize(),
-                dataType: 'JSON',
-                success: function(data){
-                    Swal.fire({
-                        toast: true,
-                        icon: 'success',
-                        title: '¡Clase registrada exitosamente!',
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                          }
-                    });
-
-                    loadSpinner.toggleClass('active');
-                    $('#registerWasteClassForm').trigger('reset');
-                    $('#RegisterClassModal').modal('hide');
-                    $('#registerWasteTypesSelect').val([]).trigger('change');
-
-                    wasteClassTable.draw();
-                },
-                error: function(data){
-                    console.log(data)
-                }
-            })
-
-        })
-
-
-        /* ------------- DELETE ------------------*/
-
-        $('body').on('click', '.deleteClass', function(){
-            var url = $(this).data('url');
-
-            Swal.fire({
-                title: '¿Estás seguro?',
-                text: "¡Esta acción no podrá ser revertida!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: '¡Sí!',
-                cancelButtonText: 'Cancelar',
-                reverseButtons: true,
-              }).then(function(e){
-
-                if(e.value === true){
-                    $.ajax({
-                        type: 'DELETE',
-                        url: url,
-                        dataType: 'JSON',
-                        success: function(result){
-                            if(result.success === true){
-                                wasteClassTable.draw();
-                                Swal.fire({
-                                    toast: true,
-                                    icon: 'success',
-                                    title: 'Registro eliminado',
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 3000,
-                                    timerProgressBar: true,
-                                    didOpen: (toast) => {
-                                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                      }
-                                });
-                            }else{
-                                Swal.fire({
-                                    toast: true,
-                                    icon: 'error',
-                                    title: '¡Ocurrió un error inesperado!',
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 3000,
-                                    timerProgressBar: true,
-                                    didOpen: (toast) => {
-                                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                      }
-                                });
-                            }
-                        },
-                        error: function(result){
-                            console.log('Error', result);
-                        }
-                    });
-                }else{
-                    e.dismiss;
-                }
-              }, function(dismiss){
-                return false;
-              })
-
-        })
-
-        if($('#editWasteTypesSelect').length)
-        {
-            var editWasteTypesSelect = $('#editWasteTypesSelect');
-            editWasteTypesSelect.select2({
-                dropdownParent: $("#EditClassModal"),
-                closeOnSelect: false,
-                placeholder: 'Selecciona uno o más tipos de residuo'
-            });
+        else{
+            showInvalidateMessage();
         }
+    })
 
+    $('#EditFrontModal').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget)
+        var url = button.data('url');
+        var getDataUrl = button.data('send');
+        var modal = $(this);
 
-        /* ------------- EDIT WASTE CLASS ---------------*/
-
-
-        $('body').on('click', '.editClass', function(){
-            var getDataUrl = $(this).data('send');
-            var url = $(this).data('url');
-            var modal = $('#EditClassModal');
-            var selectTypes = $('#editWasteTypesSelect');
-            
-            modal.find('#EditWasteClassForm').attr('action', url);
-
-            $.ajax({
-                type: 'GET',
-                url: getDataUrl,
-                dataType: 'JSON',
-                success: function(data){
-                    modal.find('#inputEditNameWasteClass').val(data.name);
-                    modal.find('#inputSymbolWasteClass').val(data.name);
-
-                    selectTypes.append('<option value=""></option>');
-                    $.each(data['types'], function(key, value){
-                        selectTypes.append('<option value="'+value.id+'">'+value.name+'</option>')
-                    })
-                    selectTypes.val(data['selectedTypes']).change();
-                },
-                error: function(data)
-                {
-                    console.log(data)
-                },
-                complete: function(data){
-                    modal.modal('show');
-                }
-            });
-        })
-
-        $('#EditClassModal').on('hidden.bs.modal', function(e){
-            $('#editWasteTypesSelect').html('');
-        })
-
-
-        $('#EditWasteClassForm').on('submit', function(e){
-            e.preventDefault();
-
-            var loadSpinner = $(this).find('.loadSpinner');
-            loadSpinner.toggleClass('active');
-            var form = $(this);
-
-            $.ajax({
-                url: form.attr('action'),
-                method: form.attr('method'),
-                data: form.serialize(),
-                dataType: 'JSON',
-                success: function(data){
-                    Swal.fire({
-                        toast: true,
-                        icon: 'success',
-                        title: '¡Clase actualizada exitosamente!',
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                            }
-                    });
-
-                    loadSpinner.toggleClass('active');
-                    $('#EditClassModal').modal('hide');
-                    wasteClassTable.draw();
-                },
-                error: function(data){
-                    console.log(data);
-                }
-            })
-
-        })
-
-
-
-
-
-         /* ------------- WASTE TYPES -------------*/
-
-         var wasteTypeTableEle = $('#waste-type-table');
-         var getTypeUrl = wasteTypeTableEle.data('url');
-         var wasteTypeTable = wasteTypeTableEle.DataTable({
-            language: DataTableEs,
-            serverSide: true,
-            processing: true,
-            ajax: {
-                "url": getTypeUrl,
-                "data": {
-                    "table": "type"
-                }
-            },
-            columns:[
-                {data: 'id', name:'id'},
-                {data: 'name', name:'name', className:"columnType"},
-                {data: 'action', name:'action', orderable: false, searchable: false, className:"btnWasteType"},
-            ]
-         })
-
-         /* ----------- REGISTER ------------*/
-
-         $('#registerWasteTypeForm').on('submit', function(e){
-            e.preventDefault();
-            
-            var loadSpinner = $(this).find('.loadSpinner');
-            loadSpinner.toggleClass('active');
-            var form = $(this);
-            $.ajax({
-                url: form.attr('action'),
-                method: form.attr('method'),
-                data: form.serialize(),
-                dataType: 'JSON',
-                success: function(data){
-                    Swal.fire({
-                        toast: true,
-                        icon: 'success',
-                        title: '¡Tipo de residuo registrado exitosamente!',
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                          }
-                    });
-
-                    loadSpinner.toggleClass('active');
-                    $('#registerWasteTypeForm').trigger('reset');
-
-                    wasteTypeTable.draw();
-                },
-                error: function(data)
-                {
-                    console.log(data);
-                }
-            })
-
-         })
-
-
-         /* -------------- EDIT ------------ */
-
-         $('body').on('click', '.editType', function(){
-            var column = $(this).closest('tr');
-            var buttons = column.find('.btnWasteType');
-            var tdText = column.find('.columnType');
-            var value = tdText.text();
-
-            column.addClass('edit-ready').siblings().removeClass('edit-ready');
-            column.siblings().find('#form-type-edit-container').remove();
-            column.siblings().find('.input-type-edit').remove();
-
-            buttons.before('<td class="input-type-edit"> \
-                                <input type="text" class="form-control" value="'+value+'" required> \
-                            </td>');
- 
-            column.append('<td id="form-type-edit-container"> \
-                                <button type="button"\
-                                        class="me-3 edit btn btn-primary btn-sm btn-update-waste-type\
-                                        "> \
-                                        <i class="fa-solid fa-floppy-disk"></i> \
-                                </button> \
-                                <button id="resetWasteTypeEdit"\
-                                        class="ms-3 btn btn-danger btn-sm"> \
-                                        <i class="fa-solid fa-x"></i> \
-                                </button> \
-                            </td>');
-         })
-
-
-         $('body').on('click', '#resetWasteTypeEdit', function(){
-            var column = $(this).closest('tr');
-            column.toggleClass('edit-ready');
-
-            column.find('.input-type-edit').remove();
-            $('#form-type-edit-container').remove();
-         })
-
-         $('body').on('click', '.btn-update-waste-type', function(){
-            var column = $(this).closest('tr');
-            var value = column.find('.input-type-edit input').val();
-            var url = column.find('.editType').data('url');
-
-            if(value.length == 0)
+        $.ajax({
+            type: 'GET',
+            url: getDataUrl,
+            dataType: 'JSON',
+            success: function(data)
             {
+                modal.find('#inputFrontName').val(data.name);
+            }
+        });
+        modal.find('#editFrontForm').attr('action', url);
+    })
+    $('#editFrontForm').on('submit', function(e){
+        e.preventDefault();
+        var loadSpinner = $(this).find('.loadSpinner')
+        loadSpinner.toggleClass('active');
+        var form = this;
+
+        $.ajax({
+            url: $(this).attr('action'),
+            method: $(this).attr('method'),
+            data: $(form).serialize(),
+            dataType: 'JSON',
+            success: function(data){
                 Swal.fire({
                     toast: true,
-                    icon: 'warning',
-                    title: '¡El campo está vacío!',
+                    icon: 'success',
+                    title: '¡Frente actualizado exitosamente!',
                     position: 'top-end',
                     showConfirmButton: false,
-                    timer: 2000,
+                    timer: 3000,
                     timerProgressBar: true,
                     didOpen: (toast) => {
                         toast.addEventListener('mouseenter', Swal.stopTimer)
                         toast.addEventListener('mouseleave', Swal.resumeTimer)
-                      }
+                        }
                 });
+                loadSpinner.toggleClass('active');
+                $('#EditFrontModal').modal('hide');
+                frontTable.draw();
+            },
+            error: function(data){
+                console.log('Error', data)
             }
-            else{
-                $.ajax({
-                    url: url,
-                    method: 'POST',
-                    data: {
-                        "value": value
-                    },
-                    dataType: "JSON",
-                    success: function(result){
-                        Swal.fire({
-                            toast: true,
-                            icon: 'success',
-                            title: '¡Registrado exitosamente!',
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000,
-                            timerProgressBar: true,
-                            didOpen: (toast) => {
-                                toast.addEventListener('mouseenter', Swal.stopTimer)
-                                toast.addEventListener('mouseleave', Swal.resumeTimer)
-                              }
-                        });
+        })
+    })
 
-                        wasteTypeTable.draw();
+    $('body').on('click', '.deleteFront', function(){
+        var url = $(this).data('url');
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡Esta acción no podrá ser revertida!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '¡Sí!',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true,
+            }).then(function(e){
+            if(e.value === true){
+                $.ajax({
+                    type: 'DELETE',
+                    url: url,
+                    dataType: 'JSON',
+                    success: function(result){
+                        if(result.success == true){
+                            frontTable.draw();
+                            Swal.fire({
+                                toast: true,
+                                icon: 'success',
+                                title: 'Registro eliminado',
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                            });
+                        }else if(result.success == 'invalid'){
+                            Swal.fire({
+                                toast: true,
+                                icon: 'error',
+                                title: 'Error: Este registro está relacionado a un punto de acopio',
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                            });
+                        }   
                     },
                     error: function(result){
-                        console.log(result)
+                        console.log('Error', result);
                     }
                 });
+            }else{
+                e.dismiss;
             }
-         });
+            }, function(dismiss){
+            return false;
+            })
+    })
+    }
 
 
 
-         /*-------------- DELETE --------------*/
+     
+    /* ------------- WASTE CLASSES --------*/
 
-         $('body').on('click', '.deleteType', function(){
-            var url = $(this).data('url');
-
-            Swal.fire({
-                title: '¿Estás seguro?',
-                text: "¡Esta acción no podrá ser revertida!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: '¡Sí!',
-                cancelButtonText: 'Cancelar',
-                reverseButtons: true,
-              }).then(function(e){
-
-                if(e.value === true){
-                    $.ajax({
-                        type: 'DELETE',
-                        url: url,
-                        dataType: 'JSON',
-                        success: function(result){
-                            if(result.success == true){
-                                wasteTypeTable.draw();
-                                Swal.fire({
-                                    toast: true,
-                                    icon: 'success',
-                                    title: 'Registro eliminado',
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 3000,
-                                    timerProgressBar: true,
-                                    didOpen: (toast) => {
-                                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                      }
-                                });
-                            }
-                            else if(result.success == 'invalid')
-                            {
-                                Swal.fire({
-                                    toast: true,
-                                    icon: 'warning',
-                                    title: '¡Este registro está relacionado a una o más clases de residuo, no se puede eliminar!',
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 3000,
-                                    timerProgressBar: true,
-                                    didOpen: (toast) => {
-                                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                      }
-                                });
-                            }
-                            else{
-                                Swal.fire({
-                                    toast: true,
-                                    icon: 'error',
-                                    title: '¡Ocurrió un error inesperado!',
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 3000,
-                                    timerProgressBar: true,
-                                    didOpen: (toast) => {
-                                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                      }
-                                });
-                            }
-                        },
-                        error: function(result){
-                            console.log('Error', result);
-                        }
-                    });
-                }else{
-                    e.dismiss;
-                }
-              }, function(dismiss){
-                return false;
-              })
-         })
-
-
-     }
+    if($('#waste-class-table').length)
+    {
+    var wasteClassTableEle = $('#waste-class-table');
+    var getDataUrl = wasteClassTableEle.data('url');
+    var wasteClassTable = wasteClassTableEle.DataTable({
+        language: DataTableEs,
+        serverSide: true,
+        processing: true,
+        ajax: {
+            "url": getDataUrl,
+            "data": {
+                "table" : "class"
+            }
+        },
+        columns:[
+            {data: 'id', name:'id'},
+            {data: 'name', name:'name'},
+            {data: 'symbol', name:'symbol'},
+            {data: 'types', name:'types'},
+            {data: 'action', name:'action', orderable: false, searchable: false},
+        ]
+    });
 
 
 
+    $('#register-wasteClass-btn').on('click', function(e){
+        var button = $(this);
+        var url = button.data('url');
+        var modal = $('#RegisterClassModal');
+        var selectTypes = $('#registerWasteTypesSelect');
+        var spinner = button.find('.loadSpinner');
+        spinner.toggleClass('active');
+        selectTypes.html('');
 
-     /* ----------- GUIDES APPLICANTT -----------*/
+        $.ajax({
+            type: 'GET',
+            url: url,
+            dataType: 'JSON',
+            success: function(data){
+                selectTypes.append('<option value=""></option>');
+                $.each(data['wasteTypes'], function(key, values){
+                    selectTypes.append('<option value="'+values.id+'">'+values.name+'</option>')
+                })
+                spinner.toggleClass('active');
+                modal.modal('show');
+            },
+            error: function(data){
+                console.log(data);
+            }
+        })
+        
+    })
 
-     if($('#guide-table-applicant').length){
-         var guideApplicantTableEle = $('#guide-table-applicant');
-        var getDataUrl = guideApplicantTableEle.data('url');
-        var guideApplicantTable = guideApplicantTableEle.DataTable({
-            order: [[1, 'desc']],
-            language: DataTableEs,
-            serverSide: true,
-            processing: true,
-            ajax: getDataUrl,
-            columns:[
-                {data: 'code', name:'code'},
-                {data: 'date', name:'date'},
-                {data: 'lot', name:'lot'},
-                {data: 'stage', name:'stage'},
-                {data: 'location', name:'location'},
-                {data: 'proyect', name:'proyect'},
-                {data: 'company', name:'company'},
-                {data: 'front', name:'front'},
-                {data: 'stat_approved', name:'stat_approved'},
-                {data: 'stat_recieved', name:'stat_recieved'},
-                {data: 'stat_verified', name:'stat_verified'},
-                {data: 'action', name:'action', orderable: false, searchable: false},
-            ]
+
+
+    if($('#registerWasteTypesSelect').length)
+    {
+        var registerWasteTypeSelect = $('#registerWasteTypesSelect');
+        registerWasteTypeSelect.select2({
+            dropdownParent: $("#RegisterClassModal"),
+            closeOnSelect: false,
+            placeholder: 'Selecciona uno o más tipos de residuo'
         });
-     }
+    }
+
+    /*------------ REGISTER CLASS -----------*/
+
+    $('#registerWasteClassForm').on('submit', function(e){
+        e.preventDefault();
+        var form = $(this);
+        var loadSpinner = form.find('.loadSpinner');
+        loadSpinner.toggleClass('active');
+
+        $.ajax({
+            url: form.attr('action'),
+            method: form.attr('method'),
+            data: form.serialize(),
+            dataType: 'JSON',
+            success: function(data){
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: '¡Clase registrada exitosamente!',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                });
+
+                loadSpinner.toggleClass('active');
+                $('#registerWasteClassForm').trigger('reset');
+                $('#RegisterClassModal').modal('hide');
+                $('#registerWasteTypesSelect').val([]).trigger('change');
+
+                wasteClassTable.draw();
+            },
+            error: function(data){
+                console.log(data)
+            }
+        })
+
+    })
+
+
+    /* ------------- DELETE ------------------*/
+
+    $('body').on('click', '.deleteClass', function(){
+        var url = $(this).data('url');
+
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡Esta acción no podrá ser revertida!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '¡Sí!',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true,
+            }).then(function(e){
+
+            if(e.value === true){
+                $.ajax({
+                    type: 'DELETE',
+                    url: url,
+                    dataType: 'JSON',
+                    success: function(result){
+                        if(result.success === true){
+                            wasteClassTable.draw();
+                            Swal.fire({
+                                toast: true,
+                                icon: 'success',
+                                title: 'Registro eliminado',
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                            });
+                        }else{
+                            Swal.fire({
+                                toast: true,
+                                icon: 'error',
+                                title: '¡Ocurrió un error inesperado!',
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                            });
+                        }
+                    },
+                    error: function(result){
+                        console.log('Error', result);
+                    }
+                });
+            }else{
+                e.dismiss;
+            }
+            }, function(dismiss){
+            return false;
+            })
+
+    })
+
+    if($('#editWasteTypesSelect').length)
+    {
+        var editWasteTypesSelect = $('#editWasteTypesSelect');
+        editWasteTypesSelect.select2({
+            dropdownParent: $("#EditClassModal"),
+            closeOnSelect: false,
+            placeholder: 'Selecciona uno o más tipos de residuo'
+        });
+    }
+
+
+    /* ------------- EDIT WASTE CLASS ---------------*/
+
+
+    $('body').on('click', '.editClass', function(){
+        var getDataUrl = $(this).data('send');
+        var url = $(this).data('url');
+        var modal = $('#EditClassModal');
+        var selectTypes = $('#editWasteTypesSelect');
+        
+        modal.find('#EditWasteClassForm').attr('action', url);
+
+        $.ajax({
+            type: 'GET',
+            url: getDataUrl,
+            dataType: 'JSON',
+            success: function(data){
+                modal.find('#inputEditNameWasteClass').val(data.name);
+                modal.find('#inputSymbolWasteClass').val(data.name);
+
+                selectTypes.append('<option value=""></option>');
+                $.each(data['types'], function(key, value){
+                    selectTypes.append('<option value="'+value.id+'">'+value.name+'</option>')
+                })
+                selectTypes.val(data['selectedTypes']).change();
+            },
+            error: function(data)
+            {
+                console.log(data)
+            },
+            complete: function(data){
+                modal.modal('show');
+            }
+        });
+    })
+
+    $('#EditClassModal').on('hidden.bs.modal', function(e){
+        $('#editWasteTypesSelect').html('');
+    })
+
+
+    $('#EditWasteClassForm').on('submit', function(e){
+        e.preventDefault();
+
+        var loadSpinner = $(this).find('.loadSpinner');
+        loadSpinner.toggleClass('active');
+        var form = $(this);
+
+        $.ajax({
+            url: form.attr('action'),
+            method: form.attr('method'),
+            data: form.serialize(),
+            dataType: 'JSON',
+            success: function(data){
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: '¡Clase actualizada exitosamente!',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                });
+
+                loadSpinner.toggleClass('active');
+                $('#EditClassModal').modal('hide');
+                wasteClassTable.draw();
+            },
+            error: function(data){
+                console.log(data);
+            }
+        })
+
+    })
+
+
+
+
+
+        /* ------------- WASTE TYPES -------------*/
+
+        var wasteTypeTableEle = $('#waste-type-table');
+        var getTypeUrl = wasteTypeTableEle.data('url');
+        var wasteTypeTable = wasteTypeTableEle.DataTable({
+        language: DataTableEs,
+        serverSide: true,
+        processing: true,
+        ajax: {
+            "url": getTypeUrl,
+            "data": {
+                "table": "type"
+            }
+        },
+        columns:[
+            {data: 'id', name:'id'},
+            {data: 'name', name:'name', className:"columnType"},
+            {data: 'action', name:'action', orderable: false, searchable: false, className:"btnWasteType"},
+        ]
+        })
+
+        /* ----------- REGISTER ------------*/
+
+        $('#registerWasteTypeForm').on('submit', function(e){
+        e.preventDefault();
+        
+        var loadSpinner = $(this).find('.loadSpinner');
+        loadSpinner.toggleClass('active');
+        var form = $(this);
+        $.ajax({
+            url: form.attr('action'),
+            method: form.attr('method'),
+            data: form.serialize(),
+            dataType: 'JSON',
+            success: function(data){
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: '¡Tipo de residuo registrado exitosamente!',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                });
+
+                loadSpinner.toggleClass('active');
+                $('#registerWasteTypeForm').trigger('reset');
+
+                wasteTypeTable.draw();
+            },
+            error: function(data)
+            {
+                console.log(data);
+            }
+        })
+
+        })
+
+
+        /* -------------- EDIT ------------ */
+
+        $('#waste-type-table').on('click', '.editType', function(){
+        var column = $(this).closest('tr');
+        var buttons = column.find('.btnWasteType');
+        var tdText = column.find('.columnType');
+        var value = tdText.text();
+
+        column.addClass('edit-ready').siblings().removeClass('edit-ready');
+        column.siblings().find('#form-type-edit-container').remove();
+        column.siblings().find('.input-type-edit').remove();
+
+        buttons.before('<td class="input-type-edit"> \
+                            <input type="text" class="form-control" value="'+value+'" required> \
+                        </td>');
+
+        column.append('<td id="form-type-edit-container"> \
+                            <button type="button"\
+                                    class="me-3 edit btn btn-primary btn-sm btn-update-waste-type\
+                                    "> \
+                                    <i class="fa-solid fa-floppy-disk"></i> \
+                            </button> \
+                            <button id="resetWasteTypeEdit"\
+                                    class="ms-3 btn btn-danger btn-sm"> \
+                                    <i class="fa-solid fa-x"></i> \
+                            </button> \
+                        </td>');
+        })
+
+
+        $('#waste-type-table').on('click', '#resetWasteTypeEdit', function(){
+        var column = $(this).closest('tr');
+        column.toggleClass('edit-ready');
+
+        column.find('.input-type-edit').remove();
+        $('#form-type-edit-container').remove();
+        })
+
+        $('#waste-type-table').on('click', '.btn-update-waste-type', function(){
+        var column = $(this).closest('tr');
+        var value = column.find('.input-type-edit input').val();
+        var url = column.find('.editType').data('url');
+
+        if(value.length == 0)
+        {
+            Swal.fire({
+                toast: true,
+                icon: 'warning',
+                title: '¡El campo está vacío!',
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+            });
+        }
+        else{
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: {
+                    "value": value
+                },
+                dataType: "JSON",
+                success: function(result){
+                    Swal.fire({
+                        toast: true,
+                        icon: 'success',
+                        title: '¡Registrado exitosamente!',
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                    });
+
+                    wasteTypeTable.draw();
+                },
+                error: function(result){
+                    console.log(result)
+                }
+            });
+        }
+        });
+
+
+        /*-------------- DELETE --------------*/
+
+        $('#waste-type-table').on('click', '.deleteType', function(){
+        var url = $(this).data('url');
+
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡Esta acción no podrá ser revertida!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '¡Sí!',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true,
+            }).then(function(e){
+
+            if(e.value === true){
+                $.ajax({
+                    type: 'DELETE',
+                    url: url,
+                    dataType: 'JSON',
+                    success: function(result){
+                        if(result.success == true){
+                            wasteTypeTable.draw();
+                            Swal.fire({
+                                toast: true,
+                                icon: 'success',
+                                title: 'Registro eliminado',
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                            });
+                        }
+                        else if(result.success == 'invalid')
+                        {
+                            Swal.fire({
+                                toast: true,
+                                icon: 'warning',
+                                title: '¡Este registro está relacionado a una o más clases de residuo, no se puede eliminar!',
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                            });
+                        }
+                        else{
+                            Swal.fire({
+                                toast: true,
+                                icon: 'error',
+                                title: '¡Ocurrió un error inesperado!',
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                            });
+                        }
+                    },
+                    error: function(result){
+                        console.log('Error', result);
+                    }
+                });
+            }else{
+                e.dismiss;
+            }
+            }, function(dismiss){
+            return false;
+            })
+        })
+
+
+
+
+
+        /*---------- PACKAGE TYPES -----------*/
+
+        var packageTypeTableEle = $('#package-type-table');
+        var getTypeUrl = packageTypeTableEle.data('url');
+        var packageTypeTable = packageTypeTableEle.DataTable({
+        language: DataTableEs,
+        serverSide: true,
+        processing: true,
+        ajax: {
+            "url": getTypeUrl,
+        },
+        columns:[
+            {data: 'id', name:'id'},
+            {data: 'name', name:'name', className:"columnType"},
+            {data: 'action', name:'action', orderable: false, searchable: false, className:"btnPackageType"},
+        ]
+        })
+
+    /* ----------- REGISTER ------------*/
+
+    $('#registerPackageTypeForm').on('submit', function(e){
+        e.preventDefault();
+        
+        var loadSpinner = $(this).find('.loadSpinner');
+        loadSpinner.toggleClass('active');
+        var form = $(this);
+        $.ajax({
+            url: form.attr('action'),
+            method: form.attr('method'),
+            data: form.serialize(),
+            dataType: 'JSON',
+            success: function(data){
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: '¡Tipo de embalaje registrado!',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                });
+
+                loadSpinner.toggleClass('active');
+                $('#registerPackageTypeForm').trigger('reset');
+
+                packageTypeTable.draw();
+            },
+            error: function(data)
+            {
+                console.log(data);
+            }
+        })
+
+    })
+
+
+    /* -------------- EDIT ------------ */
+
+    $('#package-type-table').on('click', '.editType', function(){
+        var column = $(this).closest('tr');
+        var buttons = column.find('.btnPackageType');
+        var tdText = column.find('.columnType');
+        var value = tdText.text();
+
+        column.addClass('edit-ready').siblings().removeClass('edit-ready');
+        column.siblings().find('#form-package-type-edit-container').remove();
+        column.siblings().find('.input-type-edit').remove();
+
+        buttons.before('<td class="input-type-edit"> \
+                            <input type="text" class="form-control" value="'+value+'" required> \
+                        </td>');
+
+        column.append('<td id="form-package-type-edit-container"> \
+                            <button type="button"\
+                                    class="me-3 edit btn btn-primary btn-sm btn-update-package-type\
+                                    "> \
+                                    <i class="fa-solid fa-floppy-disk"></i> \
+                            </button> \
+                            <button id="resetpackageTypeEdit"\
+                                    class="ms-3 btn btn-danger btn-sm"> \
+                                    <i class="fa-solid fa-x"></i> \
+                            </button> \
+                        </td>');
+        })
+
+
+        $('#package-type-table').on('click', '#resetpackageTypeEdit', function(){
+        var column = $(this).closest('tr');
+        column.toggleClass('edit-ready');
+
+        column.find('.input-type-edit').remove();
+        $('#form-package-type-edit-container').remove();
+        })
+
+
+
+        $('#package-type-table').on('click', '.btn-update-package-type', function(){
+        var column = $(this).closest('tr');
+        var value = column.find('.input-type-edit input').val();
+        var url = column.find('.editType').data('url');
+
+        if(value.length == 0)
+        {
+            Swal.fire({
+                toast: true,
+                icon: 'warning',
+                title: '¡El campo está vacío!',
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+            });
+        }
+        else{
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: {
+                    "value": value
+                },
+                dataType: "JSON",
+                success: function(result){
+                    Swal.fire({
+                        toast: true,
+                        icon: 'success',
+                        title: '¡Registrado exitosamente!',
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                    });
+
+                    packageTypeTable.draw();
+                },
+                error: function(result){
+                    console.log(result)
+                }
+            });
+        }
+        });
+
+
+        /*-------------- DELETE --------------*/
+
+        $('#package-type-table').on('click', '.deleteType', function(){
+        var url = $(this).data('url');
+
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡Esta acción no podrá ser revertida!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '¡Sí!',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true,
+            }).then(function(e){
+
+            if(e.value === true){
+                $.ajax({
+                    type: 'DELETE',
+                    url: url,
+                    dataType: 'JSON',
+                    success: function(result){
+                        if(result.success == true){
+                            packageTypeTable.draw();
+                            Swal.fire({
+                                toast: true,
+                                icon: 'success',
+                                title: 'Registro eliminado',
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                            });
+                        }
+                        else if(result.success == 'invalid')
+                        {
+                            Swal.fire({
+                                toast: true,
+                                icon: 'warning',
+                                title: '¡Este registro está relacionado a una o más guías de internamiento, no se puede eliminar!',
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                            });
+                        }
+                        else{
+                            Swal.fire({
+                                toast: true,
+                                icon: 'error',
+                                title: '¡Ocurrió un error inesperado!',
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                            });
+                        }
+                    },
+                    error: function(result){
+                        console.log('Error', result);
+                    }
+                });
+            }else{
+                e.dismiss;
+            }
+            }, function(dismiss){
+            return false;
+            })
+        })
+    }
+
+
+
+
+    /* ----------- GUIDES APPLICANTT -----------*/
+
+    if($('#guide-table-applicant').length){
+        var guideApplicantTableEle = $('#guide-table-applicant');
+    var getDataUrl = guideApplicantTableEle.data('url');
+    var guideApplicantTable = guideApplicantTableEle.DataTable({
+        order: [[1, 'desc']],
+        language: DataTableEs,
+        serverSide: true,
+        processing: true,
+        ajax: getDataUrl,
+        columns:[
+            {data: 'code', name:'code'},
+            {data: 'date', name:'date'},
+            {data: 'lot', name:'lot'},
+            {data: 'stage', name:'stage'},
+            {data: 'location', name:'location'},
+            {data: 'proyect', name:'proyect'},
+            {data: 'company', name:'company'},
+            {data: 'front', name:'front'},
+            {data: 'stat_approved', name:'stat_approved'},
+            {data: 'stat_recieved', name:'stat_recieved'},
+            {data: 'stat_verified', name:'stat_verified'},
+            {data: 'action', name:'action', orderable: false, searchable: false},
+        ]
+    });
+    }
 
 
      if($('#registerGuideForm').length){
@@ -2797,7 +3226,8 @@ $(function() {
                 Swal.fire({
                     toast: true,
                     icon: 'warning',
-                    title: '¡Selecciona al menos un tipo de residuo para continuar!',
+                    title: 'Advertencia:',
+                    text: '¡Selecciona al menos un tipo de residuo para continuar!',
                     position: 'top-end',
                     showConfirmButton: false,
                     timer: 3000,
@@ -2830,13 +3260,26 @@ $(function() {
                                                             <input name="aproxWeightType-'+value.id+'" class="form-control col-6 selects-inputs-wasteType select-weight required-input" type="number" min="0" step="0.01" value=""> \
                                                         </td> \
                                                         <td> <input name="packageQuantity-'+value.id+'" class="form-control col-6 selects-inputs-wasteType select-quantity required-input" onkeypress="return(event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" type="number" min="0" step="1" value=""> </td> \
-                                                        <td> <input name="packageType-'+value.id+'" class="form-control col-12 required-input" type="text"> </td> \
+                                                        <td> <select name="packageType-'+value.id+'" class="form-control select2 select-packages required-input">\
+                                                            </select>\
+                                                        </td> \
                                                         <td> \
                                                             <button class="delete-row-wasteype-guide btn btn-danger">\
                                                                 <i class="fa-solid fa-trash-can"></i>\
                                                             </button>\
                                                         </td> \
-                                                    </tr>')
+                                                    </tr>');
+
+                                var selectPackages = $('#rowClassType-'+value.id).find('.select-packages');
+                                selectPackages.append('<option value=""></option>');
+
+                                $.each(data['packageTypes'], function(key2, value2){
+                                    selectPackages.append('<option value="'+value2.id+'">'+value2.name+'</option>');
+                                })
+
+                                selectPackages.select2({
+                                    placeholder: 'Selecciona un tipo de embalaje',
+                                })
                             }
                         })
                     },
@@ -2908,16 +3351,8 @@ $(function() {
             var button = $(this);
             var spinner = button.find('.loadSpinner');
             
-            var passValidation = true;
+            var passValidation = validateInput();
 
-            $('.required-input').each(function(){
-                $(this).removeClass('required');
-                if($(this).val() == '' || $(this).val().length == 0)
-                {
-                    $(this).addClass('required');
-                    passValidation = false
-                }
-            })
             if(selectInputsLen == 0)
             {
                 passValidation = false;
@@ -2946,7 +3381,8 @@ $(function() {
                 Swal.fire({
                     toast: true,
                     icon: 'warning',
-                    title: '¡Rellena el formulario para continuar!',
+                    title: 'Advertencia:',
+                    text: '¡Rellena el formulario para continuar!',
                     position: 'top-end',
                     showConfirmButton: false,
                     timer: 3000,
@@ -2957,10 +3393,8 @@ $(function() {
                     }
                 });
             }
-        }
-        
-
-    )}
+        })
+    }
 
 
 
@@ -2971,7 +3405,7 @@ $(function() {
 
 
 
-     /* -------------- APPROVING --------------------*/
+    /* -------------- APPROVING --------------------*/
      
 
      if($('#guide-pending-table-approvant').length){
@@ -3006,67 +3440,27 @@ $(function() {
 
      if($('#register-approved-guide-form').length)
      {
-        $('body').on('input', '.select-actual-weight', function(){
-            var totalWeight = 0
-    
-            $('.select-actual-weight').each(function(){
-                totalWeight += Number($(this).val());
-            })
-    
-            $('#info-actual-total-weight').html(totalWeight.toFixed(2));
-        })
-
 
         $('#button-save-approved-guide').on('click', function(e){
             e.preventDefault();
             var form = $('#register-approved-guide-form');
-            var passValidation = true;
 
-            $('.required-input').each(function(){
-                $(this).removeClass('required');
-                if($(this).val() == ''){
-                    $(this).addClass('required');
-                    passValidation = false;
-                }
-            })
-
-            if(passValidation)
-            {
-                Swal.fire({
-                    title: 'Confirmar Aprobación',
-                    text: '¡Esta acción no se podrá deshacer!',
-                    icon: 'info',
-                    showCancelButton: true,
-                    confirmButtonText: 'Aprobar',
-                    cancelButtonText: 'Cancelar',
-                    reverseButtons: true,
-                  }).then((result)=>{
-                    if (result.isConfirmed) {
-                        form.submit();
-                      }
-                  }, function(dismiss){
-                    return false;
-                  })
-
-            }else{
-                Swal.fire({
-                    toast: true,
-                    icon: 'warning',
-                    title: 'Advertencia:',
-                    text: 'LLena todos los campos para continuar',
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                      }
-                });
-            }
+            Swal.fire({
+                title: 'Confirmar Aprobación',
+                text: '¡Esta acción no se podrá deshacer!',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+                }).then((result)=>{
+                if (result.isConfirmed) {
+                    form.submit();
+                    }
+                }, function(dismiss){
+                return false;
+                })
         })
-
-
 
         $('#button-rejected-guide').on('click', function(e){
             e.preventDefault();
@@ -3153,7 +3547,7 @@ $(function() {
   
 
 
-     /* -------------- RECIEVER ---------------*/
+    /* -------------- RECIEVER ---------------*/
 
      if($('#guide-pending-table-reciever').length){
         
@@ -3187,27 +3581,58 @@ $(function() {
 
      if($('#register-recieved-guide-form').length)
      {
-        
+        $('body').on('input', '.select-actual-weight', function(){
+            var totalWeight = 0
+    
+            $('.select-actual-weight').each(function(){
+                totalWeight += Number($(this).val());
+            })
+    
+            $('#info-actual-total-weight').html(totalWeight.toFixed(2));
+        })
+
+
         $('#button-save-reciever-guide').on('click', function(e){
             e.preventDefault();
 
             var form = $('#register-recieved-guide-form');
 
-            Swal.fire({
-                title: 'Confirmar Recepción',
-                text: '¡Esta acción no se podrá deshacer!',
-                icon: 'info',
-                showCancelButton: true,
-                confirmButtonText: 'Confirmar',
-                cancelButtonText: 'Cancelar',
-                reverseButtons: true,
-                }).then((result)=>{
-                if (result.isConfirmed) {
-                    form.submit();
-                    }
-                }, function(dismiss){
-                return false;
-                })
+            var passValidation = validateInput();
+
+            if(passValidation)
+            {
+                Swal.fire({
+                    title: 'Confirmar Recepción',
+                    text: '¡Esta acción no se podrá deshacer!',
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonText: 'Aprobar',
+                    cancelButtonText: 'Cancelar',
+                    reverseButtons: true,
+                  }).then((result)=>{
+                    if (result.isConfirmed) {
+                        form.submit();
+                      }
+                  }, function(dismiss){
+                    return false;
+                  })
+
+            }else{
+                Swal.fire({
+                    toast: true,
+                    icon: 'warning',
+                    title: 'Advertencia:',
+                    text: 'LLena todos los campos para continuar',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                      }
+                });
+            }
         })
 
 
@@ -3229,7 +3654,6 @@ $(function() {
               }, function(dismiss){
                 return false;
               })
-
         })
      }
 

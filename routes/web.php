@@ -8,7 +8,8 @@ use App\Http\Controllers\Admin\{
     WarehouseController,
     WasteController,
     UserController,
-    IntermentGuideController
+    IntermentGuideController,
+    PackageController
 };
 
 use App\Http\Controllers\Aprobant\{
@@ -151,5 +152,10 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('/administrador/residuos/tipo/editar/{type}', [WasteController::class, 'typeEdit'])->name('wastesType.edit');
         Route::post('/administrador/residuos/tipo/actualizar/{type}', [WasteController::class, 'typeUpdate'])->name('wastesType.update');
         Route::delete('/administrador/residuos/tipo/eliminar/{type}', [WasteController::class, 'typeDestroy'])->name('wastesType.delete');
+
+        Route::get('/administrador/residuos/tipo-embalaje', [PackageController::class, 'index'])->name('packages.index');
+        Route::post('/administrador/residuos/tipo-embalaje/registrar', [PackageController::class, 'store'])->name('packageType.store');
+        Route::post('/administrador/residuos/tipo-embalaje/actualizar/{type}', [PackageController::class, 'typeUpdate'])->name('packageType.update');
+        Route::delete('/administrador/residuos/tipo-embalaje/eliminar/{type}', [PackageController::class, 'typeDestroy'])->name('packageType.delete');
     });
 });

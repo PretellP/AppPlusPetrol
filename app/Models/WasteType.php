@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\{WasteClass, IntermentGuide};
+use App\Models\{WasteClass, GuideWaste};
 
 class WasteType extends Model
 {
@@ -18,12 +18,8 @@ class WasteType extends Model
                     ->withPivot(['id'])->withTimestamps();
     }
 
-
-    
-    public function intermentGuides()
+    public function guideWastes()
     {
-        return $this->belongsToMany(IntermentGuide::class, 'guide_has_wastes', 'id_wasteType', 'id_guide')
-                    ->withPivot(['id', 'aprox_weight', 'actual_weight', 'package_quantity', 'package_type'])
-                    ->withTimestamps();
+        return $this->hasMany(GuideWaste::class, 'id_wasteType', 'id');
     }
 }

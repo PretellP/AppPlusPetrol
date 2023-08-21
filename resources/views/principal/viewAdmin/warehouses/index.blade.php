@@ -146,7 +146,7 @@
                 <div class="tab-pane fade" id="projects" role="tabpanel" aria-labelledby="projects-tab">
                     <div class="mb-4">
                         <button class="btn btn-primary" data-text="Registrar área de proyecto"
-                            data-placeholder="nombre de área de proyecto" data-url="{{route('projects.store')}}"
+                            data-placeholder="Nombre de área de proyecto" data-url="{{route('projects.store')}}"
                             data-toggle="modal" data-target="#RegisterProjectsModal">
                             <i class="fa-solid fa-square-plus"></i> &nbsp; Registrar
                         </button>
@@ -241,14 +241,14 @@
                         <div class="form-group col-md-6">
                             <label for="inputProfile">Lote *</label>
 
-                            <select name="lot_id" class="form-control select2" id="registerLotSelect" required>
+                            <select name="lot_id" class="form-control select2 required-input" id="registerLotSelect">
                                 <option value=""></option>
                             </select>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="inputProfile">Etapa *</label>
 
-                            <select name="stage_id" class="form-control select2" id="registerStageSelect" required>
+                            <select name="stage_id" class="form-control select2 required-input" id="registerStageSelect">
                                 <option value=""></option>
                             </select>
                         </div>
@@ -258,7 +258,7 @@
                         <div class="form-group col-md-6">
                             <label for="inputProfile">Locación *</label>
 
-                            <select name="location_id" class="form-control select2" id="registerLocationSelect"
+                            <select name="location_id" class="form-control select2 required-input" id="registerLocationSelect"
                                 required>
                                 <option value=""></option>
                             </select>
@@ -266,7 +266,7 @@
                         <div class="form-group col-md-6">
                             <label for="inputProfile">Área de proyecto *</label>
 
-                            <select name="project_id" class="form-control select2" id="registerProjectSelect" required>
+                            <select name="project_id" class="form-control select2 required-input" id="registerProjectSelect">
                                 <option value=""></option>
                             </select>
                         </div>
@@ -276,14 +276,14 @@
                         <div class="form-group col-md-6">
                             <label for="inputProfile">Empresa *</label>
 
-                            <select name="company_id" class="form-control select2" id="registerCompanySelect" required>
+                            <select name="company_id" class="form-control select2 required-input" id="registerCompanySelect">
                                 <option value=""></option>
                             </select>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="inputProfile">Frente *</label>
 
-                            <select name="front_id" class="form-control select2" id="registerFrontSelect" required>
+                            <select name="front_id" class="form-control select2 required-input" id="registerFrontSelect">
                                 <option value=""></option>
                             </select>
                         </div>
@@ -292,7 +292,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary btn-close" data-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary btn-save">
+                    <button type="submit" class="btn btn-primary btn-save" id="btn-save-warehouse">
                         Guardar
                         <i class="fa-solid fa-spinner fa-spin loadSpinner ms-1"></i>
                     </button>
@@ -423,8 +423,8 @@
                         <div class="form-group col-md-12">
                             <label for="inputElementName">Nombre *</label>
                             <div class="input-group">
-                                <input id="inputName" type="text" name="elementName" class="form-control name"
-                                    placeholder="" required>
+                                <input id="inputName" type="text" name="elementName" class="form-control name required-input"
+                                    placeholder="">
                             </div>
                         </div>
                     </div>
@@ -432,7 +432,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary btn-close" data-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary btn-save">
+                    <button type="submit" class="btn btn-primary btn-save" id="btn-save-lot">
                         Guardar
                         <i class="fa-solid fa-spinner fa-spin loadSpinner ms-1"></i>
                     </button>
@@ -487,7 +487,6 @@
 
 {{-------------- stages -----------------}}
 
-
 <div class="modal fade" id="RegisterStagesModal" data-context='' tabindex="-1" aria-labelledby="RegisterStagesModal"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable">
@@ -514,8 +513,8 @@
                         <div class="form-group col-md-12">
                             <label for="inputElementName">Nombre *</label>
                             <div class="input-group">
-                                <input id="inputName" type="text" name="elementName" class="form-control name"
-                                    placeholder="" required>
+                                <input id="inputName" type="text" name="elementName" class="form-control name required-input"
+                                    placeholder="">
                             </div>
                         </div>
                     </div>
@@ -523,7 +522,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary btn-close" data-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary btn-save">
+                    <button type="submit" class="btn btn-primary btn-save" id="btn-save-stage">
                         Guardar
                         <i class="fa-solid fa-spinner fa-spin loadSpinner ms-1"></i>
                     </button>
@@ -603,8 +602,8 @@
                         <div class="form-group col-md-12">
                             <label for="inputElementName">Nombre *</label>
                             <div class="input-group">
-                                <input id="inputName" type="text" name="elementName" class="form-control name"
-                                    placeholder="" required>
+                                <input id="inputName" type="text" name="elementName" class="form-control name required-input"
+                                    placeholder="">
                             </div>
                         </div>
                     </div>
@@ -612,7 +611,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary btn-close" data-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary btn-save">
+                    <button type="submit" class="btn btn-primary btn-save" id="btn-save-location">
                         Guardar
                         <i class="fa-solid fa-spinner fa-spin loadSpinner ms-1"></i>
                     </button>
@@ -693,8 +692,8 @@
                         <div class="form-group col-md-12">
                             <label for="inputElementName">Nombre *</label>
                             <div class="input-group">
-                                <input id="inputName" type="text" name="elementName" class="form-control name"
-                                    placeholder="" required>
+                                <input id="inputName" type="text" name="elementName" class="form-control name required-input"
+                                    placeholder="">
                             </div>
                         </div>
                     </div>
@@ -702,7 +701,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary btn-close" data-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary btn-save">
+                    <button type="submit" class="btn btn-primary btn-save" id="btn-save-project">
                         Guardar
                         <i class="fa-solid fa-spinner fa-spin loadSpinner ms-1"></i>
                     </button>
@@ -782,17 +781,17 @@
                         <div class="form-group col-md-12">
                             <label for="inputElementName">Nombre *</label>
                             <div class="input-group">
-                                <input id="inputName" type="text" name="elementName" class="form-control name"
-                                    placeholder="" required>
+                                <input id="inputName" type="text" name="elementName" class="form-control name required-input"
+                                    placeholder="">
                             </div>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group col-md-12">
-                            <label for="inputElementName">Ruc (opcional)</label>
+                            <label for="inputElementName">Nro. Ruc *</label>
                             <div class="input-group">
-                                <input id="inputRuc" type="text" name="ruc" class="form-control name"
+                                <input id="inputRuc" type="text" name="ruc" class="form-control name required-input"
                                     placeholder="Número de RUC">
                             </div>
                         </div>
@@ -801,7 +800,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary btn-close" data-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary btn-save">
+                    <button type="submit" class="btn btn-primary btn-save" id="btn-save-company">
                         Guardar
                         <i class="fa-solid fa-spinner fa-spin loadSpinner ms-1"></i>
                     </button>
@@ -842,10 +841,10 @@
 
                     <div class="form-row">
                         <div class="form-group col-md-12">
-                            <label for="inputCompanyName">Ruc (opcional)</label>
+                            <label for="inputCompanyName">Nro. Ruc *</label>
                             <div class="input-group">
                                 <input type="text" id="inputCompanyRuc" name="ruc" class="form-control name"
-                                    placeholder="Número de RUC">
+                                    placeholder="Número de RUC" required>
                             </div>
                         </div>
                     </div>
@@ -891,8 +890,8 @@
                         <div class="form-group col-md-12">
                             <label for="inputElementName">Nombre *</label>
                             <div class="input-group">
-                                <input id="inputName" type="text" name="elementName" class="form-control name"
-                                    placeholder="" required>
+                                <input id="inputName" type="text" name="elementName" class="form-control name required-input"
+                                    placeholder="">
                             </div>
                         </div>
                     </div>
@@ -900,7 +899,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary btn-close" data-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary btn-save">
+                    <button type="submit" class="btn btn-primary btn-save" id="btn-save-front">
                         Guardar
                         <i class="fa-solid fa-spinner fa-spin loadSpinner ms-1"></i>
                     </button>

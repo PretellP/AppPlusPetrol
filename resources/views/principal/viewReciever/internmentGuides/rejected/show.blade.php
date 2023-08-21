@@ -92,18 +92,18 @@
                         </thead>
                         <tbody id="table-classTypes-body">
 
-                            @foreach ($wasteTypes as $wasteType)
+                            @foreach ($guide->guideWastes as $wasteType)
 
                             <tr id="row-info-total-guide">
                                 <input type="hidden" name="waste-types-approved[]" value="{{$wasteType->id}}">
-                                <td>{{$wasteType->classesWastes->first()->symbol}}</td>
-                                <td> {{$wasteType->name}} </td>
-                                <td id="info-total-weight"> {{$wasteType->pivot->aprox_weight}} </td>
+                                <td>{{$wasteType->waste->classesWastes->first()->symbol}}</td>
+                                <td> {{$wasteType->waste->name}} </td>
+                                <td id="info-total-weight"> {{$wasteType->aprox_weight}} </td>
                                 <td> 
-                                  {{$wasteType->pivot->actual_weight}}
+                                  {{$wasteType->actual_weight}}
                                 </td>
-                                <td>{{$wasteType->pivot->package_quantity}}</td>
-                                <td>{{$wasteType->pivot->package_type}}</td>
+                                <td>{{$wasteType->package_quantity}}</td>
+                                <td>{{$wasteType->package->name}}</td>
                             </tr>
 
                             @endforeach
@@ -113,7 +113,7 @@
                                 <td></td>
                                 <td class="text-right">Peso Total:</td>
                                 <td id="info-actual-total-weight">{{$totalWeight}}</td>
-                                <td></td>
+                                <td>{{$totalPackage}}</td>
                                 <td></td>
                             </tr>
                         </tbody>

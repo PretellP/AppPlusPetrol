@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-use App\Models\{UserType, User, IntermentGuide};
+use App\Models\{UserType, User, IntermentGuide, Company};
 
 class User extends Authenticatable
 {
@@ -17,6 +17,7 @@ class User extends Authenticatable
 
     protected $fillable = [
         'id_user_type',
+        'id_company',
         'user_name',
         'password',
         'name',
@@ -72,5 +73,10 @@ class User extends Authenticatable
     public function checkerGuides()
     {
         return $this->hasMany(IntermentGuide::class, 'id_checker', 'id');
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class, 'id_company', 'id');
     }
 }

@@ -143,13 +143,23 @@ class IntermentGuideControllerApproving extends Controller
                                 $query->with(['front','company','location','lot','projectArea','stage'])
                                 ])
                                 ->with('applicant.userType')
+                                ->with(['guideWastes' => fn($query) =>
+                                    $query->with(['waste.classesWastes', 'package'])    
+                                ])
                                 ->where('id', $guide->id)->first();
 
-        $wasteTypes = $guide->wasteTypes()->with('classesWastes')->get();
+        $aprox_weight = $guide->guideWastes->sum(function($waste){
+                            return $waste->aprox_weight;
+                        });
+
+        $totalPackage = $guide->guideWastes->sum(function($waste){
+                            return $waste->package_quantity;
+                        });
 
         return view('principal.viewApproving.intermentGuides.pending.show', [
             "guide" => $guide,
-            "wasteTypes" => $wasteTypes
+            "totalPackage" => $totalPackage,
+            "aprox_weight" => $aprox_weight
         ]);
     }
 
@@ -162,22 +172,27 @@ class IntermentGuideControllerApproving extends Controller
     public function approvedShow(IntermentGuide $guide)
     {
         $guide = $guide->with(['warehouse' => fn($query) =>
-        $query->with(['front','company','location','lot','projectArea','stage'])
-        ])
-        ->with('approvant.userType')
-        ->with('applicant.userType')
-        ->where('id', $guide->id)->first();
+                                $query->with(['front','company','location','lot','projectArea','stage'])
+                        ])
+                        ->with('approvant.userType')
+                        ->with('applicant.userType')
+                        ->with(['guideWastes' => fn($query) =>
+                                $query->with(['waste.classesWastes', 'package'])    
+                        ])
+                        ->where('id', $guide->id)->first();
 
-        $wasteTypes = $guide->wasteTypes()->with('classesWastes')->get();
+        $totalWeight = $guide->guideWastes->sum(function($waste){
+                        return $waste->actual_weight;
+                    });
 
-        $totalWeight = $wasteTypes->sum(function($waste){
-                            return $waste->pivot->actual_weight;
-                        });
+        $totalPackage = $guide->guideWastes->sum(function($waste){
+                        return $waste->package_quantity;
+                    });
 
         return view('principal.viewApproving.intermentGuides.approved.show', [
             "guide" => $guide,
-            "wasteTypes" => $wasteTypes,
-            "totalWeight" => $totalWeight
+            "totalWeight" => $totalWeight,
+            "totalPackage" => $totalPackage
         ]);
     }
 
@@ -189,22 +204,27 @@ class IntermentGuideControllerApproving extends Controller
     public function rejectedShow(IntermentGuide $guide)
     {
         $guide = $guide->with(['warehouse' => fn($query) =>
-        $query->with(['front','company','location','lot','projectArea','stage'])
-        ])
-        ->with('approvant.userType')
-        ->with('applicant.userType')
-        ->where('id', $guide->id)->first();
+                            $query->with(['front','company','location','lot','projectArea','stage'])
+                        ])
+                        ->with('approvant.userType')
+                        ->with('applicant.userType')
+                        ->with(['guideWastes' => fn($query) =>
+                            $query->with(['waste.classesWastes', 'package'])    
+                        ])
+                        ->where('id', $guide->id)->first();
 
-        $wasteTypes = $guide->wasteTypes()->with('classesWastes')->get();
+        $totalWeight = $guide->guideWastes->sum(function($waste){
+                            return $waste->actual_weight;
+                        });
 
-        $totalWeight = $wasteTypes->sum(function($waste){
-                            return $waste->pivot->actual_weight;
+        $totalPackage = $guide->guideWastes->sum(function($waste){
+                            return $waste->package_quantity;
                         });
 
         return view('principal.viewApproving.intermentGuides.rejected.show', [
             "guide" => $guide,
-            "wasteTypes" => $wasteTypes,
-            "totalWeight" => $totalWeight
+            "totalWeight" => $totalWeight,
+            "totalPackage" => $totalPackage
         ]);
     }
 
@@ -217,27 +237,8 @@ class IntermentGuideControllerApproving extends Controller
         return redirect()->route('approvingGuides.index');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-
     public function update(Request $request, IntermentGuide $guide)
     {
-        foreach($request['waste-types-approved'] as $id)
-        {
-            $guide->wasteTypes()->updateExistingPivot($id, [
-                "actual_weight" => $request['input-actual-weight-'.$id]
-            ]);
-        }
-
         $guide->update([
             "stat_approved" => 1,
             "date_approved" => Carbon::now()->toDateTimeString()
@@ -257,14 +258,4 @@ class IntermentGuideControllerApproving extends Controller
         return redirect()->route('approvingGuides.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

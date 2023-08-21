@@ -25,9 +25,11 @@
                 <button class="ms-3 btn btn-primary" data-toggle="modal" data-target="#RegisterWasteModal">
                     <i class="fa-solid fa-biohazard"></i> &nbsp; Tipos de residuo
                 </button>
+
+                <button class="ms-3 btn btn-primary" data-toggle="modal" data-target="#RegisterPackageModal">
+                    <i class="fa-solid fa-boxes-packing"></i> &nbsp; Tipos de embalaje
+                </button>
             </div>
-
-
 
             <table id="waste-class-table" class="table table-hover" data-url="{{route('wastes.index')}}">
                 <thead>
@@ -224,6 +226,69 @@
 
 
                 <table id="waste-type-table" class="table table-hover" data-url="{{route('wastes.index')}}">
+                    <thead>
+                        <tr>
+                            <th>#ID</th>
+                            <th>Nombre</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                </table>
+
+
+
+            </div>
+
+        </div>
+
+
+
+    </div>
+</div>
+
+
+<div class="modal fade" id="RegisterPackageModal" tabindex="-1" aria-labelledby="RegisterPackageModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="RegisterPackageTitle">
+                    <div class="section-title mt-0">
+                        <i class="fa-solid fa-boxes-packing"></i> &nbsp;
+                        <span id="txt-context-element">
+                            Registros de tipos de embalaje
+                        </span>
+                    </div>
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"> &times; </span>
+                </button>
+            </div>
+
+
+            <div class="modal-body">
+
+                <form action="{{route('packageType.store')}}" id="registerPackageTypeForm" method="POST">
+                    @csrf
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="inputNamePackageType">Agregar tipo de embalaje: </label>
+                            <div class="input-group">
+                                <input id="inputNamePackageType" name="packageTypeName" class="form-control" type="text"
+                                    placeholder="Nombre de tipo de embalaje" required>
+                                <div class="input-group-prepend">
+                                    <button type="submit" class="btn btn-primary btn-save">
+                                        <i class="fa-solid fa-floppy-disk"></i>
+                                        <i class="fa-solid fa-spinner fa-spin loadSpinner"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+
+                <table id="package-type-table" class="table table-hover" data-url="{{route('packages.index')}}">
                     <thead>
                         <tr>
                             <th>#ID</th>
