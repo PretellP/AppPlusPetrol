@@ -168,6 +168,8 @@ class UserController extends Controller
 
         $last_login = $user->last_login_at == null ? '- -' : getDiffForHumansFromTimestamp($user->last_login_at);
 
+        $companyName = $user->company == null ? null : $user->company->name; 
+
         return response()->json([
             "username" => $user->user_name,
             "name" => $user->name,
@@ -178,7 +180,7 @@ class UserController extends Controller
             "status" => $user->status,
             "last_login" => $last_login,
             "profile" => $user->userType->name,
-            "company" => $user->company->name,
+            "company" => $companyName,
             "validApplicant" => $validApplicant,
             "selectedApprovings" => $selectedApprovings,
             'approvings' => $approvings

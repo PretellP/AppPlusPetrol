@@ -37,7 +37,7 @@
                         <th>Estado Aprobado</th>
                         <th>Estado Recepcionado</th>
                         <th>Estado Verificado</th>
-                        <th>Ver</th>
+                        <th class="not-export-col">Ver</th>
                     </tr>
                 </thead>
             </table>

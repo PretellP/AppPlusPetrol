@@ -652,6 +652,9 @@ $(function() {
                         $('#txt-edit-description-user').html('Inactivo');
                     }
                 },
+                error: function(data){
+                    console.log(data)
+                },
                 complete: function (data){
                     modal.modal('show');
                 }
@@ -3110,27 +3113,37 @@ $(function() {
 
     if($('#guide-table-applicant').length){
         var guideApplicantTableEle = $('#guide-table-applicant');
-    var getDataUrl = guideApplicantTableEle.data('url');
-    var guideApplicantTable = guideApplicantTableEle.DataTable({
-        order: [[1, 'desc']],
-        language: DataTableEs,
-        serverSide: true,
-        processing: true,
-        ajax: getDataUrl,
-        columns:[
-            {data: 'code', name:'code'},
-            {data: 'date', name:'date'},
-            {data: 'lot', name:'lot'},
-            {data: 'stage', name:'stage'},
-            {data: 'location', name:'location'},
-            {data: 'proyect', name:'proyect'},
-            {data: 'company', name:'company'},
-            {data: 'front', name:'front'},
-            {data: 'stat_approved', name:'stat_approved'},
-            {data: 'stat_recieved', name:'stat_recieved'},
-            {data: 'stat_verified', name:'stat_verified'},
-            {data: 'action', name:'action', orderable: false, searchable: false},
-        ]
+        var getDataUrl = guideApplicantTableEle.data('url');
+        var guideApplicantTable = guideApplicantTableEle.DataTable({
+            order: [[1, 'desc']],
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax: getDataUrl,
+            columns:[
+                {data: 'code', name:'code'},
+                {data: 'date', name:'date'},
+                {data: 'lot', name:'lot'},
+                {data: 'stage', name:'stage'},
+                {data: 'location', name:'location'},
+                {data: 'proyect', name:'proyect'},
+                {data: 'company', name:'company'},
+                {data: 'front', name:'front'},
+                {data: 'stat_approved', name:'stat_approved'},
+                {data: 'stat_recieved', name:'stat_recieved'},
+                {data: 'stat_verified', name:'stat_verified'},
+                {data: 'action', name:'action', orderable: false, searchable: false},
+            ],
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: 'EXCEL',
+                    extend: 'excelHtml5',
+                    exportOptions: {
+                        columns: ':visible:not(.not-export-col)'
+                    }
+                }   
+            ]
     });
     }
 

@@ -11,6 +11,8 @@
 
 <script src="{{asset('assets/principal/modules/datatables/datatables.min.js')}}"></script>
 <script src="{{asset('assets/principal/modules/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js')}}"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="{{asset('vendor/datatables/buttons.server-side.js')}}"></script>
 
 <script src="{{asset('assets/principal/modules/nicescroll/jquery.nicescroll.min.js')}}"></script>
 <script src="{{asset('assets/principal/modules/moment.min.js')}}"></script>

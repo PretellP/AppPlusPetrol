@@ -25,7 +25,7 @@
 	<link rel="stylesheet" href="{{asset('assets/principal/css/custom.css')}}">
 	<link rel="stylesheet" href="{{asset('assets/common/css/fonts.css')}}">
 
-	<!------- DATATABLES ------>
+	<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
 
 	@yield('extra-head')
 

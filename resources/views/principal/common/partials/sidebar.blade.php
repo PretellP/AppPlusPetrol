@@ -31,6 +31,13 @@
                 </a>
             </li>
 
+            <li class="">
+                <a href="" class="nav-link">
+                    <i class="fa-solid fa-dumpster"></i>
+                    <span>Residuos Generados</span>
+                </a>
+            </li>
+
             @endif
 
           @if (in_array(Auth::user()->userType->name, ['APROBANTE']))

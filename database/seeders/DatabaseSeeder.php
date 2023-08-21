@@ -31,7 +31,8 @@ class DatabaseSeeder extends Seeder
             ['id' => '2', 'name' => 'SOLICITANTE'],
             ['id' => '3', 'name' => 'APROBANTE'],
             ['id' => '4', 'name' => 'RECEPTOR'],
-            ['id' => '5', 'name' => 'SUPERVISOR']
+            ['id' => '5', 'name' => 'SUPERVISOR'],
+            ['id' => '6', 'name' => 'GESTOR']
         ];
 
         foreach($dataTypeUsers as $typeUser)
