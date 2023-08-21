@@ -24,7 +24,13 @@ class IntermentGuideControllerApproving extends Controller
         {
             if($request['table'] == 'pending')
             {
-                $guidesPending = $user->approvantGuides()->where('stat_approved', 0)->where('stat_rejected', 0)->get();
+                $guidesPending = $user->approvantGuides()
+                                        ->where('stat_approved', 0)
+                                        ->where('stat_rejected', 0)
+                                        ->whereHas('applicant.company', function($query) use($user){
+                                            $query->where('id', $user->company->id);
+                                        })
+                                        ->get();
 
                 $allGuides = DataTables::of($guidesPending)
                 ->addColumn('date', function($guide){
