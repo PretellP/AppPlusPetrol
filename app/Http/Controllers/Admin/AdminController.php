@@ -38,6 +38,7 @@ class AdminController extends Controller
             $routeApproved = route('guidesApproved.index');
             $routePending = route('guidesPending.index');
             $routeRejected = route('guidesRejected.index');
+            $routeWastes = route('generatedWastesApplicant.index');
         }
         elseif($userType == 'ADMINISTRADOR')
         {

@@ -14,7 +14,8 @@ use App\Http\Controllers\Admin\{
 };
 
 use App\Http\Controllers\Applicant\{
-    IntermentGuideController
+    IntermentGuideController,
+    ApplicantGeneratedWastesController
 };
 
 use App\Http\Controllers\Aprobant\{
@@ -57,6 +58,9 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('/solicitante/guías-de-internamiento/rechazados/ver/{guide}', [IntermentGuideController::class, 'rejectedShow'])->name('guidesRejected.show');
         Route::get('/solicitante/crear-guía-de-internamiento/getDataWarehouse', [IntermentGuideController::class, 'getDataWarehouse'])->name('guides.getDataWarehouse');
         Route::post('/solicitante/crear-guía-de-internamiento/registrar', [IntermentGuideController::class, 'store'])->name('guides.store');
+
+
+        Route::get('/solicitante/residuos-generados', [ApplicantGeneratedWastesController::class, 'index'])->name('generatedWastesApplicant.index');
     });
 
     Route::group(['middleware' => 'check.role:ADMINISTRADOR,APROBANTE'], function(){

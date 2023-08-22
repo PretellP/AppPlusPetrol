@@ -18,6 +18,8 @@
 
 	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
+	{{-- Date range picker --}}
+	<link rel="stylesheet" href="{{asset('assets/principal/modules/bootstrap-daterangepicker/daterangepicker.css')}}">
 
 	<!-- Template CSS -->
 	<link rel="stylesheet" href="{{asset('assets/principal/css/style.css')}}">

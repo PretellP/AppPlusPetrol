@@ -19,7 +19,7 @@
             <div class="form-group date-range-container">
                 <div class="input-group">
                     <div class="input-group-prepend">
-                        <a href="javascript:;" id="daterange-btn-wastes-admin" class="btn btn-primary icon-left btn-icon pt-2">
+                        <a href="javascript:;" id="daterange-btn-wastes-applicant" class="btn btn-primary icon-left btn-icon pt-2">
                             <i class="fas fa-calendar"></i>
                                 Elegir Fecha 
                         </a>
@@ -30,7 +30,7 @@
 
             <input type="hidden" id="excel-generated-wastes-info" data-name='{{Auth::user()->name}}'>
 
-            <table id="generated-wastes-table-admin" class="table table-hover" data-url="{{route('generatedWastesAdmin.index')}}">
+            <table id="generated-wastes-table-applicant" class="table table-hover" data-url="{{route('generatedWastesApplicant.index')}}">
                 <thead>
                     <tr>
                         <th>Nro. de Guía</th>

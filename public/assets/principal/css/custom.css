@@ -1731,6 +1731,22 @@ ul.select2-selection__rendered {
 
 
 
+
+/* --------- DATE RANGE STYLES -------*/
+
+.date-range-container
+{
+    width: 400px;
+}
+
+.ranges li:hover, .ranges li.active
+{
+    background-color: #08c !important;
+}
+
+
+
+
 /* ------- PUBLISHING STYLES -------*/
 
 

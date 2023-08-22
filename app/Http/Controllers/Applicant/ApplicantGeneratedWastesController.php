@@ -1,45 +1,49 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Applicant;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\{
+    IntermentGuide
+};
 use Auth;
 use DataTables;
-use App\Models\IntermentGuide;
 
-class AdminGeneratedWastesController extends Controller
+class ApplicantGeneratedWastesController extends Controller
 {
     public function index(Request $request)
     {
-        $wastes = IntermentGuide::with(['guideWastes' => fn($query) =>
-                                        $query->with('waste.classesWastes')
-                                            ->with([
-                                                'guide' => fn($query2) => 
-                                                    $query2->with([
-                                                        'warehouse'=>fn($query3)=>
-                                                            $query3->with([
-                                                                'company:id,name',
-                                                                'front:id,name',
-                                                                'location:id,name',
-                                                                'lot:id,name',
-                                                                'projectArea:id,name',
-                                                                'stage:id,name'
+        $user = Auth::user();
+
+        $wastes = $user->applicantGuides()->with(['guideWastes' => fn($query) =>
+                                            $query->with('waste.classesWastes')
+                                                ->with([
+                                                    'guide' => fn($query2) => 
+                                                        $query2->with([
+                                                            'warehouse'=>fn($query3)=>
+                                                                $query3->with([
+                                                                    'company:id,name',
+                                                                    'front:id,name',
+                                                                    'location:id,name',
+                                                                    'lot:id,name',
+                                                                    'projectArea:id,name',
+                                                                    'stage:id,name'
+                                                                ])
                                                             ])
-                                                        ])
-                                                ])
-                                    ])
-                                    ->where('stat_verified', 1)
-                                    ->get()
-                                    ->pluck('guideWastes')
-                                    ->flatten();
+                                                    ])
+                                            ])
+                                            ->where('stat_verified', 1)
+                                            ->get()
+                                            ->pluck('guideWastes')
+                                            ->flatten();
 
         if($request->ajax())
         {
             if($request->filled('from_date') && $request->filled('end_date')){
                 $wastes = $wastes->whereBetween('guide.date_verified', [$request->from_date, $request->end_date]);
             }
-            
+
             $allWastes = DataTables::of($wastes)
             ->addColumn('code', function($waste){
                 return $waste->guide->code;
@@ -82,6 +86,6 @@ class AdminGeneratedWastesController extends Controller
             return $allWastes;
         }
 
-        return view('principal.viewAdmin.generatedWastes.index');
+        return view('principal.viewApplicant.generatedWastes.index');
     }
 }

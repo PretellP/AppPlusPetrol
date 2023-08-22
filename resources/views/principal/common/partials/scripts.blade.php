@@ -18,6 +18,11 @@
 <script src="{{asset('assets/principal/modules/moment.min.js')}}"></script>
 <script src="{{asset('assets/principal/js/stisla.js')}}"></script>
 
+
+{{-- Date range picker  --}}
+
+<script src="{{asset('assets/principal/modules/bootstrap-daterangepicker/daterangepicker.js')}}"></script>
+
 <!-- JS Libraies -->
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

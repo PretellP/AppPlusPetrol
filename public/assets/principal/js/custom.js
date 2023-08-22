@@ -287,6 +287,9 @@ $(function() {
     }
 
 
+   
+
+
     /*--------------- USERS ---------------*/
 
     if($('#users-table').length)
@@ -3110,6 +3113,39 @@ $(function() {
 
     /* ------------- GUIDES ADMIN --------------*/
 
+    if($('#daterange-btn-wastes-admin').length){
+
+        $('.date-range-input').val('Todos los registros');
+
+        $('.daterange-cus').daterangepicker({
+            locale: {format: 'YYYY-MM-DD'},
+            drops: 'down',
+            opens: 'right'
+          });
+          
+          $('#daterange-btn-wastes-admin').daterangepicker({
+            ranges: {
+              'Todo' : [moment('1970-01-01'), moment().add(1, 'days')],
+              'Hoy'   : [moment(), moment().add(1, 'days')],
+              'Ayer'   : [moment().subtract(1, 'days'), moment()],
+              'Últimos 7 días' : [moment().subtract(6, 'days'), moment().add(1, 'days')],
+              'Últimos 30 días': [moment().subtract(29, 'days'), moment().add(1, 'days')],
+              'Este mes'  : [moment().startOf('month'), moment().endOf('month').add(1, 'days')],
+              'Último mes'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month').add(1, 'days')]
+            },
+            startDate: moment('1970-01-01'),
+            endDate  : moment().add(1, 'days'),
+          }, function (start, end) {
+            if(start.format('YYYY-MM-DD') == '1970-01-01'){
+                $('.date-range-input').val('Todos los registros');
+            }else{
+                $('.date-range-input').val('Del: ' + start.format('YYYY-MM-DD') + ' hasta el: ' + end.format('YYYY-MM-DD'))
+            }
+            generatedWastesAdminTable.draw();
+        });
+    }
+
+
     if($('#guide-approved-table-admin').length)
     {
         var guideAdminApprovedTableEle = $('#guide-approved-table-admin');
@@ -3218,7 +3254,13 @@ $(function() {
             language: DataTableEs,
             serverSide: true,
             processing: true,
-            ajax: getDataUrl,
+            ajax: {
+                "url": getDataUrl,
+                "data": function(data){
+                    data.from_date = $('#daterange-btn-wastes-admin').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                    data.end_date = $('#daterange-btn-wastes-admin').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                }
+            },
             columns:[
                 {data: 'code', name:'code'},
                 {data: 'date', name:'date'},
@@ -3239,10 +3281,18 @@ $(function() {
                     text: '<i class="fa-solid fa-download"></i> &nbsp; Descargar Excel',
                     extend: 'excelHtml5',
                     title:    function () {
-                         return $('#excel-generated-wastes-info').data('title'); 
+                        var from_date = $('#daterange-btn-wastes-admin').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                        var end_date = $('#daterange-btn-wastes-admin').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                        var name = $('#excel-generated-wastes-info').data('name');
+                        if(from_date == '1970-01-01'){from_date = 'El principio'};
+                        return 'RESIDUOS GENERADOS - ADMINISTRADOR: '+name+' - DESDE: '+from_date+ ' - ' + 'HASTA: ' + end_date; 
                     },
                     filename: function () {
-                        return $('#excel-generated-wastes-info').data('name');
+                        var from_date = $('#daterange-btn-wastes-admin').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                        var end_date = $('#daterange-btn-wastes-admin').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                        var name = $('#excel-generated-wastes-info').data('name');
+                        if(from_date == '1970-01-01'){from_date = 'todos'};
+                        return 'residuos-generados_administrador-'+name+'_'+from_date+'_' + end_date + '_' + moment().format("hh-mm-ss");
                     }
                 }   
             ]
@@ -3252,7 +3302,42 @@ $(function() {
 
 
 
+
+
     /* ----------- GUIDES APPLICANTT -----------*/
+
+    if($('#daterange-btn-wastes-applicant').length){
+
+        $('.date-range-input').val('Todos los registros');
+
+        $('.daterange-cus').daterangepicker({
+            locale: {format: 'YYYY-MM-DD'},
+            drops: 'down',
+            opens: 'right'
+          });
+          
+          $('#daterange-btn-wastes-applicant').daterangepicker({
+            ranges: {
+              'Todo' : [moment('1970-01-01'), moment().add(1, 'days')],
+              'Hoy'   : [moment(), moment().add(1, 'days')],
+              'Ayer'   : [moment().subtract(1, 'days'), moment()],
+              'Últimos 7 días' : [moment().subtract(6, 'days'), moment().add(1, 'days')],
+              'Últimos 30 días': [moment().subtract(29, 'days'), moment().add(1, 'days')],
+              'Este mes'  : [moment().startOf('month'), moment().endOf('month').add(1, 'days')],
+              'Último mes'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month').add(1, 'days')]
+            },
+            startDate: moment('1970-01-01'),
+            endDate  : moment().add(1, 'days'),
+          }, function (start, end) {
+            if(start.format('YYYY-MM-DD') == '1970-01-01'){
+                $('.date-range-input').val('Todos los registros');
+            }else{
+                $('.date-range-input').val('Del: ' + start.format('YYYY-MM-DD') + ' hasta el: ' + end.format('YYYY-MM-DD'))
+            }
+            generatedWastesApplicantTable.draw();
+        });
+    }
+
 
     if($('#guide-table-applicant').length){
         var guideApplicantTableEle = $('#guide-table-applicant');
@@ -3392,7 +3477,6 @@ $(function() {
 
 
      if($('#registerGuideForm').length){
-
 
         var guideWarehouseSelect = $('#guide-warehouse-select');
         guideWarehouseSelect.select2({
@@ -3652,6 +3736,64 @@ $(function() {
         })
     }
 
+
+    if($('#generated-wastes-table-applicant').length){
+        
+        var generatedWastesApplicantTableEle = $('#generated-wastes-table-applicant');
+        var getDataUrl = generatedWastesApplicantTableEle.data('url');
+        var generatedWastesApplicantTable = generatedWastesApplicantTableEle.DataTable({
+            order: [[1, 'desc']],
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax: {
+                "url": getDataUrl,
+                "data": function(data){
+                    data.from_date = $('#daterange-btn-wastes-applicant').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                    data.end_date = $('#daterange-btn-wastes-applicant').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                }
+            },
+            columns:[
+                {data: 'code', name:'code'},
+                {data: 'date', name:'date'},
+                {data: 'lot', name:'lot'},
+                {data: 'stage', name:'stage'},
+                {data: 'location', name:'location'},
+                {data: 'proyect', name:'proyect'},
+                {data: 'company', name:'company'},
+                {data: 'front', name:'front'},
+                {data: 'class', name:'class'},
+                {data: 'waste', name:'waste'},
+                {data: 'weight', name:'weight'},
+                {data: 'packages', name:'packages'},
+            ],
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: '<i class="fa-solid fa-download"></i> &nbsp; Descargar Excel',
+                    extend: 'excelHtml5',
+                    title:    function () {
+                        var from_date = $('#daterange-btn-wastes-applicant').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                        var end_date = $('#daterange-btn-wastes-applicant').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                        var name = $('#excel-generated-wastes-info').data('name');
+                        if(from_date == '1970-01-01'){from_date = 'El principio'};
+                         return 'RESIDUOS GENERADOS - SOLICITANTE: '+name+' - DESDE: '+from_date+ ' - ' + 'HASTA: ' + end_date; 
+                    },
+                    filename: function () {
+                        var from_date = $('#daterange-btn-wastes-applicant').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                        var end_date = $('#daterange-btn-wastes-applicant').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                        var name = $('#excel-generated-wastes-info').data('name');
+                        if(from_date == '1970-01-01'){from_date = 'todos'};
+                        return 'residuos-generados_solicitante-'+name+'_'+from_date+'_' + end_date + '_' + moment().format("hh-mm-ss");
+                    }
+                }   
+            ]
+        })
+    }
+
+
+    
+  
 
 
 

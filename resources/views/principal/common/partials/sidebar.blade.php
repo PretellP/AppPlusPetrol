@@ -52,8 +52,8 @@
                 </a>
             </li>
 
-            <li class="">
-                <a href="" class="nav-link">
+            <li class="{{setActive('generatedWastesApplicant.*')}}">
+                <a href="{{route('generatedWastesApplicant.index')}}" class="nav-link">
                     <i class="fa-solid fa-dumpster"></i>
                     <span>Residuos Generados</span>
                 </a>
