@@ -2,32 +2,53 @@
     <aside id="sidebar-wrapper">
 
         <div class="sidebar-brand">
-            <a href="{{route('admin.index')}}">
+            <a href="{{route('home.index')}}">
                 <img src="{{asset('assets/common/images/logo.png')}}" alt="">
             </a>
         </div>
         
         <div class="sidebar-brand hidden sidebar-brand-sm">
-            <a href="{{route('admin.index')}}">
+            <a href="{{route('home.index')}}">
                 <img src="{{asset('assets/common/images/logo.png')}}" alt="">
             </a>
         </div>
 
         <ul class="sidebar-menu">
 
-            <li class="{{setActive('admin.index')}}">
-                <a href="{{route('admin.index')}}" class="nav-link">
+            <li class="{{setActive('home.index')}}">
+                <a href="{{route('home.index')}}" class="nav-link">
                     <i class="fa-solid fa-house"></i>
                     <span>Inicio</span>
                 </a>
             </li>
 
-            @if (in_array(Auth::user()->userType->name, ['ADMINISTRADOR', 'SOLICITANTE']))
+            @if (in_array(Auth::user()->userType->name, ['SOLICITANTE']))
 
             <li class="{{setActive('guides.*')}}">
-                <a href="{{route('guides.index')}}" class="nav-link">
+                <a href="{{route('guides.create')}}" class="nav-link">
                     <i class="fa-solid fa-building-circle-check"></i>
-                    <span>Guías de Internamiento</span>
+                    <span>Crear Guía</span>
+                </a>
+            </li>
+
+            <li class="{{setActive('guidesApproved.*')}}">
+                <a href="{{route('guidesApproved.index')}}" class="nav-link">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span>Aprobados</span>
+                </a>
+            </li>
+
+            <li class="{{setActive('guidesPending.*')}}">
+                <a href="{{route('guidesPending.index')}}" class="nav-link">
+                    <i class="fa-solid fa-clock-rotate-left fa-flip-vertical"></i>
+                    <span>Pendientes</span>
+                </a>
+            </li>
+
+            <li class="{{setActive('guidesRejected.*')}}">
+                <a href="{{route('guidesRejected.index')}}" class="nav-link">
+                    <i class="fa-solid fa-ban"></i>
+                    <span>Rechazadas</span>
                 </a>
             </li>
 
@@ -111,6 +132,36 @@
           </li>
         @endif
 
+        @if (Auth::user()->userType->name == 'ADMINISTRADOR')
+            <li class="{{setActive('guidesAdminApproved.*')}}">
+                <a href="{{route('guidesAdminApproved.index')}}" class="nav-link">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span>Guías aprobadas</span>
+                </a>
+            </li>
+
+            <li class="{{setActive('guidesAdminPending.*')}}">
+                <a href="{{route('guidesAdminPending.index')}}" class="nav-link">
+                    <i class="fa-solid fa-clock-rotate-left fa-flip-vertical"></i>
+                    <span>Guías pendientes</span>
+                </a>
+            </li>
+
+            <li class="{{setActive('guidesAdminRejected.*')}}">
+                <a href="{{route('guidesAdminRejected.index')}}" class="nav-link">
+                    <i class="fa-solid fa-ban"></i>
+                    <span>Guías rechazadas</span>
+                </a>
+            </li>
+
+            <li class="{{setActive('generatedWastesAdmin.*')}}">
+                <a href="{{route('generatedWastesAdmin.index')}}" class="nav-link">
+                    <i class="fa-solid fa-dumpster"></i>
+                    <span>Residuos Generados</span>
+                </a>
+            </li>
+        
+        @endif
 
         </ul>
 

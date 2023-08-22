@@ -1423,6 +1423,133 @@ ul.select2-selection__rendered {
 
 
 
+
+
+
+
+
+
+
+
+
+/* ---------- HOME PLUS PETROL ------------*/
+
+
+.title-home-text
+{
+    padding: 1em;
+    font-size: 2.2em;
+    text-align: center;
+    font-weight: 700;
+}
+
+.subtitle-home-text
+{
+    text-align: center;
+    font-size: 1.7em;
+}
+
+.link-boxes-container
+{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 5em;
+    justify-content: space-evenly;
+    align-items: center;
+    min-height: calc(73vh - 250px);
+    padding: 2em;
+}
+
+.link-boxes-container
+.link-box
+{
+    display: flex;
+    flex-direction: row;
+    border: 1px solid rgba(0, 0, 0, 0.233);
+    height: 200px;
+    width: 380px;
+    justify-content: space-around;
+    align-items: center;
+    gap: 2em;
+    padding: 2em;
+    border-radius: 40px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.068);
+    transition: all .2s;
+    text-align: center;
+}
+
+.link-box:hover
+{
+    box-shadow: 0 0px 15px rgba(0, 0, 0, 0);
+}
+
+.link-box
+.img-context-link-container
+{
+    height: 130px;
+    display: flex;
+    align-items: center;
+}
+
+.link-box
+.img-context-link-container img
+{
+    height: 100%;
+}
+
+.link-box
+.context-home-text
+{
+    font-size: 1.3em;
+    font-weight: bolder;
+}
+
+.link-box
+.img-context-link-container i
+{
+    font-size: 6em;
+}
+
+.img-context-link-container.warehouses i
+{
+    color: rgb(58, 175, 3);
+}
+
+.img-context-link-container.wastes i
+{
+    color: rgb(8, 207, 191);
+}
+
+.img-context-link-container.users i
+{
+    color: rgb(52, 102, 194);
+}
+
+
+
+
+/* ----- DATATABLES BUTTONS ---------*/
+
+.buttons-excel
+{
+    background-color: #07bd01;
+}
+
+.buttons-excel:hover
+{
+    background-color: #07bd01 !important;
+    filter: brightness(1.1);
+}
+
+.buttons-excel:focus
+{
+    background-color: #07bd01 !important;
+}
+
+
+
+
 /* ---------- PROFILE STYLES ------------*/
 
 
@@ -1691,6 +1818,23 @@ a:hover
 {
     padding: 1.25rem 25px !important;
 } */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2272,15 +2416,6 @@ a:hover
 }
 
 
-
-/* --------- ZOOM STYLES  -----*/
-
-
-iframe.zoom-meeting
-{
-    width: 100%;
-    height: 800px;
-}
 
 
 

@@ -32,29 +32,8 @@ class LoginController extends Controller
 
     public function redirectTo()
     {
-
-        switch(Auth::user()->userType->name)
-        {
-            case 'ADMINISTRADOR':
-                $this->redirectTo = route('warehouses.index');
-                return $this->redirectTo;
-                break;
-            case 'SOLICITANTE':
-                $this->redirectTo = route('guides.index');
-                return $this->redirectTo;
-                break;
-            case 'APROBANTE':
-                $this->redirectTo = route('approvingGuides.index');
-                return $this->redirectTo;
-                break;
-            case 'RECEPTOR':
-                $this->redirectTo = route('recieverGuides.index');
-                return $this->redirectTo;
-                break;
-            default:
-                $this->redirectTo = '/';
-                return $this->redirectTo;
-        }
+        $this->redirectTo = route('home.index');
+        return $this->redirectTo;
     }
 
     public function username()

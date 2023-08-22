@@ -9,7 +9,7 @@
         <div class="card page-title-container">
             <div class="card-header">
                 <div class="total-width-container">
-                    <h4>Revisar guía de Internamiento aprobada</h4>
+                    <h4>Revisar guía de Internamiento pendiente</h4>
                 </div>
             </div>
         </div>
@@ -17,7 +17,7 @@
         
         <div class="principal-container container-create-guide card-body card z-index-2">
 
-            <a href="{{route('guides.index')}}" class="btn btn-primary return-btn mb-2">
+            <a href="{{route('guidesPending.index')}}" class="btn btn-primary return-btn mb-2">
                 <i class="fa-solid fa-circle-arrow-left fa-xl"></i> &nbsp;
                 Regresar
             </a>

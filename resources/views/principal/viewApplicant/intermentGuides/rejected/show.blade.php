@@ -9,7 +9,7 @@
         <div class="card page-title-container">
             <div class="card-header">
                 <div class="total-width-container">
-                    <h4>Revisar guía de Internamiento recepcionada</h4>
+                    <h4>Revisar guía de Internamiento rechazada</h4>
                 </div>
             </div>
         </div>
@@ -17,7 +17,7 @@
         
         <div class="principal-container container-create-guide card-body card z-index-2">
 
-            <a href="{{route('recieverRecievedGuides.index')}}" class="btn btn-primary return-btn mb-2">
+            <a href="{{route('guidesRejected.index')}}" class="btn btn-primary return-btn mb-2">
                 <i class="fa-solid fa-circle-arrow-left fa-xl"></i> &nbsp;
                 Regresar
             </a>
@@ -112,11 +112,10 @@
                                 <td></td>
                                 <td class="text-right">Peso Total:</td>
                                 <td id="info-actual-total-weight">{{$totalWeight}}</td>
-                                <td>{{$totalPackage}}</td>
-                                <td> {{$totalPackage}}</td>
+                                <td> {{$totalPackage}} </td>
+                                <td></td>
                             </tr>
                         </tbody>
-                        
                         
                     </table>
 
@@ -128,10 +127,7 @@
                         <span> {{$guide->comment}} </span>
                     </div>
 
-
-
                     <div class="info-sending-users mt-3">
-
 
                         <div class="info-user-box-guide info-applicant-container">
                             <div class="info-user-header-guide">
@@ -166,10 +162,13 @@
 
                         <div class="info-user-box-guide info-approvant-container">
                             <div class="info-user-header-guide">
+
                                 Aprobado por
                             </div>
                             <div class="img-signature-container">
+                                @if ($guide->stat_approved == 1)
                                 <img src="{{asset('storage/'.$guide->approvant->url_signature)}}" alt="">
+                                @endif
                             </div>
 
 
@@ -211,26 +210,73 @@
                                 Recepcionado por:
                             </div>
                             <div class="img-signature-container">
-                                <img src="{{asset('storage/'.$guide->reciever->url_signature)}}" alt="">
+                                @if ($guide->reciever != null && $guide->stat_recieved == 1)
+                                    <img src="{{asset('storage/'.$guide->reciever->url_signature)}}" alt="">
+                                @endif
                             </div>
                             <div class="personal-info-user">
 
 
                                 <div class="row-user-info-guide">
                                     <div class="row-user-info-label-guide">Nombre: </div>
-                                    <div class="row-user-info-txt"> {{$guide->reciever->name}} </div> 
+                                    <div class="row-user-info-txt">
+                                        @if ($guide->reciever != null && $guide->stat_recieved == 1)
+                                        {{$guide->reciever->name}} 
+                                        @endif
+                                    </div> 
                                 </div>
                                 <div class="row-user-info-guide">
                                     <div class="row-user-info-label-guide">
                                         Tipo Usuario:
                                     </div>
                                     <div class="row-user-info-txt">
-                                        {{$guide->reciever->userType->name}}
+                                        @if ($guide->reciever != null && $guide->stat_recieved == 1)
+                                            {{$guide->reciever->userType->name}}
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="row-user-info-guide">
                                     <div class="row-user-info-label-guide">Fecha de recepción:</div>
                                     <div class="row-user-info-txt">{{$guide->date_recieved}}</div>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                        <div class="info-user-box-guide info-applicant-container">
+                            <div class="info-user-header-guide">
+                                Verificado por:
+                            </div>
+                            <div class="img-signature-container">
+                                @if ($guide->checker != null && $guide->stat_verified == 1)
+                                <img src="{{asset('storage/'.$guide->checker->url_signature)}}" alt="">
+                                @endif
+                            </div>
+                            <div class="personal-info-user">
+
+
+                                <div class="row-user-info-guide">
+                                    <div class="row-user-info-label-guide">Nombre: </div>
+                                    <div class="row-user-info-txt">
+                                        @if ($guide->checker != null && $guide->stat_verified == 1)
+                                        {{$guide->checker->name}} 
+                                        @endif
+                                    </div> 
+                                </div>
+                                <div class="row-user-info-guide">
+                                    <div class="row-user-info-label-guide">
+                                        Tipo Usuario:
+                                    </div>
+                                    <div class="row-user-info-txt">
+                                        @if ($guide->checker != null && $guide->stat_verified == 1)
+                                            {{$guide->checker->userType->name}}
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="row-user-info-guide">
+                                    <div class="row-user-info-label-guide">Fecha de verificación:</div>
+                                    <div class="row-user-info-txt">{{$guide->date_verified}}</div>
                                 </div>
 
 

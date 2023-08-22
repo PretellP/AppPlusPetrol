@@ -9,7 +9,7 @@
         <div class="card page-title-container">
             <div class="card-header">
                 <div class="total-width-container">
-                    <h4>Revisar guía de Internamiento aprobada</h4>
+                    <h4>Revisar guía de Internamiento rechazada</h4>
                 </div>
             </div>
         </div>

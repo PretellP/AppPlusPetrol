@@ -23,27 +23,8 @@ class RedirectIfAuthenticated
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
 
-                switch(Auth::user()->userType->name)
-                {
-                    case 'ADMINISTRADOR':
-                        $verifiedRoute = route('warehouses.index');
-                        break;
-                    case 'SOLICITANTE':
-                        $verifiedRoute = route('guides.index');
-                        break;
-                    case 'APROBANTE':
-                        $verifiedRoute = route('approvingGuides.index');
-                        break;
-                    case 'RECEPTOR':
-                        $verifiedRoute = route('recieverGuides.index');
-                        break;
-                    case 'SUPERVISOR':
-                        $verifiedRoute = route('verificatorGuides.index');
-                        break;
-                    default:
-                        $verifiedRoute = route('login');
-                }
-   
+                $verifiedRoute = route('home.index');
+              
                 return redirect($verifiedRoute);
             }
         }

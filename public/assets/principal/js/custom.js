@@ -3108,6 +3108,149 @@ $(function() {
 
 
 
+    /* ------------- GUIDES ADMIN --------------*/
+
+    if($('#guide-approved-table-admin').length)
+    {
+        var guideAdminApprovedTableEle = $('#guide-approved-table-admin');
+        var getDataUrl = guideAdminApprovedTableEle.data('url');
+        var guideAdminApprovedTable = guideAdminApprovedTableEle.DataTable({
+            order: [[1, 'desc']],
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax:  {
+                "url": getDataUrl,
+                "data": {
+                    "table" : "approved"
+                }
+            },
+            columns:[
+                {data: 'code', name:'code'},
+                {data: 'date', name:'date'},
+                {data: 'lot', name:'lot'},
+                {data: 'stage', name:'stage'},
+                {data: 'location', name:'location'},
+                {data: 'proyect', name:'proyect'},
+                {data: 'company', name:'company'},
+                {data: 'front', name:'front'},
+                {data: 'stat_approved', name:'stat_approved'},
+                {data: 'stat_recieved', name:'stat_recieved'},
+                {data: 'stat_verified', name:'stat_verified'},
+                {data: 'action', name:'action', orderable: false, searchable: false},
+            ]
+        });
+    }   
+
+
+    if($('#guide-pending-table-admin').length){
+        var guideAdminPendingTableEle = $('#guide-pending-table-admin');
+        var getDataUrl = guideAdminPendingTableEle.data('url');
+        var guideAdminPendingTable = guideAdminPendingTableEle.DataTable({
+            order: [[1, 'desc']],
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax:  {
+                "url": getDataUrl,
+                "data": {
+                    "table" : "pending"
+                }
+            },
+            columns:[
+                {data: 'code', name:'code'},
+                {data: 'date', name:'date'},
+                {data: 'lot', name:'lot'},
+                {data: 'stage', name:'stage'},
+                {data: 'location', name:'location'},
+                {data: 'proyect', name:'proyect'},
+                {data: 'company', name:'company'},
+                {data: 'front', name:'front'},
+                {data: 'stat_approved', name:'stat_approved'},
+                {data: 'stat_recieved', name:'stat_recieved'},
+                {data: 'stat_verified', name:'stat_verified'},
+                {data: 'action', name:'action', orderable: false, searchable: false},
+            ]
+        });
+    }
+
+
+    if($('#guide-rejected-table-admin').length){
+        var guideAdminRejectedTableEle = $('#guide-rejected-table-admin');
+        var getDataUrl = guideAdminRejectedTableEle.data('url');
+        var guideAdminRejectedTable = guideAdminRejectedTableEle.DataTable({
+            order: [[1, 'desc']],
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax:  {
+                "url": getDataUrl,
+                "data": {
+                    "table" : "rejected"
+                }
+            },
+            columns:[
+                {data: 'code', name:'code'},
+                {data: 'date', name:'date'},
+                {data: 'lot', name:'lot'},
+                {data: 'stage', name:'stage'},
+                {data: 'location', name:'location'},
+                {data: 'proyect', name:'proyect'},
+                {data: 'company', name:'company'},
+                {data: 'front', name:'front'},
+                {data: 'stat_approved', name:'stat_approved'},
+                {data: 'stat_recieved', name:'stat_recieved'},
+                {data: 'stat_verified', name:'stat_verified'},
+                {data: 'action', name:'action', orderable: false, searchable: false},
+            ]
+        });
+    }
+
+
+
+    /*  --- GENERATED WASTES ADMIN ----------*/
+
+    if($('#generated-wastes-table-admin').length){
+        var generatedWastesAdminTableEle = $('#generated-wastes-table-admin');
+        var getDataUrl = generatedWastesAdminTableEle.data('url');
+        var generatedWastesAdminTable = generatedWastesAdminTableEle.DataTable({
+            order: [[1, 'desc']],
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax: getDataUrl,
+            columns:[
+                {data: 'code', name:'code'},
+                {data: 'date', name:'date'},
+                {data: 'lot', name:'lot'},
+                {data: 'stage', name:'stage'},
+                {data: 'location', name:'location'},
+                {data: 'proyect', name:'proyect'},
+                {data: 'company', name:'company'},
+                {data: 'front', name:'front'},
+                {data: 'class', name:'class'},
+                {data: 'waste', name:'waste'},
+                {data: 'weight', name:'weight'},
+                {data: 'packages', name:'packages'},
+            ],
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: '<i class="fa-solid fa-download"></i> &nbsp; Descargar Excel',
+                    extend: 'excelHtml5',
+                    title:    function () {
+                         return $('#excel-generated-wastes-info').data('title'); 
+                    },
+                    filename: function () {
+                        return $('#excel-generated-wastes-info').data('name');
+                    }
+                }   
+            ]
+        });
+    }
+
+
+
 
     /* ----------- GUIDES APPLICANTT -----------*/
 
@@ -3119,7 +3262,12 @@ $(function() {
             language: DataTableEs,
             serverSide: true,
             processing: true,
-            ajax: getDataUrl,
+            ajax:  {
+                "url": getDataUrl,
+                "data": {
+                    "table" : "index"
+                }
+            },
             columns:[
                 {data: 'code', name:'code'},
                 {data: 'date', name:'date'},
@@ -3144,7 +3292,102 @@ $(function() {
                     }
                 }   
             ]
-    });
+        });
+    }
+
+
+    if($('#guide-pending-table-applicant').length){
+        var guidePendingApplicantTableEle = $('#guide-pending-table-applicant');
+        var getDataUrl = guidePendingApplicantTableEle.data('url');
+        var guidePendingApplicantTable = guidePendingApplicantTableEle.DataTable({
+            order: [[1, 'desc']],
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax:  {
+                "url": getDataUrl,
+                "data": {
+                    "table" : "pending"
+                }
+            },
+            columns:[
+                {data: 'code', name:'code'},
+                {data: 'date', name:'date'},
+                {data: 'lot', name:'lot'},
+                {data: 'stage', name:'stage'},
+                {data: 'location', name:'location'},
+                {data: 'proyect', name:'proyect'},
+                {data: 'company', name:'company'},
+                {data: 'front', name:'front'},
+                {data: 'stat_approved', name:'stat_approved'},
+                {data: 'stat_recieved', name:'stat_recieved'},
+                {data: 'stat_verified', name:'stat_verified'},
+                {data: 'action', name:'action', orderable: false, searchable: false},
+            ]
+        });
+    }
+
+    if($('#guide-approved-table-applicant').length)
+    {
+        var guideApprovedApplicantTableEle = $('#guide-approved-table-applicant');
+        var getDataUrl = guideApprovedApplicantTableEle.data('url');
+        var guideApprovedApplicantTable = guideApprovedApplicantTableEle.DataTable({
+            order: [[1, 'desc']],
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax:  {
+                "url": getDataUrl,
+                "data": {
+                    "table" : "approved"
+                }
+            },
+            columns:[
+                {data: 'code', name:'code'},
+                {data: 'date', name:'date'},
+                {data: 'lot', name:'lot'},
+                {data: 'stage', name:'stage'},
+                {data: 'location', name:'location'},
+                {data: 'proyect', name:'proyect'},
+                {data: 'company', name:'company'},
+                {data: 'front', name:'front'},
+                {data: 'stat_approved', name:'stat_approved'},
+                {data: 'stat_recieved', name:'stat_recieved'},
+                {data: 'stat_verified', name:'stat_verified'},
+                {data: 'action', name:'action', orderable: false, searchable: false},
+            ]
+        });
+    }
+
+    if($('#guide-rejected-table-applicant').length){
+        var guideRejectedApplicantTableEle = $('#guide-rejected-table-applicant');
+        var getDataUrl = guideRejectedApplicantTableEle.data('url');
+        var guideRejectedApplicantTable = guideRejectedApplicantTableEle.DataTable({
+            order: [[1, 'desc']],
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax:  {
+                "url": getDataUrl,
+                "data": {
+                    "table" : "rejected"
+                }
+            },
+            columns:[
+                {data: 'code', name:'code'},
+                {data: 'date', name:'date'},
+                {data: 'lot', name:'lot'},
+                {data: 'stage', name:'stage'},
+                {data: 'location', name:'location'},
+                {data: 'proyect', name:'proyect'},
+                {data: 'company', name:'company'},
+                {data: 'front', name:'front'},
+                {data: 'stat_approved', name:'stat_approved'},
+                {data: 'stat_recieved', name:'stat_recieved'},
+                {data: 'stat_verified', name:'stat_verified'},
+                {data: 'action', name:'action', orderable: false, searchable: false},
+            ]
+        });
     }
 
 
@@ -3449,6 +3692,8 @@ $(function() {
         });
 
      }  
+
+
 
 
      if($('#register-approved-guide-form').length)

@@ -8,8 +8,13 @@ use App\Http\Controllers\Admin\{
     WarehouseController,
     WasteController,
     UserController,
-    IntermentGuideController,
-    PackageController
+    PackageController,
+    AdminIntermentGuideController,
+    AdminGeneratedWastesController
+};
+
+use App\Http\Controllers\Applicant\{
+    IntermentGuideController
 };
 
 use App\Http\Controllers\Aprobant\{
@@ -36,7 +41,7 @@ Auth::routes(['register' => false]);
 
 Route::group(['middleware' => 'auth'], function(){
 
-    Route::get('/inicio', [AdminController::class, 'index'])->name('admin.index');
+    Route::get('/inicio', [AdminController::class, 'index'])->name('home.index');
 
 // RUTAS DE LA INTERFAZ ADMINISTRADOR ------------------ 
 
@@ -44,11 +49,15 @@ Route::group(['middleware' => 'auth'], function(){
 
         Route::get('/solicitante/guías-de-internamiento', [IntermentGuideController::class, 'index'])->name('guides.index');
         Route::get('/solicitante/guías-de-internamiento/crear', [IntermentGuideController::class, 'create'])->name('guides.create');
-        Route::get('/solicitante/guías-de-internamiento/ver/{guide}', [IntermentGuideController::class, 'show'])->name('guides.show');
+        Route::get('/solicitante/guías-de-internamiento/pendientes', [IntermentGuideController::class, 'pendingGuides'])->name('guidesPending.index');
+        Route::get('/solicitante/guías-de-internamiento/aprobados', [IntermentGuideController::class, 'approvedGuides'])->name('guidesApproved.index');
+        Route::get('/solicitante/guías-de-internamiento/rechazados', [IntermentGuideController::class, 'rejectedGuides'])->name('guidesRejected.index');
+        Route::get('/solicitante/guías-de-internamiento/pendientes/ver/{guide}', [IntermentGuideController::class, 'pendingShow'])->name('guidesPending.show');
+        Route::get('/solicitante/guías-de-internamiento/aprobados/ver/{guide}', [IntermentGuideController::class, 'approvedShow'])->name('guidesApproved.show');
+        Route::get('/solicitante/guías-de-internamiento/rechazados/ver/{guide}', [IntermentGuideController::class, 'rejectedShow'])->name('guidesRejected.show');
         Route::get('/solicitante/crear-guía-de-internamiento/getDataWarehouse', [IntermentGuideController::class, 'getDataWarehouse'])->name('guides.getDataWarehouse');
         Route::post('/solicitante/crear-guía-de-internamiento/registrar', [IntermentGuideController::class, 'store'])->name('guides.store');
     });
-
 
     Route::group(['middleware' => 'check.role:ADMINISTRADOR,APROBANTE'], function(){
 
@@ -93,6 +102,20 @@ Route::group(['middleware' => 'auth'], function(){
 
     
     Route::group(['middleware' => 'check.role:ADMINISTRADOR'], function(){
+
+        Route::get('/administrador/guías-de-internamiento', [AdminIntermentGuideController::class, 'index'])->name('guidesAdmin.index');
+        Route::get('/administrador/guías-de-internamiento/aprobados', [AdminIntermentGuideController::class, 'approvedGuides'])->name('guidesAdminApproved.index');
+        Route::get('/administrador/guías-de-internamiento/pendientes', [AdminIntermentGuideController::class, 'pendingGuides'])->name('guidesAdminPending.index');
+        Route::get('/administrador/guías-de-internamiento/rechazadas', [AdminIntermentGuideController::class, 'rejectedGuides'])->name('guidesAdminRejected.index');
+        Route::get('/administrador/guías-de-internamiento/aprobados/ver/{guide}', [AdminIntermentGuideController::class, 'approvedShow'])->name('guidesAdminApproved.show');
+        Route::get('/administrador/guías-de-internamiento/pendientes/ver/{guide}', [AdminIntermentGuideController::class, 'pendingShow'])->name('guidesAdminPending.show');
+        Route::get('/administrador/guías-de-internamiento/rechazadas/ver/{guide}', [AdminIntermentGuideController::class, 'rejectedShow'])->name('guidesAdminRejected.show');
+
+
+        /* ------------ GENERATED WASTES  ----------------*/
+
+        Route::get('/administrador/residuos-generados', [AdminGeneratedWastesController::class, 'index'])->name('generatedWastesAdmin.index');
+
         
         Route::get('/administrador/usuarios', [UserController::class, 'index'])->name('users.index');
         Route::post('/administrador/usuario/registrar', [UserController::class, 'store'])->name('users.store');

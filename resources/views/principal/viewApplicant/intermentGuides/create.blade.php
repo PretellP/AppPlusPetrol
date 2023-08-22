@@ -16,11 +16,6 @@
 
         <div class="principal-container container-create-guide card-body card z-index-2">
 
-            <a href="{{route('guides.index')}}" class="btn btn-primary return-btn mb-2">
-                <i class="fa-solid fa-circle-arrow-left fa-xl"></i> &nbsp;
-                Regresar
-            </a>
-
             <div class="code-container mb-4">
                 GUÍA DE INTERNAMIENTO Nro:
                 <span class="code-txt">
