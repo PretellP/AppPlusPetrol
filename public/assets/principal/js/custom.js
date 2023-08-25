@@ -4288,5 +4288,508 @@ $(function() {
         });
 
      }
+
+
+
+
+
+     /* -----------  MANAGER STOCK ------------*/
+
+    if($('#interment-guides-table-manager').length){
+
+        var intermentGuideManagerTableEle = $('#interment-guides-table-manager');
+        var getDataUrl = intermentGuideManagerTableEle.data('url');
+        var intermentGuideManagerTable = intermentGuideManagerTableEle.DataTable({
+            language: DataTableEs,
+            order: [[2, 'desc']],
+            serverSide: true,
+            processing: true,
+            ajax: {
+                "url": getDataUrl,
+                "data": {
+                    "table": "intGuide"
+                }
+            },
+            columns:[
+                {data: 'choose', name:'choose', orderable: false, searchable: false},
+                {data: 'code', name:'code'},
+                {data: 'date', name:'date'},
+                {data: 'company', name:'company'},
+                {data: 'weight', name:'weight'},
+                {data: 'packages', name:'packages'},
+                {data: 'status', name:'status'}
+            ]
+        });
+
+
+        var packingGuideManagerTableEle = $('#packing-guides-table-manager');
+        var getDataPackingUrl = packingGuideManagerTableEle.data('url');
+        var packingGuideManagerTable = packingGuideManagerTableEle.DataTable({
+            language: DataTableEs,
+            order: [[2, 'desc']],
+            serverSide: true,
+            processing: true,
+            ajax: {
+                "url": getDataPackingUrl,
+                "data": {
+                    "table": "packing"
+                }
+            },
+            columns:[
+                {data: 'choose', name:'choose', orderable: false, searchable: false},
+                {data: 'code', name:'code'},
+                {data: 'date', name:'date'},
+                {data: 'weight', name:'weight'},
+                {data: 'packages', name:'packages'},
+                {data: 'volum', name:'volum'},
+                {data: 'status', name:'status'}
+            ]
+        });
+
+        var transportTypeSelect = $('#transport-type-select');
+            transportTypeSelect.select2({
+                dropdownParent: $("#updateDeparturePgModal"),
+                placeholder: 'Selecciona un transporte'
+        });
+
+        var destinationSelect = $('#destination-select');
+            destinationSelect.select2({
+                dropdownParent: $("#updateDeparturePgModal"),
+                placeholder: 'Selecciona un destino'
+        });
+
+
+        $('body').on('click', '.checkbox-guide-label', function(){
+            var input = $('#'+$(this).attr('for'));
+            var status_array = [];
+            var status = false;
+            if(!input.is(':checked')){
+                status_array.push(input.data('status'))
+            }
+
+            $('input[name="guides-selected[]"]:checked').each(function(){
+                if($(this).attr('id') != input.attr('id')){
+                    status_array.push($(this).data('status'))
+                }
+            })
+
+            $.each(status_array, function(index, value){
+                if(value == 1){
+                    status = false;
+                    return false;
+                }else{
+                    status = true;
+                }
+            })
+
+            var btn_container = $('#btn-register-packing-guide-container');
+
+            if(status){
+                btn_container.html('<button id="btn-register-pg-modal" class="btn btn-primary"> \
+                                        <i class="fa-solid fa-square-plus"></i> &nbsp; <span class="me-1"> Realizar Carga </span> \
+                                        <i class="fa-solid fa-spinner fa-spin loadSpinner"></i> \
+                                    </button>');
+            }else{
+                btn_container.html('<div class="btn btn-secondary" style="pointer-events: none;"> \
+                                        <i class="fa-solid fa-square-plus"></i> &nbsp; <span class="me-1"> Realizar Carga </span>\
+                                    </div>');
+            }
+        })
+
+
+        $('body').on('click', '#btn-register-pg-modal',function(){
+            var button = $(this);
+            var modal = $('#RegisterPackingGuideModal');
+            var spinner = button.find('.loadSpinner');
+            var values = [];
+            var url = $('#btn-register-packing-guide-container').data('url');
+            var tbody = $('#t-body-guides-pg-manager')
+            var weight_container = modal.find('#total-weight-pg-manager');
+            var packages_container = modal.find('#total-packages-pg-manager');
+
+            spinner.toggleClass('active');
+            tbody.html('');
+            weight_container.html('');
+            packages_container.html('');
+            
+            $('input[name="guides-selected[]"]:checked').each(function(){
+                values.push($(this).val())
+            });
+            
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: {
+                    "values": values,
+                    "table": "packingGuide"
+                },
+                dataType: 'JSON',
+                success: function(data){
+
+                    $.each(data['guides'], function(key, values){
+                        var weight = 0 
+                        var packages = 0
+                        $.each(values['guide_wastes'], function(index, waste){
+                            weight += waste.actual_weight;
+                            packages += waste.package_quantity;
+                        });
+
+                        tbody.append('<tr> \
+                                        <input name="guides-pg-ids[]" type="hidden" value="'+values.id+'"> \
+                                        <td>'+values.code+'</td> \
+                                        <td>'+values.date_verified+'</td> \
+                                        <td>'+values['warehouse']['company'].name+'</td> \
+                                        <td>'+weight+'</td> \
+                                        <td>'+packages+'</td> \
+                                    </tr>');
+                    })
+
+                    weight_container.html(data['weight']);
+                    packages_container.html(data['packages'])
+
+                    spinner.toggleClass('active')
+                    modal.modal('show')
+                },
+                error: function(data){
+                    console.log(data)
+                }
+            });
+
+        })
+
+        $('#register-pg-manager-form').on('submit', function(e){
+            e.preventDefault();
+            var form = $(this);
+            var spinner = form.find('.loadSpinner')
+            var url = form.attr('action');
+            var modal = $('#RegisterPackingGuideModal')
+            var btn_container = $('#btn-register-packing-guide-container');
+
+            Swal.fire({
+                title: 'Confirmar',
+                text: '¡Esta acción no se podrá deshacer!',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Registrar',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+            }).then((result)=>{
+            if (result.isConfirmed) {
+
+                spinner.toggleClass('active');
+
+                $.ajax({
+                    method: form.attr('method'),
+                    url: url,
+                    data: form.serialize(),
+                    dataType: 'JSON',
+                    success: function(data){
+                        Swal.fire({
+                            toast: true,
+                            icon: 'success',
+                            text: '¡Carga realizada!',
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        });
+    
+                        btn_container.html('<div class="btn btn-secondary" style="pointer-events: none;"> \
+                                                <i class="fa-solid fa-square-plus"></i> &nbsp; Realizar Carga \
+                                            </div>');
+    
+                        intermentGuideManagerTable.draw();
+                        packingGuideManagerTable.draw();
+                        spinner.toggleClass('active');
+                        modal.modal('hide');
+                    },
+                    error: function(data){
+                        console.log(data);
+                    }
+                });
+            }
+            }, function(dismiss){
+            return false;
+            })
+            
+           
+        })
+
+        $('body').on('click', '.btn-show-guide', function(e){
+            e.preventDefault();
+            var button = $(this);
+            var url = button.data('url');
+            var modal = $('#showGuideDetailModal');
+            var tableGuide = $('#t-body-show-guide-manager');
+            var tableWastes = $('#t-body-guide-wastes-manager');
+            tableGuide.html('');
+            tableWastes.html('');
+
+            $.ajax({
+                type: 'GET',
+                url: url,
+                dataType: 'JSON',
+                success: function(data){
+                    var guide = data['guide'];
+
+                    tableGuide.html('<tr>\
+                                        <td>'+guide.code+'</td>\
+                                        <td>'+guide.date_verified+'</td>\
+                                        <td>'+guide['warehouse']['company'].name+'</td>\
+                                        <td>'+data['weight']+'</td>\
+                                        <td>'+data['packages']+'</td>\
+                                        <td>'+data.comment+'</td>\
+                                    </tr>');
+
+                    $.each(guide['guide_wastes'], function(key, values){
+                        tableWastes.append('<tr>\
+                                                <td>'+values['waste']['classes_wastes'][0].symbol+'</td>\
+                                                <td>'+values['waste'].name+'</td>\
+                                                <td>'+values['package'].name+'</td>\
+                                                <td>'+values.actual_weight+'</td>\
+                                                <td>'+values.package_quantity+'</td>\
+                                            </tr>');
+                                            });
+
+                    console.log(data['guide']);
+                    modal.modal('toggle');
+                },
+                error: function(data){
+                    console.log(data);
+                }
+            })
+        })
+
+
+
+
+
+        $('body').on('click', '.checkbox-packingGuide-label', function(){
+            var input = $('#'+$(this).attr('for'));
+            var status_array = [];
+            var status = false;
+            if(!input.is(':checked')){
+                status_array.push(input.data('status'))
+            }
+
+            $('input[name="packingGuides-selected[]"]:checked').each(function(){
+                if($(this).attr('id') != input.attr('id')){
+                    status_array.push($(this).data('status'))
+                }
+            })
+
+            $.each(status_array, function(index, value){
+                if(value == 1){
+                    status = false;
+                    return false;
+                }else{
+                    status = true;
+                }
+            })
+
+            var btn_container = $('#btn-update-departure-container');
+
+            if(status){
+                btn_container.html('<button id="btn-update-departure-modal" class="btn btn-primary"> \
+                                        <i class="fa-solid fa-square-plus"></i> &nbsp; <span class="me-1"> Dar salida </span> \
+                                        <i class="fa-solid fa-spinner fa-spin loadSpinner"></i> \
+                                    </button>');
+            }else{
+                btn_container.html('<div class="btn btn-secondary" style="pointer-events: none;"> \
+                                        <i class="fa-solid fa-square-plus"></i> &nbsp; <span class="me-1"> Dar salida </span>\
+                                    </div>');
+            }
+        })
+
+
+
+
+        $('body').on('click', '.btn-show-packingGuide', function(e){
+            e.preventDefault();
+            var button = $(this);
+            var url = button.data('url');
+            var modal = $('#showPackingGuideDetailModal');
+            var tablePgBody = $('#t-body-show-packing-guide-manager');
+            var tableIntGuideBody = $('#t-body-int-guides-manager');
+            
+            tablePgBody.html('');
+            tableIntGuideBody.html('');
+
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: {
+                    "table": "packingGuide"
+                },
+                dataType: 'JSON',
+                success: function(data){
+                    var guide = data['guide'];
+                        console.log(guide);
+                    tablePgBody.html('<tr> \
+                                        <td>'+guide.cod_guide+'</td>\
+                                        <td>'+guide.date_guides_departure+'</td>\
+                                        <td>'+data['weight']+'</td>\
+                                        <td>'+data['packages']+'</td>\
+                                        <td>'+guide.volum+'</td>\
+                                    </tr>');
+
+                    $.each(guide['guides'], function(key, values){
+                        var weightGuide = 0
+                        var packageGuide = 0
+                        $.each(values['guide_wastes'], function(index, waste){
+                            weightGuide += waste.actual_weight;
+                            packageGuide += waste.package_quantity
+                        })
+
+                        tableIntGuideBody.append('<tr>\
+                                                    <td>'+values.code+'</td>\
+                                                    <td>'+values.date_verified+'</td>\
+                                                    <td>'+values['warehouse']['company'].name+'</td>\
+                                                    <td>'+weightGuide+'</td>\
+                                                    <td>'+packageGuide+'</td>\
+                                                </tr>');
+                    })
+
+                    modal.modal('toggle');
+                },
+                error: function(data){
+                    console.log(data)
+                }
+            });
+
+        })
+
+        $('body').on('click', '#btn-update-departure-modal',function(){
+            var button = $(this);
+            var modal = $('#updateDeparturePgModal');
+            var spinner = button.find('.loadSpinner');
+            var url = $('#btn-update-departure-container').data('url');
+            var tbody = $('#t-body-guides-departure-manager');
+
+            var values = [];
+
+            spinner.toggleClass('active');
+            tbody.html('');
+
+            $('input[name="packingGuides-selected[]"]:checked').each(function(){
+                values.push($(this).val())
+            });
+
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: {
+                    "values": values,
+                    "table": "departure"
+                },
+                dataType: 'JSON',
+                success: function(data){
+                    var guides = data['packingGuides'];
+
+                    $.each(guides, function(key, values){
+                        var weight = 0;
+                        var packages = 0;
+                        $.each(values['guides'], function(index, guide){
+                            $.each(guide['guide_wastes'], function(index2, waste){
+                                weight += waste.actual_weight
+                                packages += waste.package_quantity
+                            })
+                        })
+
+                        tbody.append('<tr>\
+                                        <input type="hidden" value="'+values.id+'" name="packingGuides-departure-selected[]"> \
+                                        <td>'+values.cod_guide+'</td>\
+                                        <td>'+values.date_guides_departure+'</td>\
+                                        <td>'+weight+'</td>\
+                                        <td>'+packages+'</td>\
+                                        <td>'+values.volum+'</td>\
+                                    </tr>');
+                    })   
+
+                    spinner.toggleClass('active');
+                    modal.modal('toggle');
+                },
+                error: function(data){
+                    console.log(data)
+                }
+            })
+        })
+
+
+        $('#updateDeparture-pg-manager-form').on('submit', function(e){
+            e.preventDefault();
+            var form = $(this);
+            var url = form.attr('action');
+            var modal = $('#updateDeparturePgModal');
+            var spinner = modal.find('.loadSpinner');
+            var button_update_container = $('#btn-update-departure-container')
+
+            Swal.fire({
+                title: 'Confirmar',
+                text: '¡Esta acción no se podrá deshacer!',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Registrar',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+            }).then((result)=>{
+            if (result.isConfirmed) {
+
+                spinner.toggleClass('active');
+
+                $.ajax({
+                    method: form.attr('method'),
+                    url: url,
+                    data: form.serialize(),
+                    dataType: 'JSON',
+                    success: function(data){
+                        Swal.fire({
+                            toast: true,
+                            icon: 'success',
+                            text: '¡Salida efectuada!',
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        });
+
+                        button_update_container.html('<div class="btn btn-secondary" style="pointer-events: none;"> \
+                                                        <i class="fa-solid fa-square-plus"></i> &nbsp; <span class="me-1"> Dar salida </span>\
+                                                    </div>');
+
+                        packingGuideManagerTable.draw();
+                        spinner.toggleClass('active');
+                        modal.modal('toggle');
+                    },
+                    error: function(data){
+                        console.log(data);
+                    }
+                });
+            }
+            }, function(dismiss){
+            return false;
+            })
+        })
+
+
+
+
+
+    }
+
+
+    
+
+ 
+
+
 });
 

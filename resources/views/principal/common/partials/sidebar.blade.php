@@ -22,7 +22,7 @@
                 </a>
             </li>
 
-            @if (in_array(Auth::user()->userType->name, ['SOLICITANTE']))
+            @if (in_array(Auth::user()->role->name, ['SOLICITANTE']))
 
             <li class="{{setActive('guides.*')}}">
                 <a href="{{route('guides.create')}}" class="nav-link">
@@ -61,7 +61,7 @@
 
             @endif
 
-          @if (in_array(Auth::user()->userType->name, ['APROBANTE']))
+          @if (in_array(Auth::user()->role->name, ['APROBANTE']))
 
             <li class="{{setActive('approvingApprovedGuides.*')}}">
                 <a href="{{route('approvingApprovedGuides.index')}}" class="nav-link">
@@ -86,7 +86,7 @@
 
           @endif
 
-          @if (in_array(Auth::user()->userType->name, ['RECEPTOR']))
+          @if (in_array(Auth::user()->role->name, ['RECEPTOR']))
             <li class="{{setActive('recieverRecievedGuides.*')}}">
                 <a href="{{route('recieverRecievedGuides.index')}}" class="nav-link">
                     <i class="fa-solid fa-circle-check"></i>
@@ -109,7 +109,7 @@
             </li>
           @endif
 
-          @if (in_array(Auth::user()->userType->name, ['SUPERVISOR']))
+          @if (in_array(Auth::user()->role->name, ['SUPERVISOR']))
           <li class="{{setActive('verificatorVerifiedGuides.*')}}">
               <a href="{{route('verificatorVerifiedGuides.index')}}" class="nav-link">
                   <i class="fa-solid fa-circle-check"></i>
@@ -132,7 +132,7 @@
           </li>
         @endif
 
-        @if (Auth::user()->userType->name == 'ADMINISTRADOR')
+        @if (Auth::user()->role->name == 'ADMINISTRADOR')
             <li class="{{setActive('guidesAdminApproved.*')}}">
                 <a href="{{route('guidesAdminApproved.index')}}" class="nav-link">
                     <i class="fa-solid fa-circle-check"></i>
@@ -163,9 +163,33 @@
         
         @endif
 
+        @if (Auth::user()->role->name == 'GESTOR')
+        <li class="{{setActive('stock.*')}}">
+            <a href="{{route('stock.index')}}" class="nav-link">
+                <i class="fa-solid fa-layer-group"></i>
+                <span>Stock</span>
+            </a>
+        </li>
+
+        <li class="">
+            <a href="" class="nav-link">
+                <i class="fa-solid fa-truck-moving"></i>
+                <span>Transporte</span>
+            </a>
+        </li>
+
+        <li class="">
+            <a href="" class="nav-link">
+                <i class="fa-solid fa-industry"></i>
+                <span>Disposición final</span>
+            </a>
+        </li>
+    
+        @endif
+
         </ul>
 
-        @if (Auth::user()->userType->name == 'ADMINISTRADOR')
+        @if (Auth::user()->role->name == 'ADMINISTRADOR')
             
         <ul class="sidebar-menu txt-divider">
             <li class="">

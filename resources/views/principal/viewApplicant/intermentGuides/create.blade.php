@@ -174,7 +174,7 @@
                                         Tipo Usuario:
                                     </div>
                                     <div class="row-user-info-txt">
-                                        {{Auth::user()->userType->name}}
+                                        {{Auth::user()->role->name}}
                                     </div>
                                 </div>
                                 <div class="row-user-info-guide">

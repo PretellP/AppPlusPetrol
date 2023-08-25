@@ -150,7 +150,7 @@
                                         Tipo Usuario:
                                     </div>
                                     <div class="row-user-info-txt">
-                                        {{$guide->applicant->userType->name}}
+                                        {{$guide->applicant->role->name}}
                                     </div>
                                 </div>
                                 <div class="row-user-info-guide">
@@ -191,7 +191,7 @@
                                     </div>
                                     <div class="row-user-info-txt" id="info-type-user-guide">
 
-                                        {{$guide->approvant->userType->name}}
+                                        {{$guide->approvant->role->name}}
                                     </div>
                                 </div>
                                 <div class="row-user-info-guide">
@@ -233,7 +233,7 @@
                                     </div>
                                     <div class="row-user-info-txt">
                                         @if ($guide->reciever != null)
-                                            {{$guide->reciever->userType->name}}
+                                            {{$guide->reciever->role->name}}
                                         @endif
                                     </div>
                                 </div>
@@ -272,7 +272,7 @@
                                     </div>
                                     <div class="row-user-info-txt">
                                         @if ($guide->checker != null)
-                                            {{$guide->checker->userType->name}}
+                                            {{$guide->checker->role->name}}
                                         @endif
                                     </div>
                                 </div>

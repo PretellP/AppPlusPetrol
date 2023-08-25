@@ -7,14 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 
 
-class UserType extends Model
+class Role extends Model
 {
     use HasFactory;
-    protected $table = 'user_types';
+    protected $table = 'roles';
     protected $guarded = [];
 
     public function users()
     {
-        return $this->hasMany(User::class, 'id_user_type', 'id');
+        return $this->hasMany(User::class, 'id_role', 'id');
     }
 }

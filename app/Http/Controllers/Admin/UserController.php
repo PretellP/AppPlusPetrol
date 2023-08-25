@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use App\Models\{User, UserType, Company};
+use App\Models\{User, Role, Company};
 use DataTables;
 use Auth;
 
@@ -14,8 +14,8 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $users = User::with('userType')->get();
-        $userTypes = UserType::all();
+        $users = User::with('role')->get();
+        $roles = Role::all();
         $companies = Company::all();
 
         if($request->ajax())
@@ -23,7 +23,7 @@ class UserController extends Controller
             $allUsers = DataTables::of($users)
                 ->addIndexColumn()
                 ->addColumn('profile', function($user){
-                    return $user->userType->name;
+                    return $user->role->name;
                 })
                 ->addColumn('company', function($user){
                     $company = '';
@@ -59,7 +59,7 @@ class UserController extends Controller
 
         return view('principal.viewAdmin.users.index', [
             'users' => $users,
-            'userTypes' => $userTypes,
+            'roles' => $roles,
             'companies' => $companies
         ]);
     }
@@ -70,15 +70,15 @@ class UserController extends Controller
         if($request['type'] == 'approving')
         {
             $status = 'invalid';
-            $usertype = UserType::where('id', $request['id'])->first()->name;
+            $role = Role::where('id', $request['id'])->first()->name;
             $approvings = null;
 
-            if($usertype == 'SOLICITANTE'){
+            if($role == 'SOLICITANTE'){
                 $status = 'valid';
 
                 if($request['company_id'] != '')
                 {
-                    $approvings = User::whereHas('userType', function($query){
+                    $approvings = User::whereHas('role', function($query){
                                     $query->where('name', 'APROBANTE');
                                 })
                                 ->where('id_company', $request['company_id'])->get();
@@ -92,7 +92,7 @@ class UserController extends Controller
         }
         elseif($request['type'] == 'company')
         {
-            $approvings = User::whereHas('userType', function($query){
+            $approvings = User::whereHas('role', function($query){
                                     $query->where('name', 'APROBANTE');
                                 })
                                 ->where('id_company', $request['id'])->get();
@@ -117,7 +117,7 @@ class UserController extends Controller
 
         $user = User::create(
                     [
-                        "id_user_type" => $request['id_user_type'],
+                        "id_role" => $request['id_role'],
                         "id_company" => $request['id_user_company'],
                         'user_name' => $request['username'],
                         'password' => Hash::make($request['password']),
@@ -154,12 +154,12 @@ class UserController extends Controller
         $validApplicant = false;
         $selectedApprovings = null;
         $approvings = null;
-        $userType = $user->userType->name;
-        if($userType == 'SOLICITANTE')
+        $role = $user->role->name;
+        if($role == 'SOLICITANTE')
         {
             $validApplicant = true;
             $selectedApprovings = $user->approvings()->get()->pluck('id')->toArray();
-            $approvings = User::whereHas('userType', function($query){
+            $approvings = User::whereHas('role', function($query){
                                         $query->where('name', 'APROBANTE');
                                 })
                                 ->where('id_company', $user->id_company)
@@ -179,7 +179,7 @@ class UserController extends Controller
             "url_signature" => $url_signature,
             "status" => $user->status,
             "last_login" => $last_login,
-            "profile" => $user->userType->name,
+            "profile" => $user->role->name,
             "company" => $companyName,
             "validApplicant" => $validApplicant,
             "selectedApprovings" => $selectedApprovings,
@@ -222,9 +222,9 @@ class UserController extends Controller
             'status' => $status
         ]);
 
-        $userType = $user->userType->name;
+        $role = $user->role->name;
 
-        if($userType == 'SOLICITANTE')
+        if($role == 'SOLICITANTE')
         {
             if($request->has('id_approvings'))
             {

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-use App\Models\{UserType, User, IntermentGuide, Company};
+use App\Models\{Role, User, IntermentGuide, Company};
 
 class User extends Authenticatable
 {
@@ -16,7 +16,7 @@ class User extends Authenticatable
     protected $table = 'users';
 
     protected $fillable = [
-        'id_user_type',
+        'id_role',
         'id_company',
         'user_name',
         'password',
@@ -38,9 +38,9 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    public function userType()
+    public function role()
     {
-        return $this->belongsTo(UserType::class, 'id_user_type', 'id');
+        return $this->belongsTo(Role::class, 'id_role', 'id');
     }
 
     public function approvings()

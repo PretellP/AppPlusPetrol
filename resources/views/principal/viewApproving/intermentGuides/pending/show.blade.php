@@ -145,7 +145,7 @@
                                         Tipo Usuario:
                                     </div>
                                     <div class="row-user-info-txt">
-                                        {{$guide->applicant->userType->name}}
+                                        {{$guide->applicant->role->name}}
                                     </div>
                                 </div>
                                 <div class="row-user-info-guide">

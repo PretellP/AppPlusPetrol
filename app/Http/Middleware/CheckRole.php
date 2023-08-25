@@ -17,7 +17,6 @@ class CheckRole
      */
     public function handle(Request $request, Closure $next, ...$roles)
     {
-
             if(!Auth::check())
             {
                 return redirect()->route('login');
@@ -25,7 +24,7 @@ class CheckRole
             else{
                 if(is_array($roles)){
                     foreach ($roles as $role) {
-                        if (Auth::user()->userType->name == $role) {
+                        if (Auth::user()->role->name == $role) {
                             return $next($request);
                         }
                     }

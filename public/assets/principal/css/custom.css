@@ -1550,6 +1550,53 @@ ul.select2-selection__rendered {
 
 
 
+
+
+
+
+
+
+
+
+
+/* --------- DATE RANGE STYLES -------*/
+
+.date-range-container
+{
+    width: 400px;
+}
+
+.ranges li:hover, .ranges li.active
+{
+    background-color: #08c !important;
+}
+
+
+
+/* ---------- TABLES CUSTOM STYLES ----------*/
+
+
+.table-sm td, .table-sm th
+{
+    padding: 0.3em 25px !important;
+}
+
+.table-title
+{
+    font-weight: 700;
+    font-size: 1.2em;
+}
+
+
+
+
+
+
+
+
+
+
+
 /* ---------- PROFILE STYLES ------------*/
 
 
@@ -1732,17 +1779,19 @@ ul.select2-selection__rendered {
 
 
 
-/* --------- DATE RANGE STYLES -------*/
 
-.date-range-container
-{
-    width: 400px;
-}
 
-.ranges li:hover, .ranges li.active
-{
-    background-color: #08c !important;
-}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4448,11 +4497,6 @@ button.btn-survey-submit:hover,
 {
     border-bottom: 1px solid var(--light-gray);
     padding-bottom: 1.3em;
-}
-
-.modal .modal-body
-{
-    font-size: 1.2em;
 }
 
 .modal .modal-body .subtitle

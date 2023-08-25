@@ -138,11 +138,11 @@
                         <div class="form-group col-md-6">
                             <label for="inputProfile">Perfil *</label>
 
-                            <select data-url="{{route('users.getApprovings')}}" name="id_user_type"
+                            <select data-url="{{route('users.getApprovings')}}" name="id_role"
                                 class="form-control select2" id="registerProfileSelect" required>
                                 <option value=""></option>
-                                @foreach ($userTypes as $userType)
-                                <option value="{{$userType->id}}"> {{$userType->name}} </option>
+                                @foreach ($roles as $role)
+                                <option value="{{$role->id}}"> {{$role->name}} </option>
                                 @endforeach
                             </select>
 

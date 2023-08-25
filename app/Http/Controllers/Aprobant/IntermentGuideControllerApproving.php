@@ -148,7 +148,7 @@ class IntermentGuideControllerApproving extends Controller
         $guide = $guide->with(['warehouse' => fn($query) =>
                                 $query->with(['front','company','location','lot','projectArea','stage'])
                                 ])
-                                ->with('applicant.userType')
+                                ->with('applicant.role')
                                 ->with(['guideWastes' => fn($query) =>
                                     $query->with(['waste.classesWastes', 'package'])    
                                 ])
@@ -180,8 +180,8 @@ class IntermentGuideControllerApproving extends Controller
         $guide = $guide->with(['warehouse' => fn($query) =>
                                 $query->with(['front','company','location','lot','projectArea','stage'])
                         ])
-                        ->with('approvant.userType')
-                        ->with('applicant.userType')
+                        ->with('approvant.role')
+                        ->with('applicant.role')
                         ->with(['guideWastes' => fn($query) =>
                                 $query->with(['waste.classesWastes', 'package'])    
                         ])
@@ -212,8 +212,8 @@ class IntermentGuideControllerApproving extends Controller
         $guide = $guide->with(['warehouse' => fn($query) =>
                             $query->with(['front','company','location','lot','projectArea','stage'])
                         ])
-                        ->with('approvant.userType')
-                        ->with('applicant.userType')
+                        ->with('approvant.role')
+                        ->with('applicant.role')
                         ->with(['guideWastes' => fn($query) =>
                             $query->with(['waste.classesWastes', 'package'])    
                         ])

@@ -30,6 +30,10 @@ use App\Http\Controllers\Verificator\{
     IntermentGuideControllerVerificator
 };
 
+use App\Http\Controllers\Manager\{
+    PackingGuideController
+};
+
 use Illuminate\Support\Facades\Route;
 
 
@@ -44,7 +48,7 @@ Route::group(['middleware' => 'auth'], function(){
 
     Route::get('/inicio', [AdminController::class, 'index'])->name('home.index');
 
-// RUTAS DE LA INTERFAZ ADMINISTRADOR ------------------ 
+   
 
     Route::group(['middleware' => 'check.role:ADMINISTRADOR,SOLICITANTE'], function(){
 
@@ -100,11 +104,21 @@ Route::group(['middleware' => 'auth'], function(){
         Route::post('/supervisor/guias-pendientes/verificar/{guide}', [IntermentGuideControllerVerificator::class, 'updateVerified'])->name('verifiedGuide.update');
         Route::post('/supervisor/guias-rechazadas/deshacer/{guide}', [IntermentGuideControllerVerificator::class, 'undoReject'])->name('verificatorGuides.undoReject');
         Route::post('/supervisor/guias-pendientes/rechazar/{guide}', [IntermentGuideControllerVerificator::class, 'updateRejected'])->name('guides.verified.rejected');
-
+    });
+    
+    Route::group(['middleware' => 'check.role:ADMINISTRADOR,GESTOR'], function(){
+        Route::get('/gestor/stock-almacén', [PackingGuideController::class, 'index'])->name('stock.index');
+        Route::get('/gestor/obtener-guias-seleccionadas', [PackingGuideController::class, 'loadGuidesSelected'])->name('loadGuidesSelected.manager');
+        Route::get('/gestor/cargar-detalle-de-guía/{guide}', [PackingGuideController::class, 'loadGuideDetail'])->name('loadGuideDetail.manager');
+        Route::get('/gestor/cargar-detalle-de-carga/{guide}', [PackingGuideController::class, 'loadPackingGuideDetail'])->name('loadPackingGuideDetail.manager');
+        Route::post('/gestor/stock-almacén/registrar-guia-de-embalaje', [PackingGuideController::class, 'storePackageGuide'])->name('stock.storePg.manager');
+        Route::post('/gestor/stock-almacén/registrar-salida', [PackingGuideController::class, 'updateDeparturePg'])->name('updatePackingGuideDeparture.manager');
     });
 
 
-    
+     // RUTAS DE LA INTERFAZ ADMINISTRADOR ------------------ 
+
+
     Route::group(['middleware' => 'check.role:ADMINISTRADOR'], function(){
 
         Route::get('/administrador/guías-de-internamiento', [AdminIntermentGuideController::class, 'index'])->name('guidesAdmin.index');

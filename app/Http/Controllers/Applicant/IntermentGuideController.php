@@ -303,7 +303,7 @@ class IntermentGuideController extends Controller
                                 ->where('id_company', $user->id_company)->get();
         $wasteClasses = WasteClass::all();
 
-        $guide_code = Carbon::now()->format('Y').'-'.$guide_code.$id_str;
+        $guide_code = 'GI-'.Carbon::now()->format('Y').'-'.$guide_code.$id_str;
 
         $approvings = $user->approvings;
  
@@ -375,7 +375,7 @@ class IntermentGuideController extends Controller
             $guide_code.='0';
         }
         
-        $guide_code = Carbon::now()->format('Y').'-'.$guide_code.$id_str;
+        $guide_code = 'GI-'.Carbon::now()->format('Y').'-'.$guide_code.$id_str;
 
         $guide = IntermentGuide::create([
             "code" => $guide_code,
@@ -384,6 +384,7 @@ class IntermentGuideController extends Controller
             "stat_approved" => 0,
             "stat_recieved" => 0,
             "stat_verified" => 0,
+            "stat_stock" => 0,
             "id_warehouse" => $request['select-warehouse'],
             "id_applicant" => $user->id,
             "id_approvant" => $request['id_approvant-guide']
@@ -412,10 +413,10 @@ class IntermentGuideController extends Controller
         $guide = $guide->with(['warehouse' => fn($query) =>
                             $query->with(['front','company','location','lot','projectArea','stage'])
                         ])
-                        ->with('approvant.userType')
-                        ->with('applicant.userType')
-                        ->with('reciever.userType')
-                        ->with('checker.userType')
+                        ->with('approvant.role')
+                        ->with('applicant.role')
+                        ->with('reciever.role')
+                        ->with('checker.role')
                         ->with(['guideWastes' => fn($query) =>
                             $query->with(['waste.classesWastes', 'package'])    
                         ])
@@ -446,10 +447,10 @@ class IntermentGuideController extends Controller
         $guide = $guide->with(['warehouse' => fn($query) =>
                             $query->with(['front','company','location','lot','projectArea','stage'])
                         ])
-                        ->with('approvant.userType')
-                        ->with('applicant.userType')
-                        ->with('reciever.userType')
-                        ->with('checker.userType')
+                        ->with('approvant.role')
+                        ->with('applicant.role')
+                        ->with('reciever.role')
+                        ->with('checker.role')
                         ->with(['guideWastes' => fn($query) =>
                             $query->with(['waste.classesWastes', 'package'])    
                         ])
@@ -480,10 +481,10 @@ class IntermentGuideController extends Controller
         $guide = $guide->with(['warehouse' => fn($query) =>
         $query->with(['front','company','location','lot','projectArea','stage'])
                         ])
-                        ->with('approvant.userType')
-                        ->with('applicant.userType')
-                        ->with('reciever.userType')
-                        ->with('checker.userType')
+                        ->with('approvant.role')
+                        ->with('applicant.role')
+                        ->with('reciever.role')
+                        ->with('checker.role')
                         ->with(['guideWastes' => fn($query) =>
                             $query->with(['waste.classesWastes', 'package'])    
                         ])

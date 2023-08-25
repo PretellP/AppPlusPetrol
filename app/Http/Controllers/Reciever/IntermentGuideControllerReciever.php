@@ -148,8 +148,8 @@ class IntermentGuideControllerReciever extends Controller
         $guide = $guide->with(['warehouse' => fn($query) =>
                              $query->with(['front','company','location','lot','projectArea','stage'])
                         ])
-                        ->with('approvant.userType')
-                        ->with('applicant.userType')
+                        ->with('approvant.role')
+                        ->with('applicant.role')
                         ->with(['guideWastes' => fn($query) =>
                             $query->with(['waste.classesWastes', 'package'])    
                         ])
@@ -225,9 +225,9 @@ class IntermentGuideControllerReciever extends Controller
         $guide = $guide->with(['warehouse' => fn($query) =>
                             $query->with(['front','company','location','lot','projectArea','stage'])
                         ])
-                        ->with('approvant.userType')
-                        ->with('applicant.userType')
-                        ->with('reciever.userType')
+                        ->with('approvant.role')
+                        ->with('applicant.role')
+                        ->with('reciever.role')
                         ->with(['guideWastes' => fn($query) =>
                             $query->with(['waste.classesWastes', 'package'])    
                         ])
@@ -259,8 +259,8 @@ class IntermentGuideControllerReciever extends Controller
         $guide = $guide->with(['warehouse' => fn($query) =>
                                 $query->with(['front','company','location','lot','projectArea','stage'])
                                 ])
-                        ->with('approvant.userType')
-                        ->with('applicant.userType')
+                        ->with('approvant.role')
+                        ->with('applicant.role')
                         ->with(['guideWastes' => fn($query) =>
                             $query->with(['waste.classesWastes', 'package'])    
                         ])

@@ -22,7 +22,7 @@
 
             <div class="link-boxes-container mt-4">
 
-                @if (Auth::user()->userType->name == 'SOLICITANTE')
+                @if (Auth::user()->role->name == 'SOLICITANTE')
                 <a href="{{route('guides.create')}}">
                     <div class="link-box">
                         <div class="img-context-link-container">
@@ -34,6 +34,8 @@
                     </div>
                 </a>
                 @endif
+
+                @if (Auth::user()->role->name != 'GESTOR')
 
                 <a href="{{$routeApproved}}">
                     <div class="link-box">
@@ -68,7 +70,44 @@
                     </div>
                 </a>
 
-                @if (in_array(Auth::user()->userType->name, ['ADMINISTRADOR','SOLICITANTE']))
+                @else
+
+                <a href="{{route('stock.index')}}">
+                    <div class="link-box">
+                        <div class="img-context-link-container">
+                            <i class="fa-solid fa-layer-group"></i>
+                        </div>
+                        <div class="context-home-text">
+                            Gestionar Stock
+                        </div>
+                    </div>
+                </a>
+               
+                <a href="">
+                    <div class="link-box">
+                        <div class="img-context-link-container">
+                            <i class="fa-solid fa-truck-moving"></i>
+                        </div>
+                        <div class="context-home-text">
+                            Gestionar Transporte
+                        </div>
+                    </div>
+                </a>
+
+                <a href="">
+                    <div class="link-box">
+                        <div class="img-context-link-container">
+                             <i class="fa-solid fa-industry"></i>
+                        </div>
+                        <div class="context-home-text">
+                            Disposición final
+                        </div>
+                    </div>
+                </a>
+
+                @endif
+
+                @if (in_array(Auth::user()->role->name, ['ADMINISTRADOR','SOLICITANTE']))
                 <a href="{{$routeWastes}}">
                     <div class="link-box">
                         <div class="img-context-link-container">
@@ -81,7 +120,7 @@
                 </a>
                 @endif
 
-                @if (Auth::user()->userType->name == 'ADMINISTRADOR')
+                @if (Auth::user()->role->name == 'ADMINISTRADOR')
                 
                 <a href="{{route('warehouses.index')}}">
                     <div class="link-box">
