@@ -2568,7 +2568,7 @@ $(function() {
             dataType: 'JSON',
             success: function(data){
                 modal.find('#inputEditNameWasteClass').val(data.name);
-                modal.find('#inputSymbolWasteClass').val(data.name);
+                modal.find('#inputSymbolWasteClass').val(data.symbol);
 
                 selectTypes.append('<option value=""></option>');
                 $.each(data['types'], function(key, value){

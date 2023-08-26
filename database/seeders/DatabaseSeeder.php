@@ -14,7 +14,8 @@ use App\Models\{
     User,
     Role,
     Warehouse,
-    WasteType
+    WasteType,
+    PackageType
 };
 
 class DatabaseSeeder extends Seeder
@@ -44,8 +45,8 @@ class DatabaseSeeder extends Seeder
             'id_role' => '1',
             'user_name' => 'admin',
             'password' => Hash::make('123456'),
-            'name' => 'Daniel Pretell',
-            'email' => 'elw.danielpretell@gmail.com',
+            'name' => 'Administrador',
+            'email' => 'adminl@gmail.com',
             'phone' => '987654321',
             'comment' => null,
             'url_signature' => '',
@@ -248,6 +249,18 @@ class DatabaseSeeder extends Seeder
 
         foreach($dataWasteTypes as $waste){
             WasteType::create($waste);
+        }
+
+        $dataPackages = [
+            ['name' => 'Pallet'],
+            ['name' => 'Caja de Madera'],
+            ['name' => 'Costal Plástico'],
+            ['name' => 'Cilindro Plástico'],
+            ['name' => 'Cilindro Metálico'],
+        ];
+
+        foreach($dataPackages as $package){
+            PackageType::create($package);
         }
     }
 }
