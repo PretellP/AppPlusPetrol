@@ -247,8 +247,6 @@ $(function() {
         }
     };
 
-
-
     $.ajaxSetup({
         headers:{
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -285,8 +283,6 @@ $(function() {
             }
         });
     }
-
-
    
 
 
@@ -302,9 +298,9 @@ $(function() {
             processing: true,
             ajax: getDataUrl,
             columns:[
-                {data: 'DT_RowIndex', name:'DT_RowIndex'},
-                {data: 'email', name:'email'},
+                {data: 'id', name:'id'},
                 {data: 'name', name:'name'},
+                {data: 'email', name:'email'},
                 {data: 'phone', name:'phone'},
                 {data: 'profile', name:'profile'},
                 {data: 'company', name:'company'},
@@ -343,6 +339,8 @@ $(function() {
                     },
                     dataType: 'JSON',
                     success: function(data){
+                        userCompanySelect.html('');
+
                         if(data.valid == 'valid')
                         {
                             if(!($('#selectApprovingsRegister').length))
@@ -372,6 +370,13 @@ $(function() {
                         }else{
                             $('#selectApprovingsRegister').remove();
                         }
+
+                        userCompanySelect.append('<option></option>');
+
+                        $.each(data.companies, function(key, values){
+                            userCompanySelect.append('<option value="'+values.id+'"> '+values.name+' </option>');
+                        })
+    
                     },
                     error: function(data){
                         console.log(data);
@@ -526,7 +531,6 @@ $(function() {
                 cancelButtonText: 'Cancelar',
                 reverseButtons: true,
               }).then(function(e){
-
                 if(e.value === true){
                     $.ajax({
                         type: 'DELETE',
@@ -3965,13 +3969,13 @@ $(function() {
             },
             columns:[
                 {data: 'code', name:'code'},
-                {data: 'date', name:'date'},
-                {data: 'lot', name:'lot'},
-                {data: 'stage', name:'stage'},
-                {data: 'location', name:'location'},
-                {data: 'proyect', name:'proyect'},
-                {data: 'company', name:'company'},
-                {data: 'front', name:'front'},
+                {data: 'created_at', name:'created_at'},
+                {data: 'warehouse.lot.name', name: 'warehouse.lot.name'},
+                {data: 'warehouse.stage.name', name:'warehouse.stage.name'},
+                {data: 'warehouse.location.name', name:'warehouse.location.name'},
+                {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name'},
+                {data: 'warehouse.company.name', name:'warehouse.company.name'},
+                {data: 'warehouse.front.name', name:'warehouse.front.name'},
                 {data: 'action', name:'action', orderable: false, searchable: false},
             ]
         });
@@ -4295,13 +4299,12 @@ $(function() {
 
      /* -----------  MANAGER STOCK ------------*/
 
-    if($('#interment-guides-table-manager').length){
+    if($('#interment-wastes-table-manager').length){
 
-        var intermentGuideManagerTableEle = $('#interment-guides-table-manager');
-        var getDataUrl = intermentGuideManagerTableEle.data('url');
-        var intermentGuideManagerTable = intermentGuideManagerTableEle.DataTable({
+        var intermentWasteManagerTableEle = $('#interment-wastes-table-manager');
+        var getDataUrl = intermentWasteManagerTableEle.data('url');
+        var intermentWasteManagerTable = intermentWasteManagerTableEle.DataTable({
             language: DataTableEs,
-            order: [[2, 'desc']],
             serverSide: true,
             processing: true,
             ajax: {
@@ -4312,15 +4315,17 @@ $(function() {
             },
             columns:[
                 {data: 'choose', name:'choose', orderable: false, searchable: false},
-                {data: 'code', name:'code'},
-                {data: 'date', name:'date'},
-                {data: 'company', name:'company'},
-                {data: 'weight', name:'weight'},
-                {data: 'packages', name:'packages'},
-                {data: 'status', name:'status'}
+                {data: 'guide.code', name:'guide.code', orderable: false,},
+                {data: 'waste.classes_wastes', name:'waste.classesWastes.symbol', orderable: false},
+                {data: 'waste.name', name:'waste.name', orderable: false},
+                {data: 'package.name', name:'package.name', orderable: false},
+                {data: 'actual_weight', name:'actual_weight', orderable: false},
+                {data: 'package_quantity', name:'package_quantity', orderable: false},
+                {data: 'guide.warehouse.company.name', name:'guide.warehouse.company.name', orderable: false},
+                {data: 'guide.date_verified', name:'guide.date_verified', orderable: false},
+                {data: 'status', name:'status', orderable: false, searchable: false}
             ]
         });
-
 
         var packingGuideManagerTableEle = $('#packing-guides-table-manager');
         var getDataPackingUrl = packingGuideManagerTableEle.data('url');
@@ -4337,12 +4342,12 @@ $(function() {
             },
             columns:[
                 {data: 'choose', name:'choose', orderable: false, searchable: false},
-                {data: 'code', name:'code'},
-                {data: 'date', name:'date'},
-                {data: 'weight', name:'weight'},
-                {data: 'packages', name:'packages'},
+                {data: 'cod_guide', name:'cod_guide'},
+                {data: 'date_guides_departure', name:'date_guides_departure'},
+                {data: 'weight', name:'weight', orderable: false, searchable: false},
+                {data: 'packages', name:'packages', orderable: false, searchable: false},
                 {data: 'volum', name:'volum'},
-                {data: 'status', name:'status'}
+                {data: 'status', name:'status', orderable: false, searchable: false}
             ]
         });
 
@@ -4357,6 +4362,22 @@ $(function() {
                 dropdownParent: $("#updateDeparturePgModal"),
                 placeholder: 'Selecciona un destino'
         });
+
+
+        intermentWasteManagerTable.on('draw.dt', function () {
+            var btn_container = $('#btn-register-packing-guide-container')
+            btn_container.html('<div class="btn btn-secondary" style="pointer-events: none;"> \
+                                        <i class="fa-solid fa-square-plus"></i> &nbsp; <span class="me-1"> Realizar Carga </span>\
+                                </div>');
+        } );
+
+
+        packingGuideManagerTable.on('draw.dt', function () {
+            var btn_container = $('#btn-update-departure-container')
+            btn_container.html('<div class="btn btn-secondary" style="pointer-events: none;"> \
+                                    <i class="fa-solid fa-square-plus"></i> &nbsp; <span class="me-1"> Dar salida </span>\
+                                </div>');
+        } );
 
 
         $('body').on('click', '.checkbox-guide-label', function(){
@@ -4426,21 +4447,18 @@ $(function() {
                 dataType: 'JSON',
                 success: function(data){
 
-                    $.each(data['guides'], function(key, values){
-                        var weight = 0 
-                        var packages = 0
-                        $.each(values['guide_wastes'], function(index, waste){
-                            weight += waste.actual_weight;
-                            packages += waste.package_quantity;
-                        });
+                    $.each(data['wastes'], function(key, values){
 
                         tbody.append('<tr> \
                                         <input name="guides-pg-ids[]" type="hidden" value="'+values.id+'"> \
-                                        <td>'+values.code+'</td> \
-                                        <td>'+values.date_verified+'</td> \
-                                        <td>'+values['warehouse']['company'].name+'</td> \
-                                        <td>'+weight+'</td> \
-                                        <td>'+packages+'</td> \
+                                        <td>'+values['guide'].code+'</td> \
+                                        <td>'+values['waste']['classes_wastes'][0].symbol+'</td> \
+                                        <td>'+values['waste'].name+'</td> \
+                                        <td>'+values['package'].name+'</td> \
+                                        <td>'+values.actual_weight+'</td> \
+                                        <td>'+values.package_quantity+'</td> \
+                                        <td>'+values['guide']['warehouse']['company'].name+'</td> \
+                                        <td>'+values['guide'].date_verified+'</td> \
                                     </tr>');
                     })
 
@@ -4456,6 +4474,7 @@ $(function() {
             });
 
         })
+
 
         $('#register-pg-manager-form').on('submit', function(e){
             e.preventDefault();
@@ -4502,7 +4521,7 @@ $(function() {
                                                 <i class="fa-solid fa-square-plus"></i> &nbsp; Realizar Carga \
                                             </div>');
     
-                        intermentGuideManagerTable.draw();
+                        intermentWasteManagerTable.draw();
                         packingGuideManagerTable.draw();
                         spinner.toggleClass('active');
                         modal.modal('hide');
@@ -4519,53 +4538,51 @@ $(function() {
            
         })
 
-        $('body').on('click', '.btn-show-guide', function(e){
-            e.preventDefault();
-            var button = $(this);
-            var url = button.data('url');
-            var modal = $('#showGuideDetailModal');
-            var tableGuide = $('#t-body-show-guide-manager');
-            var tableWastes = $('#t-body-guide-wastes-manager');
-            tableGuide.html('');
-            tableWastes.html('');
 
-            $.ajax({
-                type: 'GET',
-                url: url,
-                dataType: 'JSON',
-                success: function(data){
-                    var guide = data['guide'];
+        // $('body').on('click', '.btn-show-guide', function(e){
+        //     e.preventDefault();
+        //     var button = $(this);
+        //     var url = button.data('url');
+        //     var modal = $('#showGuideDetailModal');
+        //     var tableGuide = $('#t-body-show-guide-manager');
+        //     var tableWastes = $('#t-body-guide-wastes-manager');
+        //     tableGuide.html('');
+        //     tableWastes.html('');
 
-                    tableGuide.html('<tr>\
-                                        <td>'+guide.code+'</td>\
-                                        <td>'+guide.date_verified+'</td>\
-                                        <td>'+guide['warehouse']['company'].name+'</td>\
-                                        <td>'+data['weight']+'</td>\
-                                        <td>'+data['packages']+'</td>\
-                                        <td>'+data.comment+'</td>\
-                                    </tr>');
+        //     $.ajax({
+        //         type: 'GET',
+        //         url: url,
+        //         dataType: 'JSON',
+        //         success: function(data){
+        //             var guide = data['guide'];
 
-                    $.each(guide['guide_wastes'], function(key, values){
-                        tableWastes.append('<tr>\
-                                                <td>'+values['waste']['classes_wastes'][0].symbol+'</td>\
-                                                <td>'+values['waste'].name+'</td>\
-                                                <td>'+values['package'].name+'</td>\
-                                                <td>'+values.actual_weight+'</td>\
-                                                <td>'+values.package_quantity+'</td>\
-                                            </tr>');
-                                            });
+        //             tableGuide.html('<tr>\
+        //                                 <td>'+guide.code+'</td>\
+        //                                 <td>'+guide.date_verified+'</td>\
+        //                                 <td>'+guide['warehouse']['company'].name+'</td>\
+        //                                 <td>'+data['weight']+'</td>\
+        //                                 <td>'+data['packages']+'</td>\
+        //                                 <td>'+data.comment+'</td>\
+        //                             </tr>');
 
-                    console.log(data['guide']);
-                    modal.modal('toggle');
-                },
-                error: function(data){
-                    console.log(data);
-                }
-            })
-        })
+        //             $.each(guide['guide_wastes'], function(key, values){
+        //                 tableWastes.append('<tr>\
+        //                                         <td>'+values['waste']['classes_wastes'][0].symbol+'</td>\
+        //                                         <td>'+values['waste'].name+'</td>\
+        //                                         <td>'+values['package'].name+'</td>\
+        //                                         <td>'+values.actual_weight+'</td>\
+        //                                         <td>'+values.package_quantity+'</td>\
+        //                                     </tr>');
+        //                                     });
 
-
-
+        //             console.log(data['guide']);
+        //             modal.modal('toggle');
+        //         },
+        //         error: function(data){
+        //             console.log(data);
+        //         }
+        //     })
+        // })
 
 
         $('body').on('click', '.checkbox-packingGuide-label', function(){
@@ -4606,8 +4623,6 @@ $(function() {
         })
 
 
-
-
         $('body').on('click', '.btn-show-packingGuide', function(e){
             e.preventDefault();
             var button = $(this);
@@ -4628,7 +4643,7 @@ $(function() {
                 dataType: 'JSON',
                 success: function(data){
                     var guide = data['guide'];
-                        console.log(guide);
+
                     tablePgBody.html('<tr> \
                                         <td>'+guide.cod_guide+'</td>\
                                         <td>'+guide.date_guides_departure+'</td>\
@@ -4637,20 +4652,17 @@ $(function() {
                                         <td>'+guide.volum+'</td>\
                                     </tr>');
 
-                    $.each(guide['guides'], function(key, values){
-                        var weightGuide = 0
-                        var packageGuide = 0
-                        $.each(values['guide_wastes'], function(index, waste){
-                            weightGuide += waste.actual_weight;
-                            packageGuide += waste.package_quantity
-                        })
-
+                    $.each(guide['wastes'], function(key, values){
+                        
                         tableIntGuideBody.append('<tr>\
-                                                    <td>'+values.code+'</td>\
-                                                    <td>'+values.date_verified+'</td>\
-                                                    <td>'+values['warehouse']['company'].name+'</td>\
-                                                    <td>'+weightGuide+'</td>\
-                                                    <td>'+packageGuide+'</td>\
+                                                    <td>'+values['guide'].code+'</td>\
+                                                    <td>'+values['waste']['classes_wastes'][0].symbol+'</td>\
+                                                    <td>'+values['waste'].name+'</td>\
+                                                    <td>'+values['package'].name+'</td>\
+                                                    <td>'+values.actual_weight+'</td>\
+                                                    <td>'+values.package_quantity+'</td>\
+                                                    <td>'+values['guide']['warehouse']['company'].name+'</td>\
+                                                    <td>'+values['guide'].date_verified+'</td>\
                                                 </tr>');
                     })
 
@@ -4662,6 +4674,7 @@ $(function() {
             });
 
         })
+
 
         $('body').on('click', '#btn-update-departure-modal',function(){
             var button = $(this);
@@ -4693,11 +4706,9 @@ $(function() {
                     $.each(guides, function(key, values){
                         var weight = 0;
                         var packages = 0;
-                        $.each(values['guides'], function(index, guide){
-                            $.each(guide['guide_wastes'], function(index2, waste){
-                                weight += waste.actual_weight
-                                packages += waste.package_quantity
-                            })
+                        $.each(values['wastes'], function(index, waste){
+                            weight += waste.actual_weight
+                            packages += waste.package_quantity
                         })
 
                         tbody.append('<tr>\
@@ -4708,7 +4719,7 @@ $(function() {
                                         <td>'+packages+'</td>\
                                         <td>'+values.volum+'</td>\
                                     </tr>');
-                    })   
+                    })
 
                     spinner.toggleClass('active');
                     modal.modal('toggle');
@@ -4779,17 +4790,7 @@ $(function() {
             })
         })
 
-
-
-
-
     }
-
-
-    
-
- 
-
 
 });
 

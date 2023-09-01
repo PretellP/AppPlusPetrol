@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\{IntermentGuide, WasteType, PackageType};
+use App\Models\{IntermentGuide, WasteType, PackageType, PackingGuide};
 
 class GuideWaste extends Model
 {
@@ -25,5 +25,10 @@ class GuideWaste extends Model
     public function package()
     {
         return $this->belongsTo(PackageType::class, 'id_packageType', 'id');
+    }
+
+    public function packingGuide()
+    {
+        return $this->belongsTo(PackingGuide::class, 'id_packing_guide', 'id');
     }
 }

@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use App\Models\{User, Role, Company};
+use App\Models\{User, Role, Company, OwnerCompany};
 use DataTables;
 use Auth;
 
@@ -14,21 +14,21 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $users = User::with('role')->get();
-        $roles = Role::all();
-        $companies = Company::all();
-
         if($request->ajax())
         {
-            $allUsers = DataTables::of($users)
-                ->addIndexColumn()
+            $allUsers = DataTables::of(User::query()
+                                    ->with(['role', 'company', 'ownerCompany'])
+                )
                 ->addColumn('profile', function($user){
                     return $user->role->name;
                 })
                 ->addColumn('company', function($user){
-                    $company = '';
+                    $company = '- -';
+
                     if($user->company != null){
                         $company = $user->company->name;
+                    }elseif($user->ownerCompany != null){
+                        $company = $user->ownerCompany->name;
                     }
                     return $company;
                 })
@@ -56,11 +56,13 @@ class UserController extends Controller
                 ->make(true);
             return $allUsers;
         }
+        else
+        {
+            $roles = Role::all();
+        }
 
         return view('principal.viewAdmin.users.index', [
-            'users' => $users,
             'roles' => $roles,
-            'companies' => $companies
         ]);
     }
 
@@ -84,10 +86,13 @@ class UserController extends Controller
                                 ->where('id_company', $request['company_id'])->get();
                 }
             }
-           
+
+            $companies = in_array($role, ['SOLICITANTE', 'APROBANTE']) ? Company::all() : OwnerCompany::all();
+
             return response()->json([
                 'valid' => $status,
-                'approvings' => $approvings
+                'approvings' => $approvings,
+                'companies' => $companies
             ]);
         }
         elseif($request['type'] == 'company')
@@ -112,13 +117,17 @@ class UserController extends Controller
         $uuid = $file->hashName();
         $storeUrl = $path.$uuid;
         $status = $request['user-status-checkbox'] == 'on' ? 1 : 0;
+
+        $company = in_array($request['id_role'], [2, 3]) ? $request['id_user_company'] : null;
+        $ownerCompany = in_array($request['id_role'], [2, 3]) ? null : $request['id_user_company'];
         
         Storage::putFileAs($path, $file, $uuid);
 
         $user = User::create(
                     [
                         "id_role" => $request['id_role'],
-                        "id_company" => $request['id_user_company'],
+                        "id_company" => $company,
+                        "id_owner_company" => $ownerCompany,
                         'user_name' => $request['username'],
                         'password' => Hash::make($request['password']),
                         'name' => $request['name'],
@@ -143,7 +152,9 @@ class UserController extends Controller
 
 
     public function edit(User $user)
-    {      
+    {  
+        $user = User::where('id', $user->id)->with(['role', 'approvings', 'company', 'ownerCompany'])->first();  
+
         if($user->url_signature == '' || $user->url_signature == null)
         {
             $url_signature = '';
@@ -158,7 +169,7 @@ class UserController extends Controller
         if($role == 'SOLICITANTE')
         {
             $validApplicant = true;
-            $selectedApprovings = $user->approvings()->get()->pluck('id')->toArray();
+            $selectedApprovings = $user->approvings->pluck('id')->toArray();
             $approvings = User::whereHas('role', function($query){
                                         $query->where('name', 'APROBANTE');
                                 })
@@ -168,7 +179,14 @@ class UserController extends Controller
 
         $last_login = $user->last_login_at == null ? '- -' : getDiffForHumansFromTimestamp($user->last_login_at);
 
-        $companyName = $user->company == null ? null : $user->company->name; 
+        $companyName = null;
+
+        if($user->company != null)
+        {
+            $companyName = $user->company->name;
+        }elseif($user->ownerCompany != null){
+            $companyName = $user->ownerCompany->name;
+        }
 
         return response()->json([
             "username" => $user->user_name,

@@ -19,49 +19,36 @@ class IntermentGuideControllerReciever extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-
+        
         if($request->ajax())
         {
             if($request['table'] == 'pending')
             {
-                $guidesPending = IntermentGuide::where('stat_approved', 1)
-                                                ->where('stat_recieved', 0)
-                                                ->where('stat_rejected', 0)
-                                                ->whereHas('applicant.company', function($query) use($user){
-                                                    $query->where('id', $user->company->id);
-                                                })->get();
+                $allGuides = IntermentGuide::where('stat_approved', 1)
+                                            ->where('stat_recieved', 0)
+                                            ->where('stat_rejected', 0)
+                                            ->with(['warehouse', 
+                                                    'warehouse.lot',
+                                                    'warehouse.company',
+                                                    'warehouse.front',
+                                                    'warehouse.location',
+                                                    'warehouse.projectArea',
+                                                    'warehouse.stage',
+                                                    'warehouse.guides'
+                                            ]);
 
-                $allGuides = DataTables::of($guidesPending)
-                ->addColumn('date', function($guide){
-                    return $guide->created_at;
-                })
-                ->addColumn('lot', function($guide){
-                    return $guide->warehouse->lot->name;
-                })
-                ->addColumn('stage', function($guide){
-                    return $guide->warehouse->stage->name;
-                })
-                ->addColumn('location', function($guide){
-                    return $guide->warehouse->location->name;
-                })
-                ->addColumn('proyect', function($guide){
-                    return $guide->warehouse->projectArea->name;
-                })
-                ->addColumn('company', function($guide){
-                    return $guide->warehouse->company->name;
-                })
-                ->addColumn('front', function($guide){
-                    return $guide->warehouse->front->name;
-                })
-                ->addColumn('action', function($guide){
-                    $btn = '<a href="'.route('recieverGuides.show', $guide).'"
-                            data-original-title="show" class="me-3 edit btn btn-info btn-sm"><i class="fa-solid fa-eye"></i></a>';
+                return DataTables::of($allGuides)
+                    ->editColumn('created_at', function($guide){
+                        return $guide->created_at;
+                    })
+                    ->addColumn('action', function($guide){
+                        $btn = '<a href="'.route('recieverGuides.show', $guide).'"
+                                data-original-title="show" class="me-3 edit btn btn-info btn-sm"><i class="fa-solid fa-eye"></i></a>';
 
-                    return $btn;
-                })
-                ->rawColumns(['action'])
-                ->make(true);
-                return $allGuides;
+                        return $btn;
+                    })
+                    ->rawColumns(['action'])
+                    ->toJson();
             }
             elseif($request['table'] == 'recieved')
             {

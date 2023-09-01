@@ -25,7 +25,6 @@ class CreateInternmentGuidesTable extends Migration
             $table->dateTime('date_recieved')->nullable();
             $table->boolean('stat_verified');
             $table->dateTime('date_verified')->nullable();
-            $table->boolean('stat_stock');
             $table->timestamps();
         });
     }

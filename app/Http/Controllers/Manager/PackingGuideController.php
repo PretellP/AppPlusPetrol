@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Auth;
 use DataTables;
-use App\Models\{IntermentGuide, PackingGuide};
+use App\Models\{IntermentGuide, PackingGuide, GuideWaste};
 
 class PackingGuideController extends Controller
 {
@@ -14,70 +14,66 @@ class PackingGuideController extends Controller
     {
         $user = Auth::user();
 
-        $guides = IntermentGuide::whereHas('checker', function($query) use($user){
-                                    $query->where('id_company', $user->id_company);
-                                })
-                                ->where('stat_approved', 1)
-                                ->where('stat_recieved', 1)
-                                ->where('stat_verified', 1)
-                                ->with(['guideWastes', 'warehouse.company'])
-                                ->get();
-
-        $packingGuides = PackingGuide::with('guides.guideWastes')->get();
+        // $wastes = GuideWaste::whereHas('guide', function($query){
+        //     $query->where('stat_approved', 1)
+        //         ->where('stat_recieved', 1)
+        //         ->where('stat_verified', 1);
+        // })
+        // ->with(['waste.classesWastes',
+        //         'guide',
+        //         'guide.warehouse.company',
+        //         'package'
+        // ])->get();
+    
+        // dd($wastes);
 
         if($request->ajax())
-        {    
+        {     
             if($request['table'] == 'intGuide')
             {
-                $allGuides = DataTables::of($guides)
-                ->addColumn('choose', function($guide){
-                    $checkbox = '<div class="custom-checkbox custom-control">
-                                    <input type="checkbox" name="guides-selected[]"  data-status="'.$guide->stat_stock.'" class="custom-control-input" id="checkbox-'.$guide->id.'" value="'.$guide->id.'">
-                                    <label for="checkbox-'.$guide->id.'" class="custom-control-label checkbox-guide-label">&nbsp;</label>
-                                </div>';
-                    return $checkbox;
-                })
-                ->addColumn('code', function($guide){
-                    $link = '<a href="" class="btn-show-guide" data-url="'.route('loadGuideDetail.manager', $guide).'">'.$guide->code.'</a>';
-                    return $link;
-                })
-                ->addColumn('date', function($guide){
-                    return $guide->date_verified;
-                })
-                ->addColumn('company', function($guide){
-                    return $guide->warehouse->company->name;
-                })
-                ->addColumn('weight', function($guide){
-                    $weight = $guide->guideWastes->sum(function($waste){
-                                return $waste->actual_weight;
-                            });
-                    return $weight;
-                })
-                ->addColumn('packages', function($guide){
-                    $packages = $guide->guideWastes->sum(function($waste){
-                        return $waste->package_quantity;
-                    });
-                    return $packages;
-                })
-                ->addColumn('status', function($guide){
-                    $status = '<span class="info-guide-pending">
-                                    Pendiente
-                                </span>';
-                    if($guide->stat_stock == 1)
-                    {
-                        $status = '<span class="info-guide-checked">
-                                        Gestionado
-                                    </span>';
-                    }
-                    return $status;
-                })
-                ->rawColumns(['choose','code','status'])
-                ->make(true);
+                $wastes = GuideWaste::whereHas('guide', function($query){
+                                        $query->where('stat_approved', 1)
+                                            ->where('stat_recieved', 1)
+                                            ->where('stat_verified', 1);
+                                    })
+                                    ->with(['waste.classesWastes',
+                                            'guide',
+                                            'guide.warehouse.company',
+                                            'package'
+                                    ]);
 
-                return $allGuides;
+                $allWastes = DataTables::of($wastes)
+                            ->addColumn('choose', function($waste){
+                                $checkbox = '<div class="custom-checkbox custom-control">
+                                                <input type="checkbox" name="guides-selected[]"  data-status="'.$waste->stat_stock.'" class="custom-control-input" id="checkbox-'.$waste->id.'" value="'.$waste->id.'">
+                                                <label for="checkbox-'.$waste->id.'" class="custom-control-label checkbox-guide-label">&nbsp;</label>
+                                            </div>';
+                                return $checkbox;
+                            })
+                            ->addColumn('waste.classes_wastes', function($waste){
+                                return $waste->waste->classesWastes->first()->symbol;
+                            })
+                            ->addColumn('status', function($waste){
+                                $status = '<span class="info-guide-pending">
+                                                Pendiente
+                                            </span>';
+                                if($waste->stat_stock == 1)
+                                {
+                                    $status = '<span class="info-guide-checked">
+                                                    Gestionado
+                                                </span>';
+                                }
+                                return $status;
+                            })
+                            ->rawColumns(['choose','status'])
+                            ->make(true);
+
+                return $allWastes;
             }
             elseif($request['table'] == 'packing')
             {
+                $packingGuides = PackingGuide::with('wastes');
+
                 $allPackingGuides = DataTables::of($packingGuides)
                 ->addColumn('choose', function($guide){
                     $checkbox = '<div class="custom-checkbox custom-control">
@@ -86,31 +82,21 @@ class PackingGuideController extends Controller
                                 </div>';
                     return $checkbox;
                 })
-                ->addColumn('code', function($guide){
+                ->editColumn('cod_guide', function($guide){
                     $link = '<a href="" class="btn-show-packingGuide" data-url="'.route('loadPackingGuideDetail.manager', $guide).'">'.$guide->cod_guide.'</a>';
                     return $link;
                 })
-                ->addColumn('date', function($guide){
-                    return $guide->date_guides_departure;
-                })
                 ->addColumn('weight', function($guide){
-                    $weight = $guide->guides->sum(function($intGuide){
-                                                return $intGuide->guideWastes->sum(function($waste){
+                    $weight = $guide->wastes->sum(function($waste){
                                                     return $waste->actual_weight;
                                                 });
-                                            });
                     return $weight;
                 })
                 ->addColumn('packages', function($guide){
-                    $packages = $guide->guides->sum(function($intGuide){
-                                                return $intGuide->guideWastes->sum(function($waste){
+                    $packages = $guide->wastes->sum(function($waste){
                                                     return $waste->package_quantity;
                                                 });
-                                            });
                     return $packages;
-                })
-                ->addColumn('volum', function($guide){
-                    return $guide->volum;
                 })
                 ->addColumn('status', function($guide){
                     $status = '<span class="info-guide-pending">
@@ -124,7 +110,7 @@ class PackingGuideController extends Controller
                     }
                     return $status;
                 })
-                ->rawColumns(['choose','code','status'])
+                ->rawColumns(['choose','cod_guide','status'])
                 ->make(true);
 
                 return $allPackingGuides;
@@ -137,27 +123,25 @@ class PackingGuideController extends Controller
 
     public function loadGuidesSelected(Request $request)
     {
-
         if($request['table'] == 'packingGuide')
         {
-            $guides = IntermentGuide::whereIn('id', $request['values'])
-                                    ->with(['guideWastes', 'warehouse.company'])
-                                    ->get();
+            $wastes = GuideWaste::whereIn('id', $request['values'])
+                                ->with(['waste.classesWastes',
+                                        'guide',
+                                        'guide.warehouse.company',
+                                        'package'
+                                ])->get();
 
-            $weight = $guides->sum(function($guide){
-                                return $guide->guideWastes->sum(function($waste){
-                                return $waste->actual_weight;
+            $weight = $wastes->sum(function($waste){
+                                    return $waste->actual_weight;
                                 });
-            });
 
-            $packages = $guides->sum(function($guide){
-                                return $guide->guideWastes->sum(function($waste){
-                                return $waste->package_quantity;
+            $packages = $wastes->sum(function($waste){
+                                    return $waste->package_quantity;
                                 });
-            });
 
             return response()->json([
-                "guides" => $guides,
+                "wastes" => $wastes,
                 "weight" => $weight,
                 "packages" => $packages
             ]);
@@ -165,7 +149,7 @@ class PackingGuideController extends Controller
         elseif($request['table'] == "departure")
         {
             $packingGuides = PackingGuide::whereIn('id', $request['values'])
-                                        ->with('guides.guideWastes')
+                                        ->with('wastes')
                                         ->get();
 
             return response()->json([
@@ -186,11 +170,11 @@ class PackingGuideController extends Controller
             "stat_transport_departure" => 0
         ]);
 
-        $guides = IntermentGuide::whereIn('id', $request['guides-pg-ids'])->get();
+        $wastes = GuideWaste::whereIn('id', $request['guides-pg-ids'])->get();
 
-        foreach($guides as $guide)
+        foreach($wastes as $waste)
         {
-            $guide->update([
+            $waste->update([
                 "stat_stock" => 1,
                 "id_packing_guide" => $packingGuide->id
             ]);
@@ -201,52 +185,22 @@ class PackingGuideController extends Controller
         ]);
     }
 
-    public function loadGuideDetail(Request $request, IntermentGuide $guide)
-    {
-        $guide = $guide->where('id', $guide->id)
-                        ->with(['warehouse.company'])
-                        ->with(['guideWastes' => fn($query) =>
-                                $query->with(['waste.classesWastes', 'package'])
-                        ])
-                        ->first();
-
-        $weight = $guide->guideWastes->sum(function($waste){
-                        return $waste->actual_weight;
-                    });
-
-        $packages =  $guide->guideWastes->sum(function($waste){
-                        return $waste->package_quantity;
-                    });
-
-        $comment = $guide->comment == null ? 'Sin obervaciones' : $guide->comment;
-
-        return response()->json([
-            "guide" => $guide,
-            "weight" => $weight,
-            "packages" => $packages,
-            "comment" => $comment
-        ]);
-    }
-
     public function loadPackingGuideDetail(Request $request, PackingGuide $guide)
     {
         $guide = $guide->where('id', $guide->id)
-                        ->with(['guides' => fn($query) => 
-                            $query->with(['guideWastes.waste.classesWastes', 'warehouse.company'])
+                        ->with(['wastes.guide.warehouse.company',
+                                'wastes.waste.classesWastes',
+                                'wastes.package'
                         ])
                         ->first();
 
-        $weight = $guide->guides->sum(function($intGuide){
-                                    return $intGuide->guideWastes->sum(function($waste){
+        $weight = $guide->wastes->sum(function($waste){
                                         return $waste->actual_weight;
                                     });
-                                });
 
-        $packages = $guide->guides->sum(function($intGuide){
-                                    return $intGuide->guideWastes->sum(function($waste){
+        $packages = $guide->wastes->sum(function($waste){
                                         return $waste->package_quantity;
                                     });
-                                });
 
         return response()->json([
             "guide" => $guide,

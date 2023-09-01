@@ -37,15 +37,18 @@
                 </div>
             </div>
 
-            <table id="interment-guides-table-manager" class="table table-hover" data-url="{{route('stock.index')}}">
+            <table id="interment-wastes-table-manager" class="table table-hover" data-url="{{route('stock.index')}}">
                 <thead>
                     <tr>
                         <th>Elegir</th>
                         <th>Nro. Guía de Internamiento</th>
-                        <th>Fecha de verificación</th>
+                        <th>clase</th>
+                        <th>Nom. Residuo</th>
+                        <th>Tipo de embalaje</th>
+                        <th>Peso Original (Kg)</th>
+                        <th>Nro. Bultos</th> 
                         <th>Empresa</th>
-                        <th>Peso total (Kg)</th>
-                        <th>Total bultos</th>
+                        <th>Fecha de verificación</th>
                         <th>Manejo/gestión</th>
                     </tr>
                 </thead>
@@ -86,7 +89,7 @@
 @section('modals')
 
 <div class="modal fade" id="RegisterPackingGuideModal" tabindex="-1" aria-labelledby="RegisterPackingGuideModal" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+    <div class="modal-dialog modal-dialog-scrollable modal-wastes">
         <div class="modal-content">
 
             <div class="modal-header">
@@ -109,7 +112,7 @@
             <div class="modal-body">
 
                 <div class="text-bold p-2 mb-2 subtitle">
-                    Guías de Internamiento seleccionadas:
+                    Residuos seleccionados:
                 </div>
 
 
@@ -117,10 +120,13 @@
                     <thead>
                         <tr>
                             <th>Nro. Guía de Internamiento</th>
-                            <th>Fecha de verificación</th>
+                            <th>clase</th>
+                            <th>Nom. Residuo</th>
+                            <th>Tipo de embalaje</th>
+                            <th>Peso Original (Kg)</th>
+                            <th>Nro. Bultos</th> 
                             <th>Empresa</th>
-                            <th class="weight-pg">Peso (Kg)</th>
-                            <th class="packages-pg">Bultos</th>
+                            <th>Fecha de verificación</th>
                         </tr>
                     </thead>
 
@@ -190,82 +196,9 @@
     </div>
 </div>
 
-<div class="modal fade" id="showGuideDetailModal" tabindex="-1" aria-labelledby="showGuideDetailModal" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-lg">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <h5 class="modal-title" id="showGuideDetailModalTitle">
-                    <div class="section-title mt-0">
-                        <i class="fa-solid fa-layer-group"></i> &nbsp;
-                        <span id="txt-context-element">
-                            Detalle de Guía de Internamiento
-                        </span>
-                    </div>
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true"> &times; </span>
-                </button>
-            </div>
-
-            <div class="modal-body">
-
-                <table id="show-guide-manager-table" class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Nro. Guía</th>
-                            <th>Fecha de verificación</th>
-                            <th>Empresa</th>
-                            <th class="weight-pg">Peso (Kg)</th>
-                            <th class="packages-pg">Bultos</th>
-                            <th>Observaciones</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="t-body-show-guide-manager">
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-
-                </table>
-
-                <div class="text-bold p-2 mb-2 subtitle">
-                    Residuos de guía de internamiento:
-                </div>
-                
-                <table id="guide-wastes-manager-table" class="table table-sm table-hover">
-                    <thead>
-                        <tr>
-                            <th>Clase</th>
-                            <th>Nombre de Residuo</th>
-                            <th>Tipo de embalaje</th>
-                            <th class="weight-pg">Peso (Kg)</th>
-                            <th class="packages-pg">Bultos</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="t-body-guide-wastes-manager">
-                        
-                    </tbody>
-
-                </table>
-                
-            </div>
-        </div>
-
-
-
-    </div>
-</div>
 
 <div class="modal fade" id="showPackingGuideDetailModal" tabindex="-1" aria-labelledby="showPackingGuideDetailModal" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+    <div class="modal-dialog modal-dialog-scrollable modal-wastes">
         <div class="modal-content">
 
             <div class="modal-header">
@@ -308,17 +241,20 @@
                 </table>
 
                 <div class="text-bold p-2 mb-2 subtitle">
-                    Guías de la carga:
+                    Resíduos de la carga:
                 </div>
                 
                 <table id="intGuide-show-manager-table" class="table table-sm table-hover">
                     <thead>
                         <tr>
-                            <th>Nro. Guía de internamiento</th>
-                            <th>Fecha de verificación</th>
+                            <th>Nro. Guía de Internamiento</th>
+                            <th>Clase</th>
+                            <th>Nom. Residuo</th>
+                            <th>Tipo de embalaje</th>
+                            <th>Peso Original (Kg)</th>
+                            <th>Nro. Bultos</th> 
                             <th>Empresa</th>
-                            <th>Peso (Kg)</th>
-                            <th>Bultos</th>
+                            <th>Fecha de verificación</th>
                         </tr>
                     </thead>
 
@@ -330,10 +266,9 @@
             </div>
         </div>
 
-
-
     </div>
 </div>
+
 
 <div class="modal fade" id="updateDeparturePgModal" tabindex="-1" aria-labelledby="updateDeparturePgModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-lg">

@@ -17,6 +17,7 @@ class AddForeignKeysToGuideWastesTable extends Migration
             $table->foreignId('id_guide')->constrained('internment_guides');
             $table->foreignId('id_wasteType')->constrained('waste_types');
             $table->foreignId('id_packageType')->constrained('package_types');
+            $table->foreignId('id_packing_guide')->nullable()->constrained('packing_guides');
         });
     }
 
@@ -31,6 +32,7 @@ class AddForeignKeysToGuideWastesTable extends Migration
             $table->dropForeign(['id_guide']);
             $table->dropForeign(['id_wasteType']);
             $table->dropForeign(['id_packageType']);
+            $table->dropForeign(['id_packing_guide']);
         });
     }
 }

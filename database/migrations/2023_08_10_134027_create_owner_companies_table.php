@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateGuideWastesTable extends Migration
+class CreateOwnerCompaniesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,10 @@ class CreateGuideWastesTable extends Migration
      */
     public function up()
     {
-        Schema::create('guide_wastes', function (Blueprint $table) {
+        Schema::create('owner_companies', function (Blueprint $table) {
             $table->id();
-            $table->double('aprox_weight',8,2);
-            $table->double('actual_weight',8,2)->nullable();
-            $table->integer('package_quantity');
-            $table->boolean('stat_stock');
+            $table->string('name');
+            $table->string('ruc')->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +28,6 @@ class CreateGuideWastesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('guide_wastes');
+        Schema::dropIfExists('owner_companies');
     }
 }

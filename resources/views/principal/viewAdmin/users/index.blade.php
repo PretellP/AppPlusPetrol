@@ -14,7 +14,6 @@
             </div>
         </div>
 
-
         <div class="principal-container card-body card z-index-2">
 
             <div class="mb-4">
@@ -27,8 +26,8 @@
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>Email</th>
                         <th>Nombre</th>
+                        <th>Email</th>
                         <th>Num. cel</th>
                         <th>Perfil</th>
                         <th>Empresa</th>
@@ -153,10 +152,7 @@
 
                             <select data-url="{{route('users.getApprovings')}}" name="id_user_company"
                                 class="form-control select2" id="registerCompanySelect" required>
-                                <option value=""></option>
-                              @foreach ($companies as $company)
-                                <option value="{{$company->id}}"> {{$company->name}} </option>
-                              @endforeach
+                                <option></option>
                             </select>
                         </div>
                     </div>
@@ -234,6 +230,20 @@
                                 <div class="input-group-prepend">
                                     <div class="input-group-text">
                                         <i class="fa-solid fa-user"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-12">
+                            <label for="inputPasswordEdit">Nueva contraseña: </label>
+                            <div class="input-group">
+                                <input type="password" id="inputPasswordEdit" name="password" class="form-control">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <i class="fa-solid fa-lock"></i>
                                     </div>
                                 </div>
                             </div>
@@ -331,19 +341,6 @@
                         </span>
                     </div>
 
-                    <div class="form-row">
-                        <div class="form-group col-12">
-                            <label for="inputPasswordEdit">Nueva contraseña: </label>
-                            <div class="input-group">
-                                <input type="password" id="inputPasswordEdit" name="password" class="form-control">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text">
-                                        <i class="fa-solid fa-lock"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="modal-footer">

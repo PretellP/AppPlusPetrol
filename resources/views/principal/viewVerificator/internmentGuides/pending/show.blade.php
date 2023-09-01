@@ -99,7 +99,7 @@
 
                             <tr id="row-info-total-guide">
                                 <td>{{$wasteType->waste->classesWastes->first()->symbol}}</td>
-                                <td> {{$wasteType->name}} </td>
+                                <td> {{$wasteType->waste->name}} </td>
                                 <td id="info-total-weight"> {{$wasteType->aprox_weight}} </td>
                                 <td> 
                                     {{$wasteType->actual_weight}} 

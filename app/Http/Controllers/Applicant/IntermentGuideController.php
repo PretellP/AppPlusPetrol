@@ -384,7 +384,6 @@ class IntermentGuideController extends Controller
             "stat_approved" => 0,
             "stat_recieved" => 0,
             "stat_verified" => 0,
-            "stat_stock" => 0,
             "id_warehouse" => $request['select-warehouse'],
             "id_applicant" => $user->id,
             "id_approvant" => $request['id_approvant-guide']
@@ -396,7 +395,8 @@ class IntermentGuideController extends Controller
                 "package_quantity" => $request['packageQuantity-'.$id],
                 "id_guide" => $guide->id,
                 "id_wasteType" => $id,
-                "id_packageType" => $request['packageType-'.$id]
+                "id_packageType" => $request['packageType-'.$id],
+                "stat_stock" => 0
             ]);
         }
 

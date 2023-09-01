@@ -19,7 +19,6 @@ class AddForeignKeysToInternmentGuideTable extends Migration
             $table->foreignId('id_approvant')->constrained('users');
             $table->foreignId('id_reciever')->nullable()->constrained('users');
             $table->foreignId('id_checker')->nullable()->constrained('users');
-            $table->foreignId('id_packing_guide')->nullable()->constrained('packing_guides');
         });
     }
 
@@ -36,7 +35,6 @@ class AddForeignKeysToInternmentGuideTable extends Migration
             $table->dropForeign(['id_approvant']);
             $table->dropForeign(['id_reciever']);
             $table->dropForeign(['id_checker']);
-            $table->dropForeign(['id_packing_guide']);
         });
     }
 }

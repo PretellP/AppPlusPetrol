@@ -14,8 +14,9 @@ class AddForeignKeysToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->foreign(['id_role'], 'fk_u_id_role')->references(['id'])->on('roles');
-            $table->foreign(['id_company'], 'fk_u_id_company')->references(['id'])->on('companies');
+            $table->foreignId('id_role')->constrained('roles');
+            $table->foreignId('id_company')->nullable()->constrained('companies');
+            $table->foreignId('id_owner_company')->nullable()->constrained('owner_companies');
         });
     }
 
@@ -27,8 +28,9 @@ class AddForeignKeysToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign('fk_u_id_role');
-            $table->dropForeign('fk_u_id_company');
+            $table->dropForeign(['id_role']);
+            $table->dropForeign(['id_company']);
+            $table->dropForeign(['id_owner_company']);
         });
     }
 }

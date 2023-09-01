@@ -15,16 +15,12 @@ use App\Models\{
     Role,
     Warehouse,
     WasteType,
-    PackageType
+    PackageType,
+    OwnerCompany
 };
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     *
-     * @return void
-     */
     public function run()
     {
         $dataRoles = [
@@ -41,16 +37,23 @@ class DatabaseSeeder extends Seeder
             Role::create($role);
         }
 
+        OwnerCompany::create([
+            'id' => 1,
+            'name' => 'Green Care del Perú S.A.',
+            'ruc' => '20236541651'
+        ]);
+
         User::create([
             'id_role' => '1',
             'user_name' => 'admin',
             'password' => Hash::make('123456'),
             'name' => 'Administrador',
-            'email' => 'adminl@gmail.com',
+            'email' => 'admin@gmail.com',
             'phone' => '987654321',
             'comment' => null,
             'url_signature' => '',
-            'status' => 1
+            'status' => 1,
+            'id_owner_company' => 1
         ]);
 
         $dataLots = [

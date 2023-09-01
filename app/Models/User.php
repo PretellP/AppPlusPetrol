@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-use App\Models\{Role, User, IntermentGuide, Company};
+use App\Models\{Role, User, IntermentGuide, Company, OwnerCompany};
 
 class User extends Authenticatable
 {
@@ -30,7 +30,8 @@ class User extends Authenticatable
         'last_login_at',
         'last_login_ip_address',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'id_owner_company'
     ];
 
     protected $hidden = [
@@ -78,5 +79,10 @@ class User extends Authenticatable
     public function company()
     {
         return $this->belongsTo(Company::class, 'id_company', 'id');
+    }
+
+    public function ownerCompany()
+    {
+        return $this->belongsTo(OwnerCompany::class, 'id_owner_company', 'id');
     }
 }

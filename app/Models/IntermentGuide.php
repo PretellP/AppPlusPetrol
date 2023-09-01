@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\{Warehouse, User, GuideWaste, PackingGuide};
+use App\Models\{Warehouse, User, GuideWaste};
 
 class IntermentGuide extends Model
 {
@@ -42,9 +42,5 @@ class IntermentGuide extends Model
         return $this->hasMany(GuideWaste::class, 'id_guide', 'id');
     }
 
-    public function packingGuides()
-    {
-        return $this->belongsTo(PackingGuide::class, 'id_packing_guide', 'id');
-    }
 
 }
