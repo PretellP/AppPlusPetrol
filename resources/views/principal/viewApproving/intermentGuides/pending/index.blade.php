@@ -18,7 +18,7 @@
 
      
 
-            <table id="guide-pending-table-approvant" class="table table-hover" data-url="{{route('approvingGuides.index')}}">
+            <table id="guide-pending-table-approvant" class="table table-hover" data-url="{{route('approverGuides.index')}}">
                 <thead>
                     <tr class="pending-guides-table-head">
                         <th>Nro de Guía</th>

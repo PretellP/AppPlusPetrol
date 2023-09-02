@@ -18,20 +18,23 @@ class AdminController extends Controller
 
         if ($role == 'APROBANTE') {
             $routeApproved = route('approvingApprovedGuides.index');
-            $routePending = route('approvingGuides.index');
+            $routePending = route('approverGuides.index');
             $routeRejected = route('approvingRejectedGuides.index');
+            $routeWastes = route('generatedWastesApproving.index');
         }
         elseif($role == 'RECEPTOR')
         {
             $routeApproved = route('recieverRecievedGuides.index');
             $routePending = route('recieverGuides.index');
             $routeRejected = route('recieverRejectedGuides.index');
+            $routeWastes = route('generatedWastesReciever.index');
         }
         elseif($role == 'SUPERVISOR')
         {
             $routeApproved = route('verificatorVerifiedGuides.index');
             $routePending = route('verificatorGuides.index');
             $routeRejected = route('verificatorRejectedGuides.index');
+            $routeWastes = route('generatedWastesVerificator.index');
         }
         elseif($role == 'SOLICITANTE')
         {

@@ -18,16 +18,19 @@ use App\Http\Controllers\Applicant\{
     ApplicantGeneratedWastesController
 };
 
-use App\Http\Controllers\Aprobant\{
-    IntermentGuideControllerApproving
+use App\Http\Controllers\Approver\{
+    IntermentGuideControllerApprover,
+    ApproverGeneratedWastesController
 };
 
 use App\Http\Controllers\Reciever\{
-    IntermentGuideControllerReciever
+    IntermentGuideControllerReciever,
+    RecieverGeneratedWastesController
 };
 
 use App\Http\Controllers\Verificator\{
-    IntermentGuideControllerVerificator
+    IntermentGuideControllerVerificator,
+    VerificatorGeneratedWastesController
 };
 
 use App\Http\Controllers\Manager\{
@@ -69,15 +72,17 @@ Route::group(['middleware' => 'auth'], function(){
 
     Route::group(['middleware' => 'check.role:ADMINISTRADOR,APROBANTE'], function(){
 
-        Route::get('/aprobante/guias-pendientes', [IntermentGuideControllerApproving::class, 'index'])->name('approvingGuides.index');
-        Route::get('/aprobante/guias-aprobadas', [IntermentGuideControllerApproving::class, 'indexApproved'])->name('approvingApprovedGuides.index');
-        Route::get('/aprobante/guias-rechazadas', [IntermentGuideControllerApproving::class, 'indexRejected'])->name('approvingRejectedGuides.index');
-        Route::get('/aprobante/guias-aprobadas/ver/{guide}', [IntermentGuideControllerApproving::class, 'approvedShow'])->name('approvingApprovedGuides.show');
-        Route::get('/aprobante/guias-rechazadas/ver/{guide}', [IntermentGuideControllerApproving::class, 'rejectedShow'])->name('approvingRejectedGuides.show');
-        Route::get('/aprobante/guias-pendientes/ver/{guide}', [IntermentGuideControllerApproving::class, 'show'])->name('approvingGuides.show');
-        Route::post('/aprobante/guias-rechazadas/deshacer/{guide}', [IntermentGuideControllerApproving::class, 'undoReject'])->name('approvingGuides.undoReject');
-        Route::post('/aprobante/guias-pendientes/actualizar/{guide}', [IntermentGuideControllerApproving::class, 'update'])->name('approvedGuide.update');
-        Route::post('/aprobante/guias-pendientes/rechazar/{guide}', [IntermentGuideControllerApproving::class, 'updateReject'])->name('guides.rejected');
+        Route::get('/aprobante/guias-pendientes', [IntermentGuideControllerApprover::class, 'index'])->name('approverGuides.index');
+        Route::get('/aprobante/guias-aprobadas', [IntermentGuideControllerApprover::class, 'indexApproved'])->name('approvingApprovedGuides.index');
+        Route::get('/aprobante/guias-rechazadas', [IntermentGuideControllerApprover::class, 'indexRejected'])->name('approvingRejectedGuides.index');
+        Route::get('/aprobante/guias-aprobadas/ver/{guide}', [IntermentGuideControllerApprover::class, 'approvedShow'])->name('approvingApprovedGuides.show');
+        Route::get('/aprobante/guias-rechazadas/ver/{guide}', [IntermentGuideControllerApprover::class, 'rejectedShow'])->name('approvingRejectedGuides.show');
+        Route::get('/aprobante/guias-pendientes/ver/{guide}', [IntermentGuideControllerApprover::class, 'show'])->name('approverGuides.show');
+        Route::post('/aprobante/guias-rechazadas/deshacer/{guide}', [IntermentGuideControllerApprover::class, 'undoReject'])->name('approverGuides.undoReject');
+        Route::post('/aprobante/guias-pendientes/actualizar/{guide}', [IntermentGuideControllerApprover::class, 'update'])->name('approvedGuide.update');
+        Route::post('/aprobante/guias-pendientes/rechazar/{guide}', [IntermentGuideControllerApprover::class, 'updateReject'])->name('guides.rejected');
+
+        Route::get('/aprobante/residuos-generados', [ApproverGeneratedWastesController::class, 'index'])->name('generatedWastesApproving.index');
     });
 
     Route::group(['middleware' => 'check.role:ADMINISTRADOR,RECEPTOR'], function(){
@@ -91,6 +96,9 @@ Route::group(['middleware' => 'auth'], function(){
         Route::post('/receptor/guias-rechazadas/deshacer/{guide}', [IntermentGuideControllerReciever::class, 'undoReject'])->name('recieverGuides.undoReject');
         Route::post('/receptor/guias-pendientes/recepcionar/{guide}', [IntermentGuideControllerReciever::class, 'updateRecieved'])->name('recievedGuide.update');
         Route::post('/receptor/guias-pendientes/rechazar/{guide}', [IntermentGuideControllerReciever::class, 'updateReject'])->name('guides.recieved.rejected');
+
+
+        Route::get('/receptor/residuos-generados', [RecieverGeneratedWastesController::class, 'index'])->name('generatedWastesReciever.index');
     });
 
     Route::group(['middleware' => 'check.role:ADMINISTRADOR,SUPERVISOR'], function(){
@@ -104,6 +112,8 @@ Route::group(['middleware' => 'auth'], function(){
         Route::post('/supervisor/guias-pendientes/verificar/{guide}', [IntermentGuideControllerVerificator::class, 'updateVerified'])->name('verifiedGuide.update');
         Route::post('/supervisor/guias-rechazadas/deshacer/{guide}', [IntermentGuideControllerVerificator::class, 'undoReject'])->name('verificatorGuides.undoReject');
         Route::post('/supervisor/guias-pendientes/rechazar/{guide}', [IntermentGuideControllerVerificator::class, 'updateRejected'])->name('guides.verified.rejected');
+
+        Route::get('/supervisor/residuos-generados', [VerificatorGeneratedWastesController::class, 'index'])->name('generatedWastesVerificator.index');
     });
     
     Route::group(['middleware' => 'check.role:ADMINISTRADOR,GESTOR'], function(){

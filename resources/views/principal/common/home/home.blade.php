@@ -107,7 +107,7 @@
 
                 @endif
 
-                @if (in_array(Auth::user()->role->name, ['ADMINISTRADOR','SOLICITANTE']))
+                @if (in_array(Auth::user()->role->name, ['ADMINISTRADOR','SOLICITANTE', 'APROBANTE', 'RECEPTOR', 'SUPERVISOR']))
                 <a href="{{$routeWastes}}">
                     <div class="link-box">
                         <div class="img-context-link-container">

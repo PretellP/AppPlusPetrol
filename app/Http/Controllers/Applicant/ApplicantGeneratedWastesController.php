@@ -16,7 +16,10 @@ class ApplicantGeneratedWastesController extends Controller
     {
         $user = Auth::user();
 
-        $wastes = $user->applicantGuides()->with(['guideWastes' => fn($query) =>
+        if($request->ajax())
+        {
+
+            $wastes = $user->applicantGuides()->with(['guideWastes' => fn($query) =>
                                             $query->with('waste.classesWastes')
                                                 ->with([
                                                     'guide' => fn($query2) => 
@@ -38,8 +41,6 @@ class ApplicantGeneratedWastesController extends Controller
                                             ->pluck('guideWastes')
                                             ->flatten();
 
-        if($request->ajax())
-        {
             if($request->filled('from_date') && $request->filled('end_date')){
                 $wastes = $wastes->whereBetween('guide.date_verified', [$request->from_date, $request->end_date]);
             }

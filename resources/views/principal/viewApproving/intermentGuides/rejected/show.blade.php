@@ -174,7 +174,7 @@
                         </div>
                     </div>
 
-                    <form action="{{route('approvingGuides.undoReject', $guide)}}" id="undoRejected-guide-form" method="POST">
+                    <form action="{{route('approverGuides.undoReject', $guide)}}" id="undoRejected-guide-form" method="POST">
                         @csrf
                         <div class="mt-5 button-save-guide-container">
 

@@ -16,7 +16,7 @@
 
         <div class="principal-container card-body card z-index-2">
 
-            <table id="guide-rejected-table-approvant" class="table table-hover" data-url="{{route('approvingGuides.index')}}">
+            <table id="guide-rejected-table-approvant" class="table table-hover" data-url="{{route('approverGuides.index')}}">
                 <thead>
                     <tr class="rejected-guides-table-head">
                         <th>Nro de Guía</th>

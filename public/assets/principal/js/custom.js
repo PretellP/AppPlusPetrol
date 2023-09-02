@@ -3808,6 +3808,39 @@ $(function() {
 
 
     /* -------------- APPROVING --------------------*/
+
+
+    if($('#daterange-btn-wastes-approver').length){
+
+        $('.date-range-input').val('Todos los registros');
+
+        $('.daterange-cus').daterangepicker({
+            locale: {format: 'YYYY-MM-DD'},
+            drops: 'down',
+            opens: 'right'
+          });
+          
+          $('#daterange-btn-wastes-approver').daterangepicker({
+            ranges: {
+              'Todo' : [moment('1970-01-01'), moment().add(1, 'days')],
+              'Hoy'   : [moment(), moment().add(1, 'days')],
+              'Ayer'   : [moment().subtract(1, 'days'), moment()],
+              'Últimos 7 días' : [moment().subtract(6, 'days'), moment().add(1, 'days')],
+              'Últimos 30 días': [moment().subtract(29, 'days'), moment().add(1, 'days')],
+              'Este mes'  : [moment().startOf('month'), moment().endOf('month').add(1, 'days')],
+              'Último mes'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month').add(1, 'days')]
+            },
+            startDate: moment('1970-01-01'),
+            endDate  : moment().add(1, 'days'),
+          }, function (start, end) {
+            if(start.format('YYYY-MM-DD') == '1970-01-01'){
+                $('.date-range-input').val('Todos los registros');
+            }else{
+                $('.date-range-input').val('Del: ' + start.format('YYYY-MM-DD') + ' hasta el: ' + end.format('YYYY-MM-DD'))
+            }
+            generatedWastesApproverTable.draw();
+        });
+    }
      
 
      if($('#guide-pending-table-approvant').length){
@@ -3838,8 +3871,6 @@ $(function() {
         });
 
      }  
-
-
 
 
      if($('#register-approved-guide-form').length)
@@ -3946,6 +3977,61 @@ $(function() {
         });
      }
 
+     
+    if($('#generated-wastes-table-approver').length){
+        
+        var generatedWastesApproverTableEle = $('#generated-wastes-table-approver');
+        var getDataUrl = generatedWastesApproverTableEle.data('url');
+        var generatedWastesApproverTable = generatedWastesApproverTableEle.DataTable({
+            order: [[11, 'desc']],
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax: {
+                "url": getDataUrl,
+                "data": function(data){
+                    data.from_date = $('#daterange-btn-wastes-approver').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                    data.end_date = $('#daterange-btn-wastes-approver').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                }
+            },
+            columns:[
+                {data: 'guide.code', name:'guide.code'},
+                {data: 'waste.classes_wastes', name:'waste.classesWastes.symbol', orderable: false},
+                {data: 'waste.name', name:'waste.name'},
+                {data: 'actual_weight', name:'actual_weight'},
+                {data: 'package_quantity', name:'package_quantity'},
+                {data: 'guide.warehouse.lot.name', name:'guide.warehouse.lot.name', orderable: false},
+                {data: 'guide.warehouse.stage.name', name:'guide.warehouse.stage.name', orderable: false},
+                {data: 'guide.warehouse.location.name', name:'guide.warehouse.location.name', orderable: false},
+                {data: 'guide.warehouse.project_area.name', name:'guide.warehouse.projectArea.name', orderable: false},
+                {data: 'guide.warehouse.company.name', name:'guide.warehouse.company.name', orderable: false},
+                {data: 'guide.warehouse.front.name', name:'guide.warehouse.front.name', orderable: false},
+                {data: 'guide.date_verified', name:'guide.date_verified'},
+            ],
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: '<i class="fa-solid fa-download"></i> &nbsp; Descargar Excel',
+                    extend: 'excelHtml5',
+                    title:    function () {
+                        var from_date = $('#daterange-btn-wastes-approver').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                        var end_date = $('#daterange-btn-wastes-approver').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                        var name = $('#excel-generated-wastes-info').data('name');
+                        if(from_date == '1970-01-01'){from_date = 'El principio'};
+                         return 'RESIDUOS GENERADOS - APROBANTE: '+name+' - DESDE: '+from_date+ ' - ' + 'HASTA: ' + end_date; 
+                    },
+                    filename: function () {
+                        var from_date = $('#daterange-btn-wastes-approver').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                        var end_date = $('#daterange-btn-wastes-approver').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                        var name = $('#excel-generated-wastes-info').data('name');
+                        if(from_date == '1970-01-01'){from_date = 'todos'};
+                        return 'residuos-generados_aprobante-'+name+'_'+from_date+'_' + end_date + '_' + moment().format("hh-mm-ss");
+                    }
+                }   
+            ]
+        })
+    }
+
 
 
   
@@ -3953,175 +4039,294 @@ $(function() {
 
     /* -------------- RECIEVER ---------------*/
 
-     if($('#guide-pending-table-reciever').length){
-        
-        var guideRecieverPendingTableEle = $('#guide-pending-table-reciever');
-        var getDataUrl = guideRecieverPendingTableEle.data('url');
-        var guideRecieverPendingTable = guideRecieverPendingTableEle.DataTable({
-            language: DataTableEs,
-            serverSide: true,
-            processing: true,
-            ajax: {
-                "url": getDataUrl,
-                "data": {
-                    "table" : "pending"
-                }
+    if($('#daterange-btn-wastes-reciever').length){
+
+        $('.date-range-input').val('Todos los registros');
+
+        $('.daterange-cus').daterangepicker({
+            locale: {format: 'YYYY-MM-DD'},
+            drops: 'down',
+            opens: 'right'
+          });
+          
+          $('#daterange-btn-wastes-reciever').daterangepicker({
+            ranges: {
+              'Todo' : [moment('1970-01-01'), moment().add(1, 'days')],
+              'Hoy'   : [moment(), moment().add(1, 'days')],
+              'Ayer'   : [moment().subtract(1, 'days'), moment()],
+              'Últimos 7 días' : [moment().subtract(6, 'days'), moment().add(1, 'days')],
+              'Últimos 30 días': [moment().subtract(29, 'days'), moment().add(1, 'days')],
+              'Este mes'  : [moment().startOf('month'), moment().endOf('month').add(1, 'days')],
+              'Último mes'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month').add(1, 'days')]
             },
-            columns:[
-                {data: 'code', name:'code'},
-                {data: 'created_at', name:'created_at'},
-                {data: 'warehouse.lot.name', name: 'warehouse.lot.name'},
-                {data: 'warehouse.stage.name', name:'warehouse.stage.name'},
-                {data: 'warehouse.location.name', name:'warehouse.location.name'},
-                {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name'},
-                {data: 'warehouse.company.name', name:'warehouse.company.name'},
-                {data: 'warehouse.front.name', name:'warehouse.front.name'},
-                {data: 'action', name:'action', orderable: false, searchable: false},
-            ]
-        });
-
-     } 
-
-
-     if($('#register-recieved-guide-form').length)
-     {
-        $('body').on('input', '.select-actual-weight', function(){
-            var totalWeight = 0
-    
-            $('.select-actual-weight').each(function(){
-                totalWeight += Number($(this).val());
-            })
-    
-            $('#info-actual-total-weight').html(totalWeight.toFixed(2));
-        })
-
-
-        $('#button-save-reciever-guide').on('click', function(e){
-            e.preventDefault();
-
-            var form = $('#register-recieved-guide-form');
-
-            var passValidation = validateInput();
-
-            if(passValidation)
-            {
-                Swal.fire({
-                    title: 'Confirmar Recepción',
-                    text: '¡Esta acción no se podrá deshacer!',
-                    icon: 'info',
-                    showCancelButton: true,
-                    confirmButtonText: 'Aprobar',
-                    cancelButtonText: 'Cancelar',
-                    reverseButtons: true,
-                  }).then((result)=>{
-                    if (result.isConfirmed) {
-                        form.submit();
-                      }
-                  }, function(dismiss){
-                    return false;
-                  })
-
+            startDate: moment('1970-01-01'),
+            endDate  : moment().add(1, 'days'),
+          }, function (start, end) {
+            if(start.format('YYYY-MM-DD') == '1970-01-01'){
+                $('.date-range-input').val('Todos los registros');
             }else{
-                Swal.fire({
-                    toast: true,
-                    icon: 'warning',
-                    title: 'Advertencia:',
-                    text: 'LLena todos los campos para continuar',
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                      }
-                });
+                $('.date-range-input').val('Del: ' + start.format('YYYY-MM-DD') + ' hasta el: ' + end.format('YYYY-MM-DD'))
             }
+            generatedWastesRecieverTable.draw();
+        });
+    }
+
+    if($('#guide-pending-table-reciever').length){
+    
+    var guideRecieverPendingTableEle = $('#guide-pending-table-reciever');
+    var getDataUrl = guideRecieverPendingTableEle.data('url');
+    var guideRecieverPendingTable = guideRecieverPendingTableEle.DataTable({
+        language: DataTableEs,
+        serverSide: true,
+        processing: true,
+        ajax: {
+            "url": getDataUrl,
+            "data": {
+                "table" : "pending"
+            }
+        },
+        columns:[
+            {data: 'code', name:'code'},
+            {data: 'created_at', name:'created_at'},
+            {data: 'warehouse.lot.name', name: 'warehouse.lot.name'},
+            {data: 'warehouse.stage.name', name:'warehouse.stage.name'},
+            {data: 'warehouse.location.name', name:'warehouse.location.name'},
+            {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name'},
+            {data: 'warehouse.company.name', name:'warehouse.company.name'},
+            {data: 'warehouse.front.name', name:'warehouse.front.name'},
+            {data: 'action', name:'action', orderable: false, searchable: false},
+        ]
+    });
+
+    } 
+
+
+    if($('#register-recieved-guide-form').length)
+    {
+    $('body').on('input', '.select-actual-weight', function(){
+        var totalWeight = 0
+
+        $('.select-actual-weight').each(function(){
+            totalWeight += Number($(this).val());
         })
 
+        $('#info-actual-total-weight').html(totalWeight.toFixed(2));
+    })
 
-        $('#button-rejected-reciever-guide').on('click', function(e){
-            e.preventDefault();
-            var form = $('#form-reject-reciever-guide');
+
+    $('#button-save-reciever-guide').on('click', function(e){
+        e.preventDefault();
+
+        var form = $('#register-recieved-guide-form');
+
+        var passValidation = validateInput();
+
+        if(passValidation)
+        {
             Swal.fire({
-                title: '¿Rechazar guía de internamiento?',
-                text: 'Luego se podrá deshacer esta acción',
-                icon: 'warning',
+                title: 'Confirmar Recepción',
+                text: '¡Esta acción no se podrá deshacer!',
+                icon: 'info',
                 showCancelButton: true,
-                confirmButtonText: 'Rechazar',
-                cancelButtonText: 'cerrar',
+                confirmButtonText: 'Aprobar',
+                cancelButtonText: 'Cancelar',
                 reverseButtons: true,
-              }).then((result)=>{
+                }).then((result)=>{
                 if (result.isConfirmed) {
                     form.submit();
-                  }
-              }, function(dismiss){
+                    }
+                }, function(dismiss){
                 return false;
-              })
+                })
+
+        }else{
+            Swal.fire({
+                toast: true,
+                icon: 'warning',
+                title: 'Advertencia:',
+                text: 'LLena todos los campos para continuar',
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+            });
+        }
+    })
+
+
+    $('#button-rejected-reciever-guide').on('click', function(e){
+        e.preventDefault();
+        var form = $('#form-reject-reciever-guide');
+        Swal.fire({
+            title: '¿Rechazar guía de internamiento?',
+            text: 'Luego se podrá deshacer esta acción',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Rechazar',
+            cancelButtonText: 'cerrar',
+            reverseButtons: true,
+            }).then((result)=>{
+            if (result.isConfirmed) {
+                form.submit();
+                }
+            }, function(dismiss){
+            return false;
+            })
+    })
+    }
+
+    if($('#guide-recieved-table-reciever').length)
+    {
+    var guideRecieverTableEle = $('#guide-recieved-table-reciever');
+    var getDataUrl = guideRecieverTableEle.data('url');
+    var guideRecievedTable = guideRecieverTableEle.DataTable({
+        language: DataTableEs,
+        serverSide: true,
+        processing: true,
+        ajax: {
+            "url": getDataUrl,
+            "data": {
+                "table" : "recieved"
+            }
+        },
+        columns:[
+            {data: 'code', name:'code'},
+            {data: 'date', name:'date'},
+            {data: 'lot', name:'lot'},
+            {data: 'stage', name:'stage'},
+            {data: 'location', name:'location'},
+            {data: 'proyect', name:'proyect'},
+            {data: 'company', name:'company'},
+            {data: 'front', name:'front'},
+            {data: 'action', name:'action', orderable: false, searchable: false},
+        ]
+    });
+    }
+
+
+    if($('#guide-rejected-table-reciever').length){
+    var guideRejectedRecieverTableEle = $('#guide-rejected-table-reciever');
+    var getDataUrl = guideRejectedRecieverTableEle.data('url');
+    var guideApprovedTable = guideRejectedRecieverTableEle.DataTable({
+        language: DataTableEs,
+        serverSide: true,
+        processing: true,
+        ajax: {
+            "url": getDataUrl,
+            "data": {
+                "table" : "rejected"
+            }
+        },
+        columns:[
+            {data: 'code', name:'code'},
+            {data: 'date', name:'date'},
+            {data: 'lot', name:'lot'},
+            {data: 'stage', name:'stage'},
+            {data: 'location', name:'location'},
+            {data: 'proyect', name:'proyect'},
+            {data: 'company', name:'company'},
+            {data: 'front', name:'front'},
+            {data: 'action', name:'action', orderable: false, searchable: false},
+        ]
+    });
+    }
+
+
+    if($('#generated-wastes-table-reciever').length){
+        
+        var generatedWastesRecieverTableEle = $('#generated-wastes-table-reciever');
+        var getDataUrl = generatedWastesRecieverTableEle.data('url');
+        var generatedWastesRecieverTable = generatedWastesRecieverTableEle.DataTable({
+            order: [[11, 'desc']],
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax: {
+                "url": getDataUrl,
+                "data": function(data){
+                    data.from_date = $('#daterange-btn-wastes-reciever').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                    data.end_date = $('#daterange-btn-wastes-reciever').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                }
+            },
+            columns:[
+                {data: 'guide.code', name:'guide.code'},
+                {data: 'waste.classes_wastes', name:'waste.classesWastes.symbol', orderable: false},
+                {data: 'waste.name', name:'waste.name'},
+                {data: 'actual_weight', name:'actual_weight'},
+                {data: 'package_quantity', name:'package_quantity'},
+                {data: 'guide.warehouse.lot.name', name:'guide.warehouse.lot.name', orderable: false},
+                {data: 'guide.warehouse.stage.name', name:'guide.warehouse.stage.name', orderable: false},
+                {data: 'guide.warehouse.location.name', name:'guide.warehouse.location.name', orderable: false},
+                {data: 'guide.warehouse.project_area.name', name:'guide.warehouse.projectArea.name', orderable: false},
+                {data: 'guide.warehouse.company.name', name:'guide.warehouse.company.name', orderable: false},
+                {data: 'guide.warehouse.front.name', name:'guide.warehouse.front.name', orderable: false},
+                {data: 'guide.date_verified', name:'guide.date_verified'},
+            ],
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: '<i class="fa-solid fa-download"></i> &nbsp; Descargar Excel',
+                    extend: 'excelHtml5',
+                    title:    function () {
+                        var from_date = $('#daterange-btn-wastes-reciever').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                        var end_date = $('#daterange-btn-wastes-reciever').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                        var name = $('#excel-generated-wastes-info').data('name');
+                        if(from_date == '1970-01-01'){from_date = 'El principio'};
+                         return 'RESIDUOS GENERADOS - RECEPTOR: '+name+' - DESDE: '+from_date+ ' - ' + 'HASTA: ' + end_date; 
+                    },
+                    filename: function () {
+                        var from_date = $('#daterange-btn-wastes-reciever').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                        var end_date = $('#daterange-btn-wastes-reciever').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                        var name = $('#excel-generated-wastes-info').data('name');
+                        if(from_date == '1970-01-01'){from_date = 'todos'};
+                        return 'residuos-generados_receptor-'+name+'_'+from_date+'_' + end_date + '_' + moment().format("hh-mm-ss");
+                    }
+                }   
+            ]
         })
-     }
-
-     if($('#guide-recieved-table-reciever').length)
-     {
-        var guideRecieverTableEle = $('#guide-recieved-table-reciever');
-        var getDataUrl = guideRecieverTableEle.data('url');
-        var guideRecievedTable = guideRecieverTableEle.DataTable({
-            language: DataTableEs,
-            serverSide: true,
-            processing: true,
-            ajax: {
-                "url": getDataUrl,
-                "data": {
-                    "table" : "recieved"
-                }
-            },
-            columns:[
-                {data: 'code', name:'code'},
-                {data: 'date', name:'date'},
-                {data: 'lot', name:'lot'},
-                {data: 'stage', name:'stage'},
-                {data: 'location', name:'location'},
-                {data: 'proyect', name:'proyect'},
-                {data: 'company', name:'company'},
-                {data: 'front', name:'front'},
-                {data: 'action', name:'action', orderable: false, searchable: false},
-            ]
-        });
-     }
-
-
-     if($('#guide-rejected-table-reciever').length){
-        var guideRejectedRecieverTableEle = $('#guide-rejected-table-reciever');
-        var getDataUrl = guideRejectedRecieverTableEle.data('url');
-        var guideApprovedTable = guideRejectedRecieverTableEle.DataTable({
-            language: DataTableEs,
-            serverSide: true,
-            processing: true,
-            ajax: {
-                "url": getDataUrl,
-                "data": {
-                    "table" : "rejected"
-                }
-            },
-            columns:[
-                {data: 'code', name:'code'},
-                {data: 'date', name:'date'},
-                {data: 'lot', name:'lot'},
-                {data: 'stage', name:'stage'},
-                {data: 'location', name:'location'},
-                {data: 'proyect', name:'proyect'},
-                {data: 'company', name:'company'},
-                {data: 'front', name:'front'},
-                {data: 'action', name:'action', orderable: false, searchable: false},
-            ]
-        });
-     }
+    }
 
 
 
 
 
      /* -------------  VERIFICATOR  -------------*/
+
+     if($('#daterange-btn-wastes-verificator').length){
+
+        $('.date-range-input').val('Todos los registros');
+
+        $('.daterange-cus').daterangepicker({
+            locale: {format: 'YYYY-MM-DD'},
+            drops: 'down',
+            opens: 'right'
+          });
+          
+          $('#daterange-btn-wastes-verificator').daterangepicker({
+            ranges: {
+              'Todo' : [moment('1970-01-01'), moment().add(1, 'days')],
+              'Hoy'   : [moment(), moment().add(1, 'days')],
+              'Ayer'   : [moment().subtract(1, 'days'), moment()],
+              'Últimos 7 días' : [moment().subtract(6, 'days'), moment().add(1, 'days')],
+              'Últimos 30 días': [moment().subtract(29, 'days'), moment().add(1, 'days')],
+              'Este mes'  : [moment().startOf('month'), moment().endOf('month').add(1, 'days')],
+              'Último mes'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month').add(1, 'days')]
+            },
+            startDate: moment('1970-01-01'),
+            endDate  : moment().add(1, 'days'),
+          }, function (start, end) {
+            if(start.format('YYYY-MM-DD') == '1970-01-01'){
+                $('.date-range-input').val('Todos los registros');
+            }else{
+                $('.date-range-input').val('Del: ' + start.format('YYYY-MM-DD') + ' hasta el: ' + end.format('YYYY-MM-DD'))
+            }
+            generatedWastesCheckerTable.draw();
+        });
+    }
 
 
      if($('#guide-pending-table-verificator').length)
@@ -4259,6 +4464,60 @@ $(function() {
         });
      }
 
+
+     if($('#generated-wastes-table-verificator').length){
+        
+        var generatedWastesCheckerTableEle = $('#generated-wastes-table-verificator');
+        var getDataUrl = generatedWastesCheckerTableEle.data('url');
+        var generatedWastesCheckerTable = generatedWastesCheckerTableEle.DataTable({
+            order: [[11, 'desc']],
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax: {
+                "url": getDataUrl,
+                "data": function(data){
+                    data.from_date = $('#daterange-btn-wastes-verificator').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                    data.end_date = $('#daterange-btn-wastes-verificator').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                }
+            },
+            columns:[
+                {data: 'guide.code', name:'guide.code'},
+                {data: 'waste.classes_wastes', name:'waste.classesWastes.symbol', orderable: false},
+                {data: 'waste.name', name:'waste.name'},
+                {data: 'actual_weight', name:'actual_weight'},
+                {data: 'package_quantity', name:'package_quantity'},
+                {data: 'guide.warehouse.lot.name', name:'guide.warehouse.lot.name', orderable: false},
+                {data: 'guide.warehouse.stage.name', name:'guide.warehouse.stage.name', orderable: false},
+                {data: 'guide.warehouse.location.name', name:'guide.warehouse.location.name', orderable: false},
+                {data: 'guide.warehouse.project_area.name', name:'guide.warehouse.projectArea.name', orderable: false},
+                {data: 'guide.warehouse.company.name', name:'guide.warehouse.company.name', orderable: false},
+                {data: 'guide.warehouse.front.name', name:'guide.warehouse.front.name', orderable: false},
+                {data: 'guide.date_verified', name:'guide.date_verified'},
+            ],
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: '<i class="fa-solid fa-download"></i> &nbsp; Descargar Excel',
+                    extend: 'excelHtml5',
+                    title:    function () {
+                        var from_date = $('#daterange-btn-wastes-verificator').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                        var end_date = $('#daterange-btn-wastes-verificator').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                        var name = $('#excel-generated-wastes-info').data('name');
+                        if(from_date == '1970-01-01'){from_date = 'El principio'};
+                         return 'RESIDUOS GENERADOS - SUPERVISOR: '+name+' - DESDE: '+from_date+ ' - ' + 'HASTA: ' + end_date; 
+                    },
+                    filename: function () {
+                        var from_date = $('#daterange-btn-wastes-verificator').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                        var end_date = $('#daterange-btn-wastes-verificator').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                        var name = $('#excel-generated-wastes-info').data('name');
+                        if(from_date == '1970-01-01'){from_date = 'todos'};
+                        return 'residuos-generados_supervisor-'+name+'_'+from_date+'_' + end_date + '_' + moment().format("hh-mm-ss");
+                    }
+                }   
+            ]
+        })
+    }
 
 
 

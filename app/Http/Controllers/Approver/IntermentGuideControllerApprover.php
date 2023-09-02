@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Aprobant;
+namespace App\Http\Controllers\Approver;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -9,7 +9,7 @@ use DataTables;
 use Carbon\Carbon;
 use App\Models\IntermentGuide;
 
-class IntermentGuideControllerApproving extends Controller
+class IntermentGuideControllerApprover extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -55,7 +55,7 @@ class IntermentGuideControllerApproving extends Controller
                     return $guide->warehouse->front->name;
                 })
                 ->addColumn('action', function($guide){
-                    $btn = '<a href="'.route('approvingGuides.show', $guide).'"
+                    $btn = '<a href="'.route('approverGuides.show', $guide).'"
                             data-original-title="show" class="me-3 edit btn btn-info btn-sm"><i class="fa-solid fa-eye"></i></a>';
 
                     return $btn;
@@ -240,7 +240,7 @@ class IntermentGuideControllerApproving extends Controller
             'stat_rejected' => 0,
         ]);
 
-        return redirect()->route('approvingGuides.index');
+        return redirect()->route('approverGuides.index');
     }
 
     public function update(Request $request, IntermentGuide $guide)
@@ -250,7 +250,7 @@ class IntermentGuideControllerApproving extends Controller
             "date_approved" => Carbon::now()->toDateTimeString()
         ]);
 
-        return redirect()->route('approvingGuides.index');
+        return redirect()->route('approverGuides.index');
     }
 
 
@@ -261,7 +261,7 @@ class IntermentGuideControllerApproving extends Controller
             "date_rejected" => Carbon::now()->toDateTimeString()
         ]);
 
-        return redirect()->route('approvingGuides.index');
+        return redirect()->route('approverGuides.index');
     }
 
 }
