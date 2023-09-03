@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\{Departure};
+use App\Models\{GuideWaste};
 
 class Disposition extends Model
 {
@@ -12,8 +12,8 @@ class Disposition extends Model
     protected $table = 'dispositions';
     protected $guarded = [];
 
-    public function departures()
+    public function wastes()
     {
-        return $this->belongsTo(Departure::class, 'id_disposition', 'id');
+        return $this->hasMany(GuideWaste::class, 'id_disposition', 'id');
     }
 }

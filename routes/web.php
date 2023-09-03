@@ -47,24 +47,26 @@ Route::get('/', function(){
 Auth::routes(['register' => false]);
 
 
-Route::group(['middleware' => 'auth'], function(){
+Route::group(['middleware' => ['auth', 'check.valid.user']], function(){
+    
 
     Route::get('/inicio', [AdminController::class, 'index'])->name('home.index');
 
    
-
     Route::group(['middleware' => 'check.role:ADMINISTRADOR,SOLICITANTE'], function(){
 
-        Route::get('/solicitante/guías-de-internamiento', [IntermentGuideController::class, 'index'])->name('guides.index');
-        Route::get('/solicitante/guías-de-internamiento/crear', [IntermentGuideController::class, 'create'])->name('guides.create');
-        Route::get('/solicitante/guías-de-internamiento/pendientes', [IntermentGuideController::class, 'pendingGuides'])->name('guidesPending.index');
-        Route::get('/solicitante/guías-de-internamiento/aprobados', [IntermentGuideController::class, 'approvedGuides'])->name('guidesApproved.index');
-        Route::get('/solicitante/guías-de-internamiento/rechazados', [IntermentGuideController::class, 'rejectedGuides'])->name('guidesRejected.index');
-        Route::get('/solicitante/guías-de-internamiento/pendientes/ver/{guide}', [IntermentGuideController::class, 'pendingShow'])->name('guidesPending.show');
-        Route::get('/solicitante/guías-de-internamiento/aprobados/ver/{guide}', [IntermentGuideController::class, 'approvedShow'])->name('guidesApproved.show');
-        Route::get('/solicitante/guías-de-internamiento/rechazados/ver/{guide}', [IntermentGuideController::class, 'rejectedShow'])->name('guidesRejected.show');
-        Route::get('/solicitante/crear-guía-de-internamiento/getDataWarehouse', [IntermentGuideController::class, 'getDataWarehouse'])->name('guides.getDataWarehouse');
-        Route::post('/solicitante/crear-guía-de-internamiento/registrar', [IntermentGuideController::class, 'store'])->name('guides.store');
+        Route::controller(IntermentGuideController::class)->group(function(){
+            Route::get('/solicitante/guías-de-internamiento', 'index')->name('guides.index');
+            Route::get('/solicitante/guías-de-internamiento/crear', 'create')->name('guides.create');
+            Route::get('/solicitante/guías-de-internamiento/pendientes', 'pendingGuides')->name('guidesPending.index');
+            Route::get('/solicitante/guías-de-internamiento/aprobados', 'approvedGuides')->name('guidesApproved.index');
+            Route::get('/solicitante/guías-de-internamiento/rechazados', 'rejectedGuides')->name('guidesRejected.index');
+            Route::get('/solicitante/guías-de-internamiento/pendientes/ver/{guide}', 'pendingShow')->name('guidesPending.show');
+            Route::get('/solicitante/guías-de-internamiento/aprobados/ver/{guide}', 'approvedShow')->name('guidesApproved.show');
+            Route::get('/solicitante/guías-de-internamiento/rechazados/ver/{guide}', 'rejectedShow')->name('guidesRejected.show');
+            Route::get('/solicitante/crear-guía-de-internamiento/getDataWarehouse', 'getDataWarehouse')->name('guides.getDataWarehouse');
+            Route::post('/solicitante/crear-guía-de-internamiento/registrar', 'store')->name('guides.store');
+        });
 
 
         Route::get('/solicitante/residuos-generados', [ApplicantGeneratedWastesController::class, 'index'])->name('generatedWastesApplicant.index');

@@ -18,7 +18,19 @@ class CreateGuideWastesTable extends Migration
             $table->double('aprox_weight',8,2);
             $table->double('actual_weight',8,2)->nullable();
             $table->integer('package_quantity');
+            $table->dateTime('date_departure')->nullable();
+            $table->string('shipping_type')->nullable();
+            $table->string('destination')->nullable();
+            $table->string('ppc_code')->nullable();
+            $table->string('manifest_code')->nullable();
+            $table->dateTime('date_arrival')->nullable();
+            $table->dateTime('date_retirement')->nullable();
+            $table->string('gc_code')->nullable();
             $table->boolean('stat_stock');
+            $table->boolean('stat_departure');
+            $table->boolean('stat_arrival');
+            $table->boolean('stat_transport_departure');
+            $table->boolean('stat_disposition');
             $table->timestamps();
         });
     }

@@ -396,7 +396,11 @@ class IntermentGuideController extends Controller
                 "id_guide" => $guide->id,
                 "id_wasteType" => $id,
                 "id_packageType" => $request['packageType-'.$id],
-                "stat_stock" => 0
+                "stat_stock" => 0,
+                "stat_departure" => 0,
+                "stat_arrival" => 0,
+                "stat_transport_departure" => 0,
+                "stat_disposition" => 0
             ]);
         }
 

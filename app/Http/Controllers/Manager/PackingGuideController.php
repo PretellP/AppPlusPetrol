@@ -14,19 +14,6 @@ class PackingGuideController extends Controller
     {
         $user = Auth::user();
 
-        // $wastes = GuideWaste::whereHas('guide', function($query){
-        //     $query->where('stat_approved', 1)
-        //         ->where('stat_recieved', 1)
-        //         ->where('stat_verified', 1);
-        // })
-        // ->with(['waste.classesWastes',
-        //         'guide',
-        //         'guide.warehouse.company',
-        //         'package'
-        // ])->get();
-    
-        // dd($wastes);
-
         if($request->ajax())
         {     
             if($request['table'] == 'intGuide')
@@ -42,6 +29,18 @@ class PackingGuideController extends Controller
                                             'package'
                                     ]);
 
+                // if($request->filled('from_date') && $request->filled('end_date')){
+                //     $wastes = $wastes->whereHas('guide', function($query2) use($request){
+                //             $query2->whereBetween('date_verified', [$request->from_date, $request->end_date]);
+                //         });
+                // }
+
+                // if($request->filled('status')){
+                //     if($request['status'] != 'all'){
+                //         $wastes = $wastes->where('stat_stock', $request['status']);
+                //     }
+                // }
+
                 $allWastes = DataTables::of($wastes)
                             ->addColumn('choose', function($waste){
                                 $checkbox = '<div class="custom-checkbox custom-control">
@@ -53,7 +52,7 @@ class PackingGuideController extends Controller
                             ->addColumn('waste.classes_wastes', function($waste){
                                 return $waste->waste->classesWastes->first()->symbol;
                             })
-                            ->addColumn('status', function($waste){
+                            ->editColumn('stat_stock', function($waste){
                                 $status = '<span class="info-guide-pending">
                                                 Pendiente
                                             </span>';
@@ -65,55 +64,95 @@ class PackingGuideController extends Controller
                                 }
                                 return $status;
                             })
-                            ->rawColumns(['choose','status'])
+                            ->editColumn('stat_departure', function($waste){
+                                $status = '<span class="info-guide-pending">
+                                                Pendiente
+                                            </span>';
+                                if($waste->stat_departure == 1)
+                                {
+                                    $status = '<span class="info-guide-checked">
+                                                    Gestionado
+                                                </span>';
+                                }
+                                return $status;
+                            })
+                            ->rawColumns(['choose','stat_stock', 'stat_departure'])
                             ->make(true);
 
                 return $allWastes;
             }
             elseif($request['table'] == 'packing')
             {
-                $packingGuides = PackingGuide::with('wastes');
+                $wastes = GuideWaste::whereHas('guide', function($query){
+                                            $query->where('stat_approved', 1)
+                                                ->where('stat_recieved', 1)
+                                                ->where('stat_verified', 1);
+                                        })
+                                        ->where('stat_stock', 1)
+                                        ->with(['waste.classesWastes',
+                                                'guide.warehouse.company',
+                                                'package',
+                                                'packingGuide'
+                                        ]);
 
-                $allPackingGuides = DataTables::of($packingGuides)
-                ->addColumn('choose', function($guide){
-                    $checkbox = '<div class="custom-checkbox custom-control">
-                                    <input type="checkbox" name="packingGuides-selected[]"  data-status="'.$guide->stat_departure.'" class="custom-control-input" id="packingCheckbox-'.$guide->id.'" value="'.$guide->id.'">
-                                    <label for="packingCheckbox-'.$guide->id.'" class="custom-control-label checkbox-packingGuide-label">&nbsp;</label>
-                                </div>';
-                    return $checkbox;
-                })
-                ->editColumn('cod_guide', function($guide){
-                    $link = '<a href="" class="btn-show-packingGuide" data-url="'.route('loadPackingGuideDetail.manager', $guide).'">'.$guide->cod_guide.'</a>';
-                    return $link;
-                })
-                ->addColumn('weight', function($guide){
-                    $weight = $guide->wastes->sum(function($waste){
-                                                    return $waste->actual_weight;
-                                                });
-                    return $weight;
-                })
-                ->addColumn('packages', function($guide){
-                    $packages = $guide->wastes->sum(function($waste){
-                                                    return $waste->package_quantity;
-                                                });
-                    return $packages;
-                })
-                ->addColumn('status', function($guide){
-                    $status = '<span class="info-guide-pending">
-                                    Pendiente
-                                </span>';
-                    if($guide->stat_departure == 1)
-                    {
-                        $status = '<span class="info-guide-checked">
-                                        Gestionado
-                                    </span>';
-                    }
-                    return $status;
-                })
-                ->rawColumns(['choose','cod_guide','status'])
-                ->make(true);
+                // if($request->filled('from_date') && $request->filled('end_date')){
+                //     $wastes = $wastes->whereHas('packingGuide', function($query2) use($request){
+                //             $query2->whereBetween('date_guides_departure', [$request->from_date, $request->end_date]);
+                //         });
+                // }
 
-                return $allPackingGuides;
+                // if($request->filled('status')){
+                //     if($request['status'] != 'all'){
+                //         $wastes = $wastes->where('stat_departure', $request['status']);
+                //     }
+                // }
+
+                $allWastes = DataTables::of($wastes)
+                            ->addColumn('choose', function($wastes){
+                                $checkbox = '<div class="custom-checkbox custom-control">
+                                                <input type="checkbox" name="packingGuides-selected[]"  data-status="'.$wastes->stat_departure.'" class="custom-control-input" id="packingCheckbox-'.$wastes->id.'" value="'.$wastes->id.'">
+                                                <label for="packingCheckbox-'.$wastes->id.'" class="custom-control-label checkbox-packingGuide-label">&nbsp;</label>
+                                            </div>';
+                                return $checkbox;
+                            })
+                            ->editColumn('packing_guide.cod_guide', function($waste){
+                                $link = '<a href="" class="btn-show-packingGuide" data-url="'.route('loadPackingGuideDetail.manager', ["guide" => $waste->packingGuide] ).'">'.$waste->packingGuide->cod_guide.'</a>';
+                                return $link;
+                            })
+                            ->addColumn('waste.classes_wastes', function($waste){
+                                return $waste->waste->classesWastes->first()->symbol;
+                            })
+                            ->editColumn('stat_stock', function($waste){
+                                $status = '<span class="info-guide-pending">
+                                                Pendiente
+                                            </span>';
+                                if($waste->stat_stock == 1)
+                                {
+                                    $status = '<span class="info-guide-checked">
+                                                    Gestionado
+                                                </span>';
+                                }
+                                return $status;
+                            })
+                            ->editColumn('stat_departure', function($waste){
+                                $status = '<span class="info-guide-pending">
+                                                Pendiente
+                                            </span>';
+                                if($waste->stat_departure == 1)
+                                {
+                                    $status = '<span class="info-guide-checked">
+                                                    Gestionado
+                                                </span>';
+                                }
+                                return $status;
+                            })
+                            ->addColumn('created_at', function($waste){
+                                return $waste->packingGuide->created_at;
+                            })
+                            ->rawColumns(['choose','packing_guide.cod_guide', 'stat_stock', 'stat_departure'])
+                            ->make(true);
+
+                return $allWastes;
             }
             
         }
@@ -148,12 +187,16 @@ class PackingGuideController extends Controller
         }
         elseif($request['table'] == "departure")
         {
-            $packingGuides = PackingGuide::whereIn('id', $request['values'])
-                                        ->with('wastes')
+            $wastes = GuideWaste::whereIn('id', $request['values'])
+                                        ->with(['packingGuide',
+                                                'guide.warehouse.company',
+                                                'package',
+                                                'waste.classesWastes'
+                                        ])
                                         ->get();
 
             return response()->json([
-                "packingGuides" => $packingGuides
+                "wastes" => $wastes
             ]);
         }
 
@@ -165,9 +208,6 @@ class PackingGuideController extends Controller
             "cod_guide" => $request['code'],
             "date_guides_departure" => $request['date'],
             "volum" =>  $request['volume'],
-            "stat_departure" => 0,
-            "stat_arrival" => 0,
-            "stat_transport_departure" => 0
         ]);
 
         $wastes = GuideWaste::whereIn('id', $request['guides-pg-ids'])->get();
@@ -176,7 +216,7 @@ class PackingGuideController extends Controller
         {
             $waste->update([
                 "stat_stock" => 1,
-                "id_packing_guide" => $packingGuide->id
+                "id_packing_guide" => $packingGuide->id,
             ]);
         }   
 
@@ -211,10 +251,10 @@ class PackingGuideController extends Controller
 
     public function updateDeparturePg(Request $request)
     {
-        $packingGuides = PackingGuide::whereIn('id', $request['packingGuides-departure-selected'])->get();
+        $wastes = GuideWaste::whereIn('id', $request['wastes-departure-selected'])->get();
 
-        foreach($packingGuides as $guide){
-            $guide->update([
+        foreach($wastes as $waste){
+            $waste->update([
                 "stat_departure" => 1,
                 "date_departure" => $request['date'],
                 "shipping_type" => $request['transport-type'],

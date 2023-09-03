@@ -18,17 +18,6 @@ class CreatePackingGuidesTable extends Migration
             $table->string('cod_guide');
             $table->dateTime('date_guides_departure');
             $table->double('volum', 8, 2);
-            $table->boolean('stat_departure');
-            $table->dateTime('date_departure')->nullable();
-            $table->string('shipping_type')->nullable();
-            $table->string('destination')->nullable();
-            $table->string('ppc_code')->nullable();
-            $table->string('manifest_code')->nullable();
-            $table->boolean('stat_arrival');
-            $table->dateTime('date_arrival')->nullable();
-            $table->dateTime('date_retirement')->nullable();
-            $table->string('gc_code')->nullable();
-            $table->boolean('stat_transport_departure');
             $table->timestamps();
         });
     }

@@ -1,7 +1,5 @@
 "use strict";
 
-
-
 $(function() {
 
     var DataTableEs = {
@@ -283,8 +281,6 @@ $(function() {
             }
         });
     }
-   
-
 
     /*--------------- USERS ---------------*/
 
@@ -326,92 +322,107 @@ $(function() {
             })
 
             userRegisterSelect.on('change', function(){
-                var value_id  = $(this).val();
-                var url = $(this).data('url');
-                
-                $.ajax({
-                    type: 'GET',
-                    url: url,
-                    data: {
-                        id: value_id,
-                        company_id: userCompanySelect.val(),
-                        type: 'approving'
-                    },
-                    dataType: 'JSON',
-                    success: function(data){
-                        userCompanySelect.html('');
 
-                        if(data.valid == 'valid')
-                        {
-                            if(!($('#selectApprovingsRegister').length))
-                            {
-                                $('#selects-container-register').
-                                append('<div class="form-group col-md-12" id="selectApprovingsRegister"> \
-                                            <label> Aprobantes *</label> \
-                                            <select name="id_approvings[]" class="form-control select2" \
-                                                multiple="multiple" id="registerApprovingsSelect" required> \
-                                            </select> \
-                                        </div>');
-                                var selectApprovings = $('#registerApprovingsSelect')
-                                selectApprovings.select2({
-                                    dropdownParent: $("#registerUserForm"),
-                                    placeholder: 'Selecciona un aprobante',
-                                    closeOnSelect: false
-                                })
-                                selectApprovings.append('<option value=""></option>');
-                                if(data['approvings'] != null)
-                                {
-                                    $.each( data['approvings'], function( key, value ) {
-                                        selectApprovings.append('<option value="'+value['id']+'">'+value['name']+'</option>');
-                                    })
-                                }
-                            }
-                         
-                        }else{
-                            $('#selectApprovingsRegister').remove();
-                        }
+                let modal = $('#RegisterUserModal')
 
-                        userCompanySelect.append('<option></option>');
-
-                        $.each(data.companies, function(key, values){
-                            userCompanySelect.append('<option value="'+values.id+'"> '+values.name+' </option>');
-                        })
-    
-                    },
-                    error: function(data){
-                        console.log(data);
-                    }
-                });
-
-            })
-
-            userCompanySelect.on('change', function(){
-
-                if($('#selectApprovingsRegister').length)
-                {
-                    var company_id = $(this).val();
+                if($('#RegisterUserModal').hasClass('show')){
+                    var value_id  = $(this).val();
                     var url = $(this).data('url');
-                    var selectApprovings = $('#registerApprovingsSelect')
-                    selectApprovings.html('');
+                    
                     $.ajax({
                         type: 'GET',
                         url: url,
                         data: {
-                            id: company_id,
-                            type: 'company'
+                            id: value_id,
+                            company_id: userCompanySelect.val(),
+                            type: 'approving'
                         },
                         dataType: 'JSON',
                         success: function(data){
+                            userCompanySelect.html('');
+
+                            if(data.valid == 'valid')
+                            {
+                                if(!($('#selectApprovingsRegister').length))
+                                {
+                                    $('#selects-container-register').
+                                    append('<div class="form-group col-md-12" id="selectApprovingsRegister"> \
+                                                <label> Aprobantes *</label> \
+                                                <select name="id_approvings[]" class="form-control select2" \
+                                                    multiple="multiple" id="registerApprovingsSelect" required> \
+                                                </select> \
+                                            </div>');
+                                    var selectApprovings = $('#registerApprovingsSelect')
+                                    selectApprovings.select2({
+                                        dropdownParent: $("#registerUserForm"),
+                                        placeholder: 'Selecciona un aprobante',
+                                        closeOnSelect: false
+                                    })
+                                    selectApprovings.append('<option value=""></option>');
+                                    if(data['approvings'] != null)
+                                    {
+                                        $.each( data['approvings'], function( key, value ) {
+                                            selectApprovings.append('<option value="'+value['id']+'">'+value['name']+'</option>');
+                                        })
+                                    }
+                                }
                             
-                            selectApprovings.append('<option value=""></option>');
-                            $.each( data['approvings'], function( key, value ) {
-                                selectApprovings.append('<option value="'+value['id']+'">'+value['name']+'</option>');
+                            }else{
+                                $('#selectApprovingsRegister').remove();
+                            }
+
+                            userCompanySelect.append('<option></option>');
+
+                            $.each(data.companies, function(key, values){
+                                userCompanySelect.append('<option value="'+values.id+'"> '+values.name+' </option>');
                             })
+
+                            if(data['validManager'] == true){
+                                $('#image-upload-register').removeAttr('required')
+                                modal.find('.info-signature-required').html('(opcional)')
+                            }else{
+                                $('#image-upload-register').prop('required', 'true')
+                                modal.find('.info-signature-required').html('*')
+                            }
+        
                         },
                         error: function(data){
                             console.log(data);
                         }
                     });
+                }
+            })
+
+            userCompanySelect.on('change', function(){
+
+                if($('#RegisterUserModal').hasClass('show')){
+
+                    if($('#selectApprovingsRegister').length)
+                    {
+                        var company_id = $(this).val();
+                        var url = $(this).data('url');
+                        var selectApprovings = $('#registerApprovingsSelect')
+                        selectApprovings.html('');
+                        $.ajax({
+                            type: 'GET',
+                            url: url,
+                            data: {
+                                id: company_id,
+                                type: 'company'
+                            },
+                            dataType: 'JSON',
+                            success: function(data){
+                                
+                                selectApprovings.append('<option value=""></option>');
+                                $.each( data['approvings'], function( key, value ) {
+                                    selectApprovings.append('<option value="'+value['id']+'">'+value['name']+'</option>');
+                                })
+                            },
+                            error: function(data){
+                                console.log(data);
+                            }
+                        });
+                    }
                 }
             })
         }
@@ -462,6 +473,7 @@ $(function() {
                     loadSpinner.toggleClass('active');
                     $('#registerUserForm').trigger('reset');
                     $('#RegisterUserModal').modal('hide');
+
                     $('#registerProfileSelect').val('').trigger('change');
                     $('#registerCompanySelect').val('').trigger('change');
 
@@ -638,6 +650,8 @@ $(function() {
                             $('#selectApprovingsEdit').remove();
                         }
                     }
+
+
                     modal.find('#inputUserName').val(data.username);
                     modal.find('#inputName').val(data.name);
                     modal.find('#inputEmail').val(data.email);
@@ -652,11 +666,19 @@ $(function() {
                    
                     if(status == 1)
                     {
-                        modal.find('#edit-user-status-checkbox').prop('checked', true);
-                        $('#txt-edit-description-user').html('Activo');
+                        modal.find('#edit-user-status-checkbox').prop('checked', true)
+                        $('#txt-edit-description-user').html('Activo')
                     }else{
-                        modal.find('#edit-user-status-checkbox').prop('checked', false);
-                        $('#txt-edit-description-user').html('Inactivo');
+                        modal.find('#edit-user-status-checkbox').prop('checked', false)
+                        $('#txt-edit-description-user').html('Inactivo')
+                    }
+
+                    if(data.is_admin == true){
+                        modal.find('#edit-user-status-checkbox').prop('disabled', true)
+                        modal.find('.custom-switch-indicator').addClass('disabled')
+                    }else{
+                        modal.find('#edit-user-status-checkbox').prop('disabled', false)
+                        modal.find('.custom-switch-indicator').removeClass('disabled')
                     }
                 },
                 error: function(data){
@@ -4555,25 +4577,103 @@ $(function() {
 
 
 
-
+    
      /* -----------  MANAGER STOCK ------------*/
 
+    if($('#daterange-btn-wastespg-manager').length){
+
+        $('#date-range-input-wastepg').val('Todos los registros');
+
+        $('.daterange-cus').daterangepicker({
+            locale: {format: 'YYYY-MM-DD'},
+            drops: 'down',
+            opens: 'right'
+          });
+          
+          $('#daterange-btn-wastespg-manager').daterangepicker({
+            ranges: {
+              'Todo' : [moment('1970-01-01'), moment().add(1, 'days')],
+              'Hoy'   : [moment(), moment().add(1, 'days')],
+              'Ayer'   : [moment().subtract(1, 'days'), moment()],
+              'Últimos 7 días' : [moment().subtract(6, 'days'), moment().add(1, 'days')],
+              'Últimos 30 días': [moment().subtract(29, 'days'), moment().add(1, 'days')],
+              'Este mes'  : [moment().startOf('month'), moment().endOf('month').add(1, 'days')],
+              'Último mes'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month').add(1, 'days')]
+            },
+            startDate: moment('1970-01-01'),
+            endDate  : moment().add(1, 'days'),
+          }, function (start, end) {
+            if(start.format('YYYY-MM-DD') == '1970-01-01'){
+                $('#date-range-input-wastepg').val('Todos los registros');
+            }else{
+                $('#date-range-input-wastepg').val('Del: ' + start.format('YYYY-MM-DD') + ' hasta el: ' + end.format('YYYY-MM-DD'))
+            }
+
+            intermentWasteManagerTable.draw()
+        });
+    }
+
+    if($('#daterange-btn-waste-departure-manager').length){
+
+        $('#date-range-input-waste-departure').val('Todos los registros');
+
+        $('.daterange-cus').daterangepicker({
+            locale: {format: 'YYYY-MM-DD'},
+            drops: 'down',
+            opens: 'right'
+          });
+          
+          $('#daterange-btn-waste-departure-manager').daterangepicker({
+            ranges: {
+              'Todo' : [moment('1970-01-01'), moment().add(1, 'days')],
+              'Hoy'   : [moment(), moment().add(1, 'days')],
+              'Ayer'   : [moment().subtract(1, 'days'), moment()],
+              'Últimos 7 días' : [moment().subtract(6, 'days'), moment().add(1, 'days')],
+              'Últimos 30 días': [moment().subtract(29, 'days'), moment().add(1, 'days')],
+              'Este mes'  : [moment().startOf('month'), moment().endOf('month').add(1, 'days')],
+              'Último mes'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month').add(1, 'days')]
+            },
+            startDate: moment('1970-01-01'),
+            endDate  : moment().add(1, 'days'),
+          }, function (start, end) {
+            if(start.format('YYYY-MM-DD') == '1970-01-01'){
+                $('#date-range-input-waste-departure').val('Todos los registros');
+            }else{
+                $('#date-range-input-waste-departure').val('Del: ' + start.format('YYYY-MM-DD') + ' hasta el: ' + end.format('YYYY-MM-DD'))
+            }
+
+            packingGuideManagerTable.draw();
+        });
+    }
+
+
     if($('#interment-wastes-table-manager').length){
+
+        /* --------- FILTER GUIDES PG -----------*/
+
+
+        $('input[name=filter-wastespg]').on('change', function(){
+            intermentWasteManagerTable.column(9).search($(this).val()).draw()
+        })
 
         var intermentWasteManagerTableEle = $('#interment-wastes-table-manager');
         var getDataUrl = intermentWasteManagerTableEle.data('url');
         var intermentWasteManagerTable = intermentWasteManagerTableEle.DataTable({
+            order: [[9,'desc']],
             language: DataTableEs,
-            serverSide: true,
-            processing: true,
+            // serverSide: true,
+            // processing: true,
             ajax: {
                 "url": getDataUrl,
-                "data": {
-                    "table": "intGuide"
+                "data": function(data){
+                        // data.from_date = $('#daterange-btn-wastespg-manager').data('daterangepicker').startDate.format('YYYY-MM-DD')
+                        // data.end_date = $('#daterange-btn-wastespg-manager').data('daterangepicker').endDate.format('YYYY-MM-DD')
+                        data.table = "intGuide"
+                        // data.status = $('input[name=filter-wastespg]:checked').val()
                 }
             },
             columns:[
-                {data: 'choose', name:'choose', orderable: false, searchable: false},
+                {data: 'choose', name:'choose', orderable: false, searchable: false, className: 'not-export-col'},
                 {data: 'guide.code', name:'guide.code', orderable: false,},
                 {data: 'waste.classes_wastes', name:'waste.classesWastes.symbol', orderable: false},
                 {data: 'waste.name', name:'waste.name', orderable: false},
@@ -4581,33 +4681,145 @@ $(function() {
                 {data: 'actual_weight', name:'actual_weight', orderable: false},
                 {data: 'package_quantity', name:'package_quantity', orderable: false},
                 {data: 'guide.warehouse.company.name', name:'guide.warehouse.company.name', orderable: false},
-                {data: 'guide.date_verified', name:'guide.date_verified', orderable: false},
-                {data: 'status', name:'status', orderable: false, searchable: false}
-            ]
+                {data: 'guide.date_verified', name:'guide.date_verified'},
+                {data: 'stat_stock', name:'stat_stock'},
+                {data: 'stat_departure', name:'stat_departure', orderable: false, searchable: false}
+            ],
+            columnDefs : [
+                { 'visible': false, 'targets': [10] }
+            ],
+            dom: 'lBfrtip',
+            buttons: [
+                {
+                    text: '<i class="fa-solid fa-download"></i> &nbsp; Descargar Excel',
+                    extend: 'excelHtml5',
+                    exportOptions: {
+                        columns: ':not(.not-export-col)'
+                    },
+                    title:    function () {
+                        var from_date = $('#daterange-btn-wastespg-manager').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                        var end_date = $('#daterange-btn-wastespg-manager').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                        var name = $('#excel-generated-wastespg-info').data('name');
+                        if(from_date == '1970-01-01'){from_date = 'El principio'};
+                         return 'DETALLE RESIDUOS VERIFICADOS - GESTOR: '+name+' - DESDE: '+from_date+ ' - ' + 'HASTA: ' + end_date; 
+                    },
+                    filename: function () {
+                        var from_date = $('#daterange-btn-wastespg-manager').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                        var end_date = $('#daterange-btn-wastespg-manager').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                        var name = $('#excel-generated-wastespg-info').data('name');
+                        if(from_date == '1970-01-01'){from_date = 'todos'};
+                        return 'detalle-residuos-verificados_gestor-'+name+'_'+from_date+'_' + end_date + '_' + moment().format("hh-mm-ss");
+                    }
+                }
+            ],
+            initComplete: function () {
+                $.fn.dataTable.ext.search.push(
+                  function( settings, data, dataIndex ) {
+                    
+                    if ( settings.nTable.id !== 'interment-wastes-table-manager' ) {
+                      return true;
+                    }  
+
+                    var min = moment($('#daterange-btn-wastespg-manager').data('daterangepicker').startDate.format('YYYY-MM-DD')).toDate();
+                    var max = moment($('#daterange-btn-wastespg-manager').data('daterangepicker').endDate.format('YYYY-MM-DD')).toDate();
+                    var startDate = moment(data[8]).toDate();
+                    if (min == null && max == null) { return true; }
+                    if (min == null && startDate <= max) { return true;}
+                    if(max == null && startDate >= min) {return true;}
+                    if (startDate <= max && startDate >= min) { return true; }
+                    return false;
+                  }
+                );
+              }
         });
+
+        /* --------- STATUS FILTER GUIDES DEPARTURE -----------*/
+
+        $('input[name=filter-wastes-departure]').on('change', function(){
+            packingGuideManagerTable.column(13).search($(this).val()).draw()
+        })
 
         var packingGuideManagerTableEle = $('#packing-guides-table-manager');
         var getDataPackingUrl = packingGuideManagerTableEle.data('url');
         var packingGuideManagerTable = packingGuideManagerTableEle.DataTable({
             language: DataTableEs,
-            order: [[2, 'desc']],
-            serverSide: true,
-            processing: true,
+            order: [[9,'asc']],
+            // serverSide: true,
+            // processing: true,
             ajax: {
                 "url": getDataPackingUrl,
-                "data": {
-                    "table": "packing"
+                "data":  function(data){
+                    // data.from_date = $('#daterange-btn-waste-departure-manager').data('daterangepicker').startDate.format('YYYY-MM-DD')
+                    // data.end_date = $('#daterange-btn-waste-departure-manager').data('daterangepicker').endDate.format('YYYY-MM-DD')
+                    data.table = "packing"
+                    // data.status = $('input[name=filter-wastes-departure]:checked').val()
                 }
             },
             columns:[
-                {data: 'choose', name:'choose', orderable: false, searchable: false},
-                {data: 'cod_guide', name:'cod_guide'},
-                {data: 'date_guides_departure', name:'date_guides_departure'},
-                {data: 'weight', name:'weight', orderable: false, searchable: false},
-                {data: 'packages', name:'packages', orderable: false, searchable: false},
-                {data: 'volum', name:'volum'},
-                {data: 'status', name:'status', orderable: false, searchable: false}
-            ]
+                {data: 'choose', name:'choose', orderable: false, searchable: false, className: 'not-export-col'},
+                {data: 'packing_guide.cod_guide', name:'packingGuide.cod_guide', orderable: false},
+                {data: 'guide.code', name:'guide.code', orderable: false, searchable: false},
+                {data: 'waste.classes_wastes', name:'waste.classesWastes.symbol', orderable: false},
+                {data: 'waste.name', name:'waste.name', orderable: false},
+                {data: 'package.name', name:'package.name', orderable: false},
+                {data: 'actual_weight', name:'actual_weight', orderable: false},
+                {data: 'package_quantity', name:'package_quantity', orderable: false},
+                {data: 'guide.warehouse.company.name', name:'guide.warehouse.company.name'},
+                {data: 'packing_guide.date_guides_departure', name:'packingGuide.date_guides_departure'},
+                {data: 'date_departure', name:'date_departure', orderable: false, searchable: false},
+                {data: 'packing_guide.volum', name:'packingGuide.volum', orderable: false, searchable: false},
+                {data: 'stat_stock', name:'stat_stock', orderable: false, searchable: false},
+                {data: 'stat_departure', name:'stat_departure'},
+                {data: 'created_at', name:'created_at' , orderable: false},
+            ],
+            columnDefs : [
+                { 'visible': false, 'targets': [2, 10, 11, 12] }
+            ],
+            dom: 'lBfrtip',
+            buttons: [
+                {
+                    text: '<i class="fa-solid fa-download"></i> &nbsp; Descargar Excel',
+                    extend: 'excelHtml5',
+                    exportOptions: {
+                        columns: ':not(.not-export-col)'
+                    },
+                    title:    function () {
+                        var from_date = $('#daterange-btn-waste-departure-manager').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                        var end_date = $('#daterange-btn-waste-departure-manager').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                        var name = $('#excel-generated-wastespg-info').data('name');
+                        if(from_date == '1970-01-01'){from_date = 'El principio'};
+                         return 'DETALLE CARGA - GESTOR: '+name+' - DESDE: '+from_date+ ' - ' + 'HASTA: ' + end_date; 
+                    },
+                    filename: function () {
+                        var from_date = $('#daterange-btn-waste-departure-manager').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                        var end_date = $('#daterange-btn-waste-departure-manager').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                        var name = $('#excel-generated-wastespg-info').data('name');
+                        if(from_date == '1970-01-01'){from_date = 'todos'};
+                        return 'detalle-carga_gestor-'+name+'_'+from_date+'_' + end_date + '_' + moment().format("hh-mm-ss");
+                    }
+                }
+            ],
+            initComplete: function () {
+                $.fn.dataTable.ext.search.push(
+                  function( settings, data, dataIndex ) {
+                    
+                    if ( settings.nTable.id !== 'packing-guides-table-manager' ) {
+                      return true;
+                    }  
+
+                    var min = moment($('#daterange-btn-waste-departure-manager').data('daterangepicker').startDate.format('YYYY-MM-DD')).toDate();
+                    var max = moment($('#daterange-btn-waste-departure-manager').data('daterangepicker').endDate.format('YYYY-MM-DD')).toDate();
+                    var startDate = moment(data[14]).toDate();
+
+                    console.log(startDate)
+                    if (min == null && max == null) { return true; }
+                    if (min == null && startDate <= max) { return true;}
+                    if(max == null && startDate >= min) {return true;}
+                    if (startDate <= max && startDate >= min) { return true; }
+                    return false;
+                  }
+                );
+              }
         });
 
         var transportTypeSelect = $('#transport-type-select');
@@ -4628,6 +4840,10 @@ $(function() {
             btn_container.html('<div class="btn btn-secondary" style="pointer-events: none;"> \
                                         <i class="fa-solid fa-square-plus"></i> &nbsp; <span class="me-1"> Realizar Carga </span>\
                                 </div>');
+
+            $('input[name="guides-selected[]"]:checked').each(function(){
+                $(this).prop('checked', false)
+            })
         } );
 
 
@@ -4636,6 +4852,10 @@ $(function() {
             btn_container.html('<div class="btn btn-secondary" style="pointer-events: none;"> \
                                     <i class="fa-solid fa-square-plus"></i> &nbsp; <span class="me-1"> Dar salida </span>\
                                 </div>');
+
+            $('input[name="packingGuides-selected[]"]:checked').each(function(){
+                $(this).prop('checked', false)
+            })
         } );
 
 
@@ -4780,10 +5000,13 @@ $(function() {
                                                 <i class="fa-solid fa-square-plus"></i> &nbsp; Realizar Carga \
                                             </div>');
     
-                        intermentWasteManagerTable.draw();
-                        packingGuideManagerTable.draw();
-                        spinner.toggleClass('active');
-                        modal.modal('hide');
+                        intermentWasteManagerTable.ajax.reload()
+                        packingGuideManagerTable.ajax.reload()
+                        spinner.toggleClass('active')
+                        modal.modal('hide')
+                        
+                        modal.find('input[name=code]').val('')
+                        modal.find('input[name=volume]').val('')
                     },
                     error: function(data){
                         console.log(data);
@@ -4796,52 +5019,6 @@ $(function() {
             
            
         })
-
-
-        // $('body').on('click', '.btn-show-guide', function(e){
-        //     e.preventDefault();
-        //     var button = $(this);
-        //     var url = button.data('url');
-        //     var modal = $('#showGuideDetailModal');
-        //     var tableGuide = $('#t-body-show-guide-manager');
-        //     var tableWastes = $('#t-body-guide-wastes-manager');
-        //     tableGuide.html('');
-        //     tableWastes.html('');
-
-        //     $.ajax({
-        //         type: 'GET',
-        //         url: url,
-        //         dataType: 'JSON',
-        //         success: function(data){
-        //             var guide = data['guide'];
-
-        //             tableGuide.html('<tr>\
-        //                                 <td>'+guide.code+'</td>\
-        //                                 <td>'+guide.date_verified+'</td>\
-        //                                 <td>'+guide['warehouse']['company'].name+'</td>\
-        //                                 <td>'+data['weight']+'</td>\
-        //                                 <td>'+data['packages']+'</td>\
-        //                                 <td>'+data.comment+'</td>\
-        //                             </tr>');
-
-        //             $.each(guide['guide_wastes'], function(key, values){
-        //                 tableWastes.append('<tr>\
-        //                                         <td>'+values['waste']['classes_wastes'][0].symbol+'</td>\
-        //                                         <td>'+values['waste'].name+'</td>\
-        //                                         <td>'+values['package'].name+'</td>\
-        //                                         <td>'+values.actual_weight+'</td>\
-        //                                         <td>'+values.package_quantity+'</td>\
-        //                                     </tr>');
-        //                                     });
-
-        //             console.log(data['guide']);
-        //             modal.modal('toggle');
-        //         },
-        //         error: function(data){
-        //             console.log(data);
-        //         }
-        //     })
-        // })
 
 
         $('body').on('click', '.checkbox-packingGuide-label', function(){
@@ -4960,28 +5137,26 @@ $(function() {
                 },
                 dataType: 'JSON',
                 success: function(data){
-                    var guides = data['packingGuides'];
+                    var wastes = data['wastes'];
 
-                    $.each(guides, function(key, values){
-                        var weight = 0;
-                        var packages = 0;
-                        $.each(values['wastes'], function(index, waste){
-                            weight += waste.actual_weight
-                            packages += waste.package_quantity
-                        })
+                    $.each(wastes, function(key, values){
 
                         tbody.append('<tr>\
-                                        <input type="hidden" value="'+values.id+'" name="packingGuides-departure-selected[]"> \
-                                        <td>'+values.cod_guide+'</td>\
-                                        <td>'+values.date_guides_departure+'</td>\
-                                        <td>'+weight+'</td>\
-                                        <td>'+packages+'</td>\
-                                        <td>'+values.volum+'</td>\
+                                        <input type="hidden" value="'+values.id+'" name="wastes-departure-selected[]"> \
+                                        <td>'+values['packing_guide'].cod_guide+'</td>\
+                                        <td>'+values['waste']['classes_wastes'][0].symbol+'</td>\
+                                        <td>'+values['waste'].name+'</td>\
+                                        <td>'+values['package'].name+'</td>\
+                                        <td>'+values.actual_weight+'</td>\
+                                        <td>'+values.package_quantity+'</td>\
+                                        <td>'+values['guide']['warehouse']['company'].name+'</td>\
+                                        <td>'+values['packing_guide'].date_guides_departure+'</td>\
                                     </tr>');
                     })
 
                     spinner.toggleClass('active');
                     modal.modal('toggle');
+
                 },
                 error: function(data){
                     console.log(data)
@@ -5035,9 +5210,15 @@ $(function() {
                                                         <i class="fa-solid fa-square-plus"></i> &nbsp; <span class="me-1"> Dar salida </span>\
                                                     </div>');
 
-                        packingGuideManagerTable.draw();
+                        intermentWasteManagerTable.ajax.reload()
+                        packingGuideManagerTable.ajax.reload()
                         spinner.toggleClass('active');
                         modal.modal('toggle');
+
+                        modal.find('select[name=transport-type]').val('').trigger('change')
+                        modal.find('select[name=destination]').val('').change()
+                        modal.find('input[name=n-guideppc]').val('')
+                        modal.find('input[name=n-manifest]').val('')
                     },
                     error: function(data){
                         console.log(data);

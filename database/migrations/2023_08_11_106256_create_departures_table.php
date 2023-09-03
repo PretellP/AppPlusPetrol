@@ -21,7 +21,6 @@ class CreateDeparturesTable extends Migration
             $table->string('plate');
             $table->double('weigth', 8,2);
             $table->double('weigth_diff', 8,2);
-            $table->boolean('stat_disposition');
             $table->timestamps();
         });
     }

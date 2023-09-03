@@ -164,7 +164,7 @@
                         </div>
                     </div>
                     <div class="form-group row mb-4">
-                        <label class="col-form-label col-12 col-md-3 col-lg-3">Subir firma * </label>
+                        <label class="col-form-label col-12 col-md-3 col-lg-3">Subir firma <span class="col-form-label info-signature-required">*</span> </label>
                         <div class="col-12">
                             <div id="image-preview" class="image-preview">
                                 <label for="image-upload" id="image-label">Subir Imagen</label>

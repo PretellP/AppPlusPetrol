@@ -16,9 +16,7 @@ class UserController extends Controller
     {
         if($request->ajax())
         {
-            $allUsers = DataTables::of(User::query()
-                                    ->with(['role', 'company', 'ownerCompany'])
-                )
+            $allUsers = DataTables::of(User::with(['role', 'company', 'ownerCompany']))
                 ->addColumn('profile', function($user){
                     return $user->role->name;
                 })
@@ -89,10 +87,13 @@ class UserController extends Controller
 
             $companies = in_array($role, ['SOLICITANTE', 'APROBANTE']) ? Company::all() : OwnerCompany::all();
 
+            $validManager = $role == 'GESTOR' ? true : false;
+
             return response()->json([
                 'valid' => $status,
                 'approvings' => $approvings,
-                'companies' => $companies
+                'companies' => $companies,
+                'validManager' => $validManager
             ]);
         }
         elseif($request['type'] == 'company')
@@ -112,17 +113,26 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $path = 'img/signatures/';
-        $file = $request->file('userImageSignatureRegister');
-        $uuid = $file->hashName();
-        $storeUrl = $path.$uuid;
+        $storeUrl = '';
+        
+        if($request->hasFile('userImageSignatureRegister'))
+        {
+            $path = 'img/signatures/';
+            $file = $request->file('userImageSignatureRegister');
+            $uuid = $file->hashName();
+            $storeUrl = $path.$uuid;
+            Storage::putFileAs($path, $file, $uuid);
+        }
+
         $status = $request['user-status-checkbox'] == 'on' ? 1 : 0;
 
+        if($request['id_role'] == 1){
+            $status = 1;
+        }
+       
         $company = in_array($request['id_role'], [2, 3]) ? $request['id_user_company'] : null;
         $ownerCompany = in_array($request['id_role'], [2, 3]) ? null : $request['id_user_company'];
         
-        Storage::putFileAs($path, $file, $uuid);
-
         $user = User::create(
                     [
                         "id_role" => $request['id_role'],
@@ -175,7 +185,9 @@ class UserController extends Controller
                                 })
                                 ->where('id_company', $user->id_company)
                                 ->get();
-        }   
+        }
+
+        $isAdmin = $role == 'ADMINISTRADOR' ? true : false;
 
         $last_login = $user->last_login_at == null ? '- -' : getDiffForHumansFromTimestamp($user->last_login_at);
 
@@ -201,13 +213,19 @@ class UserController extends Controller
             "company" => $companyName,
             "validApplicant" => $validApplicant,
             "selectedApprovings" => $selectedApprovings,
-            'approvings' => $approvings
+            'approvings' => $approvings,
+            'is_admin' => $isAdmin
         ]);
     }
 
     public function update(Request $request, User $user)
     {
         $status = $request['user-status-checkbox'] == 'on' ? 1 : 0;
+        $role = $user->role->name;
+
+        if($role == 'ADMINISTRADOR'){
+            $status = 1;
+        }
 
         if($request->hasFile('userImageSignatureEdit'))
         {
@@ -239,8 +257,6 @@ class UserController extends Controller
             'url_signature' => $url_signature,
             'status' => $status
         ]);
-
-        $role = $user->role->name;
 
         if($role == 'SOLICITANTE')
         {

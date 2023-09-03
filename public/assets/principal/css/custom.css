@@ -1040,6 +1040,11 @@ i.loadSpinner.active
     width: 50%;
 }
 
+.image-preview input, #callback-preview input
+{
+    font-size: unset !important;
+}
+
 
 
 
@@ -1549,7 +1554,12 @@ ul.select2-selection__rendered {
 
 
 
+/* ------ MODAL USERS ADMIN ---------*/
 
+.custom-switch-indicator.disabled
+{
+    background: rgb(207, 207, 207) !important;
+}
 
 
 
@@ -1587,8 +1597,34 @@ ul.select2-selection__rendered {
     font-size: 1.2em;
 }
 
+.group-filter-buttons-section
+{
+    display: flex;
+    gap: 1.5em;
+}
 
+.selectgroup-item
+{
+    margin-bottom: 0 !important;
+}
 
+.selectgroup
+{
+    height: 100% !important;
+}
+
+.selectgroup
+.selectgroup-button.selectgroup-button-icon
+{
+    height: 100% !important;
+    display: flex;
+    align-items: center;
+}
+
+.selectgroup-input:focus + .selectgroup-button, .selectgroup-input:checked + .selectgroup-button
+{
+    background-color: var(--first-color) !important;
+}
 
 
 

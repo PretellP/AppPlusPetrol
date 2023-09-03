@@ -84,13 +84,6 @@ a
 
 .right-container
 {
-  z-index: 1;
-  background-color: rgba(255, 255, 255, 0.808);
-}
-
-
-.right-container
-{
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -101,7 +94,10 @@ a
   margin: 0 !important;
   padding: 50px !important;
   box-shadow: -10px 0px 40px rgba(0, 0, 0, 0.2);
-  overflow: auto;
+  overflow: visible;
+  z-index: 1;
+  background-color: rgba(255, 255, 255, 0.808);
+  position: relative;
 }
 
 .right-container
@@ -121,6 +117,14 @@ a
 {
   width: 100%;
   height: 100%;
+}
+
+.right-container
+.alert-danger
+{
+  position: absolute;
+  top: 0;
+  transform: translateY(-120%);
 }
 
 .cont-txt-login
