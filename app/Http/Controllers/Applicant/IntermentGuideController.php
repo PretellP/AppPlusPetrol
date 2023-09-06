@@ -26,37 +26,24 @@ class IntermentGuideController extends Controller
 
         if($request->ajax())
         {
-            if($request['table'] == 'pending')
-            {
+            if($request['table'] == 'pending'){
                 $guidesApplicant = $user->applicantGuides()->where('stat_rejected', 0)
                                                         ->where(function($query){
                                                             $query->where('stat_approved', 0)
                                                                 ->orWhere('stat_recieved', 0)
                                                                 ->orWhere('stat_verified', 0);
                                                         })
-                                                        ->get();
+                                                        ->with(['warehouse.lot',
+                                                                'warehouse.stage',
+                                                                'warehouse.location',
+                                                                'warehouse.projectArea',
+                                                                'warehouse.company',
+                                                                'warehouse.front'
+                                                        ]);
 
                 $allGuides = DataTables::of($guidesApplicant)
-                ->addColumn('date', function($guide){
+                ->editColumn('created_at', function($guide){
                     return $guide->created_at;
-                })
-                ->addColumn('lot', function($guide){
-                    return $guide->warehouse->lot->name;
-                })
-                ->addColumn('stage', function($guide){
-                    return $guide->warehouse->stage->name;
-                })
-                ->addColumn('location', function($guide){
-                    return $guide->warehouse->location->name;
-                })
-                ->addColumn('proyect', function($guide){
-                    return $guide->warehouse->projectArea->name;
-                })
-                ->addColumn('company', function($guide){
-                    return $guide->warehouse->company->name;
-                })
-                ->addColumn('front', function($guide){
-                    return $guide->warehouse->front->name;
                 })
                 ->addColumn('stat_approved', function($guide){
                     $status = '<span class="info-guide-pending">
@@ -113,34 +100,21 @@ class IntermentGuideController extends Controller
                 ->make(true);
                 return $allGuides;
             }
-            elseif($request['table'] == 'approved')
-            {
+            elseif($request['table'] == 'approved'){
                 $guidesApplicant = $user->applicantGuides()->where('stat_approved', 1)
                                                             ->where('stat_recieved', 1)
                                                             ->where('stat_verified', 1)
-                                                            ->get();
+                                                            ->with(['warehouse.lot',
+                                                                    'warehouse.stage',
+                                                                    'warehouse.location',
+                                                                    'warehouse.projectArea',
+                                                                    'warehouse.company',
+                                                                    'warehouse.front'
+                                                        ]);
 
                 $allGuides = DataTables::of($guidesApplicant)
-                ->addColumn('date', function($guide){
+                ->editColumn('created_at', function($guide){
                     return $guide->created_at;
-                })
-                ->addColumn('lot', function($guide){
-                    return $guide->warehouse->lot->name;
-                })
-                ->addColumn('stage', function($guide){
-                    return $guide->warehouse->stage->name;
-                })
-                ->addColumn('location', function($guide){
-                    return $guide->warehouse->location->name;
-                })
-                ->addColumn('proyect', function($guide){
-                    return $guide->warehouse->projectArea->name;
-                })
-                ->addColumn('company', function($guide){
-                    return $guide->warehouse->company->name;
-                })
-                ->addColumn('front', function($guide){
-                    return $guide->warehouse->front->name;
                 })
                 ->addColumn('stat_approved', function($guide){
                     $status = '<span class="info-guide-pending">
@@ -200,29 +174,17 @@ class IntermentGuideController extends Controller
             elseif($request['table'] == 'rejected')
             {
                 $guidesApplicant = $user->applicantGuides()->where('stat_rejected', 1)
-                                                            ->get();
+                                                            ->with(['warehouse.lot',
+                                                                    'warehouse.stage',
+                                                                    'warehouse.location',
+                                                                    'warehouse.projectArea',
+                                                                    'warehouse.company',
+                                                                    'warehouse.front'
+                                                        ]);
 
                 $allGuides = DataTables::of($guidesApplicant)
-                ->addColumn('date', function($guide){
+                ->editColumn('created_at', function($guide){
                     return $guide->created_at;
-                })
-                ->addColumn('lot', function($guide){
-                    return $guide->warehouse->lot->name;
-                })
-                ->addColumn('stage', function($guide){
-                    return $guide->warehouse->stage->name;
-                })
-                ->addColumn('location', function($guide){
-                    return $guide->warehouse->location->name;
-                })
-                ->addColumn('proyect', function($guide){
-                    return $guide->warehouse->projectArea->name;
-                })
-                ->addColumn('company', function($guide){
-                    return $guide->warehouse->company->name;
-                })
-                ->addColumn('front', function($guide){
-                    return $guide->warehouse->front->name;
                 })
                 ->addColumn('stat_approved', function($guide){
                     $status = '<span class="info-guide-pending">

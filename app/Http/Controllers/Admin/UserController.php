@@ -17,9 +17,6 @@ class UserController extends Controller
         if($request->ajax())
         {
             $allUsers = DataTables::of(User::with(['role', 'company', 'ownerCompany']))
-                ->addColumn('profile', function($user){
-                    return $user->role->name;
-                })
                 ->addColumn('company', function($user){
                     $company = '- -';
 
@@ -30,7 +27,7 @@ class UserController extends Controller
                     }
                     return $company;
                 })
-                ->addColumn('status-btn', function($user){
+                ->editColumn('status', function($user){
                     $status = $user->status == 1 ? 'Activo': 'Inactivo';
                     $statusBtn = '<span class="'.getUserStatusClass($user).'">'.$status.'</span>';
                     return $statusBtn;
@@ -50,7 +47,7 @@ class UserController extends Controller
                     }
                     return $btn;
                 })
-                ->rawColumns(['status-btn', 'action'])
+                ->rawColumns(['status', 'action'])
                 ->make(true);
             return $allUsers;
         }

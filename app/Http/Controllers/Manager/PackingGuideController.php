@@ -16,8 +16,7 @@ class PackingGuideController extends Controller
 
         if($request->ajax())
         {     
-            if($request['table'] == 'intGuide')
-            {
+            if($request['table'] == 'intGuide'){
                 $wastes = GuideWaste::whereHas('guide', function($query){
                                         $query->where('stat_approved', 1)
                                             ->where('stat_recieved', 1)
@@ -81,8 +80,7 @@ class PackingGuideController extends Controller
 
                 return $allWastes;
             }
-            elseif($request['table'] == 'packing')
-            {
+            elseif($request['table'] == 'packing'){
                 $wastes = GuideWaste::whereHas('guide', function($query){
                                             $query->where('stat_approved', 1)
                                                 ->where('stat_recieved', 1)

@@ -24,25 +24,23 @@ class ApproverGeneratedWastesController extends Controller
                                         ->where('id_approvant', $user->id);
                                 })
                                 ->with(['waste.classesWastes',
-                                        'guide',
                                         'guide.warehouse.company',
-                                        'guide.warehouse.front',
-                                        'guide.warehouse.location',
-                                        'guide.warehouse.lot',
-                                        'guide.warehouse.projectArea',
-                                        'guide.warehouse.stage',
-                                        'package'
+                                        'package',
+                                        'packingGuide'
                                 ]);
 
-            if($request->filled('from_date') && $request->filled('end_date')){
-                $wastes = $wastes->whereHas('guide', function($query2) use($request){
-                        $query2->whereBetween('date_verified', [$request->from_date, $request->end_date]);
-                    });
-            }
-
             $allWastes = DataTables::of($wastes)
+                        ->editColumn('packing_guide.cod_guide', function($waste){
+                            return $waste->packingGuide != null ? $waste->packingGuide->cod_guide : '- -';
+                        })
                         ->addColumn('waste.classes_wastes', function($waste){
                             return $waste->waste->classesWastes->first()->symbol;
+                        })
+                        ->editColumn('packing_guide.date_guides_departure', function($waste){
+                            return $waste->packingGuide != null ? $waste->packingGuide->date_guides_departure : '- -';
+                        })
+                        ->editColumn('packing_guide.volum', function($waste){
+                            return $waste->packingGuide != null ? $waste->packingGuide->volum : '- -';
                         })
                         ->make(true);
 

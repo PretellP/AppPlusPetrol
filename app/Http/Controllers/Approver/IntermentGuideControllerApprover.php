@@ -30,111 +30,78 @@ class IntermentGuideControllerApprover extends Controller
                                         ->whereHas('applicant.company', function($query) use($user){
                                             $query->where('id', $user->company->id);
                                         })
-                                        ->get();
+                                        ->with(['warehouse.lot',
+                                                'warehouse.stage',
+                                                'warehouse.location',
+                                                'warehouse.projectArea',
+                                                'warehouse.company',
+                                                'warehouse.front'
+                                        ]);
 
                 $allGuides = DataTables::of($guidesPending)
-                ->addColumn('date', function($guide){
-                    return $guide->created_at;
-                })
-                ->addColumn('lot', function($guide){
-                    return $guide->warehouse->lot->name;
-                })
-                ->addColumn('stage', function($guide){
-                    return $guide->warehouse->stage->name;
-                })
-                ->addColumn('location', function($guide){
-                    return $guide->warehouse->location->name;
-                })
-                ->addColumn('proyect', function($guide){
-                    return $guide->warehouse->projectArea->name;
-                })
-                ->addColumn('company', function($guide){
-                    return $guide->warehouse->company->name;
-                })
-                ->addColumn('front', function($guide){
-                    return $guide->warehouse->front->name;
-                })
-                ->addColumn('action', function($guide){
-                    $btn = '<a href="'.route('approverGuides.show', $guide).'"
-                            data-original-title="show" class="me-3 edit btn btn-info btn-sm"><i class="fa-solid fa-eye"></i></a>';
+                            ->editColumn('created_at', function($guide){
+                                return $guide->created_at;
+                            })
+                            ->addColumn('action', function($guide){
+                                $btn = '<a href="'.route('approverGuides.show', $guide).'"
+                                        data-original-title="show" class="me-3 edit btn btn-info btn-sm"><i class="fa-solid fa-eye"></i></a>';
 
-                    return $btn;
-                })
-                ->rawColumns(['action'])
-                ->make(true);
+                                return $btn;
+                            })
+                            ->rawColumns(['action'])
+                            ->make(true);
                 return $allGuides;
             }
             elseif($request['table'] == 'approved')
             {
-                $guidesApproved = $user->approvantGuides()->where('stat_approved', 1)->get();
+                $guidesApproved = $user->approvantGuides()->where('stat_approved', 1)
+                                                        ->with(['warehouse.lot',
+                                                        'warehouse.stage',
+                                                        'warehouse.location',
+                                                        'warehouse.projectArea',
+                                                        'warehouse.company',
+                                                        'warehouse.front'
+                                                ]);
 
                 $allGuides = DataTables::of($guidesApproved)
-                ->addColumn('date', function($guide){
-                    return $guide->created_at;
-                })
-                ->addColumn('lot', function($guide){
-                    return $guide->warehouse->lot->name;
-                })
-                ->addColumn('stage', function($guide){
-                    return $guide->warehouse->stage->name;
-                })
-                ->addColumn('location', function($guide){
-                    return $guide->warehouse->location->name;
-                })
-                ->addColumn('proyect', function($guide){
-                    return $guide->warehouse->projectArea->name;
-                })
-                ->addColumn('company', function($guide){
-                    return $guide->warehouse->company->name;
-                })
-                ->addColumn('front', function($guide){
-                    return $guide->warehouse->front->name;
-                })
-                ->addColumn('action', function($guide){
-                    $btn = '<a href="'.route('approvingApprovedGuides.show', $guide).'"
-                            data-original-title="show" class="me-3 edit btn btn-info btn-sm"><i class="fa-solid fa-eye"></i></a>';
+                            ->editColumn('created_at', function($guide){
+                                return $guide->created_at;
+                            })
+                            ->addColumn('action', function($guide){
+                                $btn = '<a href="'.route('approvingApprovedGuides.show', $guide).'"
+                                        data-original-title="show" class="me-3 edit btn btn-info btn-sm"><i class="fa-solid fa-eye"></i></a>';
 
-                    return $btn;
-                })
-                ->rawColumns(['action'])
-                ->make(true);
+                                return $btn;
+                            })
+                            ->rawColumns(['action'])
+                            ->make(true);
                 return $allGuides;
             }
             elseif($request['table'] == 'rejected')
             {
                 $guidesRejected = $user->approvantGuides()->where('stat_rejected', 1)
-                                                            ->where('stat_approved', 0)->get();
+                                                            ->where('stat_approved', 0)
+                                                            ->with(['warehouse.lot',
+                                                                    'warehouse.stage',
+                                                                    'warehouse.location',
+                                                                    'warehouse.projectArea',
+                                                                    'warehouse.company',
+                                                                    'warehouse.front'
+                                                            ]);
 
                 $allGuides = DataTables::of($guidesRejected)
-                ->addColumn('date', function($guide){
-                    return $guide->created_at;
-                })
-                ->addColumn('lot', function($guide){
-                    return $guide->warehouse->lot->name;
-                })
-                ->addColumn('stage', function($guide){
-                    return $guide->warehouse->stage->name;
-                })
-                ->addColumn('location', function($guide){
-                    return $guide->warehouse->location->name;
-                })
-                ->addColumn('proyect', function($guide){
-                    return $guide->warehouse->projectArea->name;
-                })
-                ->addColumn('company', function($guide){
-                    return $guide->warehouse->company->name;
-                })
-                ->addColumn('front', function($guide){
-                    return $guide->warehouse->front->name;
-                })
-                ->addColumn('action', function($guide){
-                    $btn = '<a href="'.route('approvingRejectedGuides.show', $guide).'"
-                            data-original-title="show" class="me-3 edit btn btn-info btn-sm"><i class="fa-solid fa-eye"></i></a>';
+                            ->editColumn('created_at', function($guide){
+                                return $guide->created_at;
+                            })
+                            ->addColumn('action', function($guide){
+                                $btn = '<a href="'.route('approvingRejectedGuides.show', $guide).'"
+                                        data-original-title="show" class="me-3 edit btn btn-info btn-sm"><i class="fa-solid fa-eye"></i></a>';
 
-                    return $btn;
-                })
-                ->rawColumns(['action'])
-                ->make(true);
+                                return $btn;
+                            })
+                            ->rawColumns(['action'])
+                            ->make(true);
+                            
                 return $allGuides;
             }
         }

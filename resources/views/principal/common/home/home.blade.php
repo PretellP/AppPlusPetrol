@@ -72,7 +72,7 @@
 
                 @else
 
-                <a href="{{route('stock.index')}}">
+                <a href="{{route('stock.index')}}" class="manager-links">
                     <div class="link-box">
                         <div class="img-context-link-container">
                             <i class="fa-solid fa-layer-group"></i>
@@ -83,7 +83,7 @@
                     </div>
                 </a>
                
-                <a href="">
+                <a href="{{route('departures.index')}}" class="manager-links">
                     <div class="link-box">
                         <div class="img-context-link-container">
                             <i class="fa-solid fa-truck-moving"></i>
@@ -94,7 +94,7 @@
                     </div>
                 </a>
 
-                <a href="">
+                <a href="{{route('dispositions.index')}}" class="manager-links">
                     <div class="link-box">
                         <div class="img-context-link-container">
                              <i class="fa-solid fa-industry"></i>

@@ -1534,6 +1534,35 @@ ul.select2-selection__rendered {
 
 
 
+/* -------- MANAGER STYLES HOME --------*/
+
+
+.manager-links:nth-child(1n) i
+{
+    color: #ff7d41;
+}
+
+.manager-links:nth-child(2n) i
+{
+    color: #2b87c5;
+}
+
+.manager-links:nth-child(3n) i
+{
+    color: #3fc951;
+}
+
+
+
+
+
+/* ---------- SELECT 2 CUSTOM ----------*/
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__display
+{
+    padding-left: 9px !important;
+}
+
 /* ----- DATATABLES BUTTONS ---------*/
 
 .buttons-excel
@@ -1585,6 +1614,11 @@ ul.select2-selection__rendered {
 
 /* ---------- TABLES CUSTOM STYLES ----------*/
 
+.buttons-register-container
+{
+    display: flex;
+    gap: 20px;
+}
 
 .table-sm td, .table-sm th
 {
@@ -1627,21 +1661,26 @@ ul.select2-selection__rendered {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
 .modal-wastes
 {
     max-width: 1140px;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -27,14 +27,12 @@ class IntermentGuideControllerReciever extends Controller
                 $allGuides = IntermentGuide::where('stat_approved', 1)
                                             ->where('stat_recieved', 0)
                                             ->where('stat_rejected', 0)
-                                            ->with(['warehouse', 
-                                                    'warehouse.lot',
+                                            ->with(['warehouse.lot',
                                                     'warehouse.company',
                                                     'warehouse.front',
                                                     'warehouse.location',
                                                     'warehouse.projectArea',
-                                                    'warehouse.stage',
-                                                    'warehouse.guides'
+                                                    'warehouse.stage'
                                             ]);
 
                 return DataTables::of($allGuides)
@@ -53,75 +51,53 @@ class IntermentGuideControllerReciever extends Controller
             elseif($request['table'] == 'recieved')
             {
                 $guidesRecieved = $user->receiverGuides()->where('stat_approved', 1)
-                                                        ->where('stat_recieved', 1)->get();
+                                                        ->where('stat_recieved', 1)
+                                                        ->with(['warehouse.lot',
+                                                                'warehouse.stage',
+                                                                'warehouse.location',
+                                                                'warehouse.projectArea',
+                                                                'warehouse.company',
+                                                                'warehouse.front'
+                                                        ]);
 
                 $allGuides = DataTables::of($guidesRecieved)
-                ->addColumn('date', function($guide){
-                    return $guide->created_at;
-                })
-                ->addColumn('lot', function($guide){
-                    return $guide->warehouse->lot->name;
-                })
-                ->addColumn('stage', function($guide){
-                    return $guide->warehouse->stage->name;
-                })
-                ->addColumn('location', function($guide){
-                    return $guide->warehouse->location->name;
-                })
-                ->addColumn('proyect', function($guide){
-                    return $guide->warehouse->projectArea->name;
-                })
-                ->addColumn('company', function($guide){
-                    return $guide->warehouse->company->name;
-                })
-                ->addColumn('front', function($guide){
-                    return $guide->warehouse->front->name;
-                })
-                ->addColumn('action', function($guide){
-                    $btn = '<a href="'.route('recieverRecievedGuides.show', $guide).'"
-                            data-original-title="show" class="me-3 edit btn btn-info btn-sm"><i class="fa-solid fa-eye"></i></a>';
+                            ->editColumn('created_at', function($guide){
+                                return $guide->created_at;
+                            })
+                            ->addColumn('action', function($guide){
+                                $btn = '<a href="'.route('recieverRecievedGuides.show', $guide).'"
+                                        data-original-title="show" class="me-3 edit btn btn-info btn-sm"><i class="fa-solid fa-eye"></i></a>';
 
-                    return $btn;
-                })
-                ->rawColumns(['action'])
-                ->make(true);
+                                return $btn;
+                            })
+                            ->rawColumns(['action'])
+                            ->make(true);
                 return $allGuides;
             }
             elseif($request['table'] == 'rejected')
             {
                 $guidesRejected = $user->receiverGuides()->where('stat_rejected', 1)
-                                                        ->where('stat_recieved', 0)->get();
+                                                        ->where('stat_recieved', 0)
+                                                        ->with(['warehouse.lot',
+                                                                'warehouse.stage',
+                                                                'warehouse.location',
+                                                                'warehouse.projectArea',
+                                                                'warehouse.company',
+                                                                'warehouse.front'
+                                                        ]);;
 
                 $allGuides = DataTables::of($guidesRejected)
-                ->addColumn('date', function($guide){
-                    return $guide->created_at;
-                })
-                ->addColumn('lot', function($guide){
-                    return $guide->warehouse->lot->name;
-                })
-                ->addColumn('stage', function($guide){
-                    return $guide->warehouse->stage->name;
-                })
-                ->addColumn('location', function($guide){
-                    return $guide->warehouse->location->name;
-                })
-                ->addColumn('proyect', function($guide){
-                    return $guide->warehouse->projectArea->name;
-                })
-                ->addColumn('company', function($guide){
-                    return $guide->warehouse->company->name;
-                })
-                ->addColumn('front', function($guide){
-                    return $guide->warehouse->front->name;
-                })
-                ->addColumn('action', function($guide){
-                    $btn = '<a href="'.route('recieverRejectedGuides.show', $guide).'"
-                            data-original-title="show" class="me-3 edit btn btn-info btn-sm"><i class="fa-solid fa-eye"></i></a>';
+                            ->editColumn('created_at', function($guide){
+                                return $guide->created_at;
+                            })
+                            ->addColumn('action', function($guide){
+                                $btn = '<a href="'.route('recieverRejectedGuides.show', $guide).'"
+                                        data-original-title="show" class="me-3 edit btn btn-info btn-sm"><i class="fa-solid fa-eye"></i></a>';
 
-                    return $btn;
-                })
-                ->rawColumns(['action'])
-                ->make(true);
+                                return $btn;
+                            })
+                            ->rawColumns(['action'])
+                            ->make(true);
                 return $allGuides;
             }
         }

@@ -154,6 +154,7 @@
         @endif
 
         @if (Auth::user()->role->name == 'ADMINISTRADOR')
+        
             <li class="{{setActive('guidesAdminApproved.*')}}">
                 <a href="{{route('guidesAdminApproved.index')}}" class="nav-link">
                     <i class="fa-solid fa-circle-check"></i>
@@ -192,15 +193,15 @@
                 </a>
             </li>
 
-            <li class="">
-                <a href="" class="nav-link">
+            <li class="{{setActive('departures.*')}}">
+                <a href="{{route('departures.index')}}" class="nav-link">
                     <i class="fa-solid fa-truck-moving"></i>
                     <span>Transporte</span>
                 </a>
             </li>
 
-            <li class="">
-                <a href="" class="nav-link">
+            <li class="{{setActive('dispositions.*')}}">
+                <a href="{{route('dispositions.index')}}" class="nav-link">
                     <i class="fa-solid fa-industry"></i>
                     <span>Disposición final</span>
                 </a>

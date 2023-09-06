@@ -33,18 +33,19 @@
             <table id="generated-wastes-table-verificator" class="table table-hover" data-url="{{route('generatedWastesVerificator.index')}}">
                 <thead>
                     <tr>
-                        <th>Nro. de Guía</th>
+                        <th>N°</th>
+                        <th>Nro. de Guía de Empaque</th>
+                        <th>Nro. de Guía de Internamiento</th>
                         <th>Clase</th>
-                        <th>Nom. Residuo</th>
-                        <th>Peso Original (Kg)</th>
-                        <th>Nro. Bultos</th>
-                        <th>Lote</th>
-                        <th>Etapa</th>
-                        <th>Locación</th>
-                        <th>Área / Proyecto</th>
+                        <th>Nombre de residuo</th>
+                        <th>Tipo de empaque</th>
+                        <th>Peso Original(kg)</th>
+                        <th>Nro. de bultos</th>
                         <th>Empresa</th>
-                        <th>Frente</th>
                         <th>Fecha de verificación</th>
+                        <th>Fecha de salida del residuo</th>
+                        <th>Fecha de salida Malvinas</th>
+                        <th>Volumen de la carga</th>
                     </tr>
                 </thead>
             </table>

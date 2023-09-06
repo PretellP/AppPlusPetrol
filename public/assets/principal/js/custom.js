@@ -298,9 +298,9 @@ $(function() {
                 {data: 'name', name:'name'},
                 {data: 'email', name:'email'},
                 {data: 'phone', name:'phone'},
-                {data: 'profile', name:'profile'},
-                {data: 'company', name:'company'},
-                {data: 'status-btn', name:'status-btn'},
+                {data: 'role.name', name:'role.name', orderable: false},
+                {data: 'company', name:'company', orderable: false},
+                {data: 'status', name:'status'},
                 {data: 'action', name:'action', orderable: false, searchable: false},
             ]
         });
@@ -786,425 +786,276 @@ $(function() {
 
     if($('#warehouses-table').length){
 
-    /* ----- WAREHOUSE TABLE ------*/
+        /* ----- WAREHOUSE TABLE ------*/
 
-    if($('#registerLotSelect').length)
-    {
-        $('#registerLotSelect').select2({
-            dropdownParent: $("#registerWarehouseForm"),
-            placeholder: 'Selecciona un lote'
-        });
-
-        $('#registerStageSelect').select2({
-            dropdownParent: $("#registerWarehouseForm"),
-            placeholder: 'Selecciona una etapa'
-        });
-
-        $('#registerLocationSelect').select2({
-            dropdownParent: $("#registerWarehouseForm"),
-            placeholder: 'Selecciona una locación'
-        });
-
-        $('#registerProjectSelect').select2({
-            dropdownParent: $("#registerWarehouseForm"),
-            placeholder: 'Selecciona una área de proyecto'
-        });
-
-        $('#registerCompanySelect').select2({
-            dropdownParent: $("#registerWarehouseForm"),
-            placeholder: 'Selecciona una empresa'
-        });
-
-        $('#registerFrontSelect').select2({
-            dropdownParent: $("#registerWarehouseForm"),
-            placeholder: 'Selecciona un frente'
-        });
-
-        $('#editLotSelect').select2({
-            dropdownParent: $("#editWarehouseForm"),
-            placeholder: 'Selecciona un lote'
-        });
-
-        $('#editStageSelect').select2({
-            dropdownParent: $("#editWarehouseForm"),
-            placeholder: 'Selecciona una etapa'
-        });
-
-        $('#editLocationSelect').select2({
-            dropdownParent: $("#editWarehouseForm"),
-            placeholder: 'Selecciona una locación'
-        });
-
-        $('#editProjectSelect').select2({
-            dropdownParent: $("#editWarehouseForm"),
-            placeholder: 'Selecciona una área de proyecto'
-        });
-
-        $('#editCompanySelect').select2({
-            dropdownParent: $("#editWarehouseForm"),
-            placeholder: 'Selecciona una empresa'
-        });
-
-        $('#editFrontSelect').select2({
-            dropdownParent: $("#editWarehouseForm"),
-            placeholder: 'Selecciona un frente'
-        });
-    }
-
-    var warehousesTableEle = $('#warehouses-table');
-    var getDataWarehouseUrl = warehousesTableEle.data('url');
-    var warehousesTable = warehousesTableEle.DataTable({
-        language: DataTableEs,
-        serverSide: true,
-        processing: true,
-        ajax: {
-            "url": getDataWarehouseUrl,
-            "data" : {
-                "table": "warehouse"
-            }
-        },
-        columns:[
-            {data: 'id', name:'id'},
-            {data: 'lot', name:'lot'},
-            {data: 'stage', name:'stage'},
-            {data: 'location', name:'location'},
-            {data: 'project', name:'project'},
-            {data: 'company', name:'company'},
-            {data: 'front', name:'front'},
-            {data: 'action', name:'action', orderable: false, searchable: false},
-        ]
-    });
-
-    $('#registerWarehouseBtn').on('click', function(e){
-        var modal = $('#RegisterWarehouseModal');
-        var lotSelect = modal.find('#registerLotSelect');
-        var stageSelect = modal.find('#registerStageSelect');
-        var locationSelect = modal.find('#registerLocationSelect');
-        var projectSelect =  modal.find('#registerProjectSelect');
-        var companySelect =  modal.find('#registerCompanySelect');
-        var frontSelect = modal.find('#registerFrontSelect');
-        var button = $(this);
-        var url = button.data('url');
-        var spinner = button.find('.loadSpinner');
-        spinner.toggleClass('active');
-        lotSelect.html('');
-        stageSelect.html('');
-        locationSelect.html('');
-        projectSelect.html('');
-        companySelect.html('');
-        frontSelect.html('');
-        $.ajax({
-            type: 'GET',
-            url: url,
-            dataType: 'JSON',
-            success: function(data){
-                lotSelect.append('<option value=""></option>')
-                $.each( data['lots'], function( key, value ) {
-                    lotSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
-                });
-                stageSelect.append('<option value=""></option>')
-                $.each( data['stages'], function( key, value ) {
-                    stageSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
-                });
-                locationSelect.append('<option value=""></option>')
-                $.each( data['locations'], function( key, value ) {
-                    locationSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
-                });
-                projectSelect.append('<option value=""></option>')
-                $.each( data['projects'], function( key, value ) {
-                    projectSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
-                });
-                companySelect.append('<option value=""></option>')
-                $.each( data['companies'], function( key, value ) {
-                    companySelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
-                });
-                frontSelect.append('<option value=""></option>')
-                $.each( data['fronts'], function( key, value ) {
-                    frontSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
-                });
-                spinner.toggleClass('active');
-                modal.modal('show');
-            }
-        })
-    })
-
-    $('#btn-save-warehouse').on('click', function(e){
-        e.preventDefault();
-        var form = $('#registerWarehouseForm');
-        var passValidation = true;
-
-        form.find('.required-input').each(function(){
-            $(this).removeClass('required');
-            if($(this).val() == ''){
-                $(this).addClass('required');
-                passValidation = false;
-            }
-        })
-
-        if(passValidation)
+        if($('#registerLotSelect').length)
         {
-            var loadSpinner = form.find('.loadSpinner');
-            loadSpinner.toggleClass('active');
-            var formData = form.serialize();
+            $('#registerLotSelect').select2({
+                dropdownParent: $("#registerWarehouseForm"),
+                placeholder: 'Selecciona un lote'
+            });
+
+            $('#registerStageSelect').select2({
+                dropdownParent: $("#registerWarehouseForm"),
+                placeholder: 'Selecciona una etapa'
+            });
+
+            $('#registerLocationSelect').select2({
+                dropdownParent: $("#registerWarehouseForm"),
+                placeholder: 'Selecciona una locación'
+            });
+
+            $('#registerProjectSelect').select2({
+                dropdownParent: $("#registerWarehouseForm"),
+                placeholder: 'Selecciona una área de proyecto'
+            });
+
+            $('#registerCompanySelect').select2({
+                dropdownParent: $("#registerWarehouseForm"),
+                placeholder: 'Selecciona una empresa'
+            });
+
+            $('#registerFrontSelect').select2({
+                dropdownParent: $("#registerWarehouseForm"),
+                placeholder: 'Selecciona un frente'
+            });
+
+            $('#editLotSelect').select2({
+                dropdownParent: $("#editWarehouseForm"),
+                placeholder: 'Selecciona un lote'
+            });
+
+            $('#editStageSelect').select2({
+                dropdownParent: $("#editWarehouseForm"),
+                placeholder: 'Selecciona una etapa'
+            });
+
+            $('#editLocationSelect').select2({
+                dropdownParent: $("#editWarehouseForm"),
+                placeholder: 'Selecciona una locación'
+            });
+
+            $('#editProjectSelect').select2({
+                dropdownParent: $("#editWarehouseForm"),
+                placeholder: 'Selecciona una área de proyecto'
+            });
+
+            $('#editCompanySelect').select2({
+                dropdownParent: $("#editWarehouseForm"),
+                placeholder: 'Selecciona una empresa'
+            });
+
+            $('#editFrontSelect').select2({
+                dropdownParent: $("#editWarehouseForm"),
+                placeholder: 'Selecciona un frente'
+            });
+        }
+
+        var warehousesTableEle = $('#warehouses-table');
+        var getDataWarehouseUrl = warehousesTableEle.data('url');
+        var warehousesTable = warehousesTableEle.DataTable({
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax: {
+                "url": getDataWarehouseUrl,
+                "data" : {
+                    "table": "warehouse"
+                }
+            },
+            columns:[
+                {data: 'id', name:'id'},
+                {data: 'lot.name', name:'lot.name', orderable: false},
+                {data: 'stage.name', name:'stage.name', orderable: false},
+                {data: 'location.name', name:'location.name', orderable: false},
+                {data: 'project_area.name', name:'projectArea.name', orderable: false},
+                {data: 'company.name', name:'company.name', orderable: false},
+                {data: 'front.name', name:'front.name', orderable: false},
+                {data: 'action', name:'action', orderable: false, searchable: false},
+            ]
+        });
+
+        $('#registerWarehouseBtn').on('click', function(e){
+            var modal = $('#RegisterWarehouseModal');
+            var lotSelect = modal.find('#registerLotSelect');
+            var stageSelect = modal.find('#registerStageSelect');
+            var locationSelect = modal.find('#registerLocationSelect');
+            var projectSelect =  modal.find('#registerProjectSelect');
+            var companySelect =  modal.find('#registerCompanySelect');
+            var frontSelect = modal.find('#registerFrontSelect');
+            var button = $(this);
+            var url = button.data('url');
+            var spinner = button.find('.loadSpinner');
+            spinner.toggleClass('active');
+            lotSelect.html('');
+            stageSelect.html('');
+            locationSelect.html('');
+            projectSelect.html('');
+            companySelect.html('');
+            frontSelect.html('');
             $.ajax({
-                url: form.attr('action'),
-                method: form.attr('method'),
-                data: formData,
+                type: 'GET',
+                url: url,
                 dataType: 'JSON',
-                success: function(e){
-                    Swal.fire({
-                        toast: true,
-                        icon: 'success',
-                        title: '¡Punto verde registrado exitosamente!',
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
+                success: function(data){
+                    lotSelect.append('<option value=""></option>')
+                    $.each( data['lots'], function( key, value ) {
+                        lotSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
                     });
-                    loadSpinner.toggleClass('active');
-                    $('#RegisterWarehouseModal').modal('hide')
-                    warehousesTable.draw();
+                    stageSelect.append('<option value=""></option>')
+                    $.each( data['stages'], function( key, value ) {
+                        stageSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
+                    });
+                    locationSelect.append('<option value=""></option>')
+                    $.each( data['locations'], function( key, value ) {
+                        locationSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
+                    });
+                    projectSelect.append('<option value=""></option>')
+                    $.each( data['projects'], function( key, value ) {
+                        projectSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
+                    });
+                    companySelect.append('<option value=""></option>')
+                    $.each( data['companies'], function( key, value ) {
+                        companySelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
+                    });
+                    frontSelect.append('<option value=""></option>')
+                    $.each( data['fronts'], function( key, value ) {
+                        frontSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
+                    });
+                    spinner.toggleClass('active');
+                    modal.modal('show');
                 }
             })
-        }
-        else{
-            showInvalidateMessage();
-        }
-    })
+        })
 
+        $('#btn-save-warehouse').on('click', function(e){
+            e.preventDefault();
+            var form = $('#registerWarehouseForm');
+            var passValidation = true;
 
-    $('body').on('click', '.editWarehouse', function(){
-        var getDataUrl = $(this).data('send');
-        var url = $(this).data('url');
-        var modal = $('#EditWarehouseModal');
-        var lotSelect = modal.find('#editLotSelect');
-        var stageSelect = modal.find('#editStageSelect');
-        var locationSelect = modal.find('#editLocationSelect');
-        var projectSelect =  modal.find('#editProjectSelect');
-        var companySelect =  modal.find('#editCompanySelect');
-        var frontSelect = modal.find('#editFrontSelect');
-        lotSelect.html('');
-        stageSelect.html('');
-        locationSelect.html('');
-        projectSelect.html('');
-        companySelect.html('');
-        frontSelect.html('');
+            form.find('.required-input').each(function(){
+                $(this).removeClass('required');
+                if($(this).val() == ''){
+                    $(this).addClass('required');
+                    passValidation = false;
+                }
+            })
 
-        $.ajax({
-            type: 'GET',
-            url: getDataUrl,
-            dataType: 'JSON',
-            success: function(data){
-                lotSelect.append('<option value=""></option>')
-                $.each( data['lots'], function( key, value ) {
-                    lotSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
-                });
-                stageSelect.append('<option value=""></option>')
-                $.each( data['stages'], function( key, value ) {
-                    stageSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
-                });
-                locationSelect.append('<option value=""></option>')
-                $.each( data['locations'], function( key, value ) {
-                    locationSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
-                });
-                projectSelect.append('<option value=""></option>')
-                $.each( data['projects'], function( key, value ) {
-                    projectSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
-                });
-                companySelect.append('<option value=""></option>')
-                $.each( data['companies'], function( key, value ) {
-                    companySelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
-                });
-                frontSelect.append('<option value=""></option>')
-                $.each( data['fronts'], function( key, value ) {
-                    frontSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
-                });
-
-                lotSelect.val(data.selecLot).change();
-                stageSelect.val(data.selectStage).change();
-                locationSelect.val(data.selectLocation).change();
-                projectSelect.val(data.selectProject).change();
-                companySelect.val(data.selectCompany).change();
-                frontSelect.val(data.selectFront).change();
-
-                modal.modal('show');
+            if(passValidation)
+            {
+                var loadSpinner = form.find('.loadSpinner');
+                loadSpinner.toggleClass('active');
+                var formData = form.serialize();
+                $.ajax({
+                    url: form.attr('action'),
+                    method: form.attr('method'),
+                    data: formData,
+                    dataType: 'JSON',
+                    success: function(e){
+                        Swal.fire({
+                            toast: true,
+                            icon: 'success',
+                            title: '¡Punto verde registrado exitosamente!',
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        });
+                        loadSpinner.toggleClass('active');
+                        $('#RegisterWarehouseModal').modal('hide')
+                        warehousesTable.draw();
+                    }
+                })
             }
-        });
+            else{
+                showInvalidateMessage();
+            }
+        })
 
-        $('#editWarehouseForm').attr('action', url)
-    });
+
+        $('body').on('click', '.editWarehouse', function(){
+            var getDataUrl = $(this).data('send');
+            var url = $(this).data('url');
+            var modal = $('#EditWarehouseModal');
+            var lotSelect = modal.find('#editLotSelect');
+            var stageSelect = modal.find('#editStageSelect');
+            var locationSelect = modal.find('#editLocationSelect');
+            var projectSelect =  modal.find('#editProjectSelect');
+            var companySelect =  modal.find('#editCompanySelect');
+            var frontSelect = modal.find('#editFrontSelect');
+            lotSelect.html('');
+            stageSelect.html('');
+            locationSelect.html('');
+            projectSelect.html('');
+            companySelect.html('');
+            frontSelect.html('');
+
+            $.ajax({
+                type: 'GET',
+                url: getDataUrl,
+                dataType: 'JSON',
+                success: function(data){
+                    lotSelect.append('<option value=""></option>')
+                    $.each( data['lots'], function( key, value ) {
+                        lotSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
+                    });
+                    stageSelect.append('<option value=""></option>')
+                    $.each( data['stages'], function( key, value ) {
+                        stageSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
+                    });
+                    locationSelect.append('<option value=""></option>')
+                    $.each( data['locations'], function( key, value ) {
+                        locationSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
+                    });
+                    projectSelect.append('<option value=""></option>')
+                    $.each( data['projects'], function( key, value ) {
+                        projectSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
+                    });
+                    companySelect.append('<option value=""></option>')
+                    $.each( data['companies'], function( key, value ) {
+                        companySelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
+                    });
+                    frontSelect.append('<option value=""></option>')
+                    $.each( data['fronts'], function( key, value ) {
+                        frontSelect.append('<option value="'+value['id']+'">'+value['name']+'</option>');
+                    });
+
+                    lotSelect.val(data.selecLot).change();
+                    stageSelect.val(data.selectStage).change();
+                    locationSelect.val(data.selectLocation).change();
+                    projectSelect.val(data.selectProject).change();
+                    companySelect.val(data.selectCompany).change();
+                    frontSelect.val(data.selectFront).change();
+
+                    modal.modal('show');
+                }
+            });
+
+            $('#editWarehouseForm').attr('action', url)
+        });
 
     
 
-    $('#editWarehouseForm').on('submit', function(e){
-        e.preventDefault();
-        var loadSpinner = $(this).find('.loadSpinner')
-        loadSpinner.toggleClass('active');
-        var form = $(this);
-
-        $.ajax({
-            url: $(this).attr('action'),
-            method: $(this).attr('method'),
-            data: $(form).serialize(),
-            dataType: 'JSON',
-            success: function(data){
-                Swal.fire({
-                    toast: true,
-                    icon: 'success',
-                    title: '¡Punto verde actualizado exitosamente!',
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                });
-                loadSpinner.toggleClass('active');
-                $('#EditWarehouseModal').modal('hide');
-                warehousesTable.draw();
-            },
-            error: function(data){
-                console.log('Error', data)
-            }
-        })
-    })
-
-    $('body').on('click', '.deleteWarehouse', function(){
-        var url = $(this).data('url');
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: "¡Esta acción no podrá ser revertida!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: '¡Sí!',
-            cancelButtonText: 'Cancelar',
-            reverseButtons: true,
-            }).then(function(e){
-            if(e.value === true){
-                $.ajax({
-                    type: 'DELETE',
-                    url: url,
-                    dataType: 'JSON',
-                    success: function(result){
-                        if(result.success == true){
-                            warehousesTable.draw();
-                            Swal.fire({
-                                toast: true,
-                                icon: 'success',
-                                title: 'Registro eliminado',
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                }
-                            });
-                        }else if(result.success == 'invalid'){
-                            Swal.fire({
-                                toast: true,
-                                icon: 'error',
-                                title: 'Error: Este punto de acopio está relacionado a una guía de internamiento',
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                    }
-                            });
-                        }   
-                    },
-                    error: function(result){
-                        console.log('Error', result);
-                    }
-                });
-            }else{
-                e.dismiss;
-            }
-            }, function(dismiss){
-            return false;
-            })
-    });
-
-    /*--------- LOT TABLE -----------*/
-
-
-    var lotsTable;
-
-    $('#lots-tab').on('click', function(){
-
-        if(!($('#lots-table_wrapper').length))
-        {
-            var lotsTableEle = $('#lots-table');
-            var getDataLotsUrl = lotsTableEle.data('url');
-                lotsTable = lotsTableEle.DataTable({
-                language: DataTableEs,
-                serverSide: true,
-                processing: true,
-                ajax: {
-                    "url": getDataLotsUrl,
-                    "data" : {
-                        "table": "lot"
-                    }
-                },
-                columns:[
-                    {data: 'id', name:'id'},
-                    {data: 'name', name:'name'},
-                    {data: 'action', name:'action', orderable: false, searchable: false},
-                ]
-            });
-        }
-    })
-
-    $('#RegisterLotsModal').on('show.bs.modal', function(event){
-        var button = $(event.relatedTarget)
-        var url = button.data('url');
-        var text = button.data('text');
-        var placeholder = button.data('placeholder');
-        var modal = $(this);
-        var form =  modal.find('#registerLotForm');
-        form.attr('action', url);
-        modal.find('#txt-context-element').html(text);
-        modal.find('#inputName').attr('placeholder', placeholder)
-    })
-
-    $('#btn-save-lot').on('click', function(e){
-        e.preventDefault();
-        var form = $('#registerLotForm');
-
-        var passValidation = true;
-        form.find('.required-input').each(function(){
-            $(this).removeClass('required');
-            if($(this).val() == ''){
-                $(this).addClass('required');
-                passValidation = false;
-            }
-        })
-
-        if(passValidation)
-        {
-            var loadSpinner = form.find('.loadSpinner');
+        $('#editWarehouseForm').on('submit', function(e){
+            e.preventDefault();
+            var loadSpinner = $(this).find('.loadSpinner')
             loadSpinner.toggleClass('active');
-            var formData = form.serialize();
+            var form = $(this);
+
             $.ajax({
-                url: form.attr('action'),
-                method: form.attr('method'),
-                data: formData,
+                url: $(this).attr('action'),
+                method: $(this).attr('method'),
+                data: $(form).serialize(),
                 dataType: 'JSON',
                 success: function(data){
                     Swal.fire({
                         toast: true,
                         icon: 'success',
-                        title: '¡Registrado exitosamente!',
+                        title: '¡Punto verde actualizado exitosamente!',
                         position: 'top-end',
                         showConfirmButton: false,
                         timer: 3000,
@@ -1214,205 +1065,414 @@ $(function() {
                             toast.addEventListener('mouseleave', Swal.resumeTimer)
                             }
                     });
-
                     loadSpinner.toggleClass('active');
-                    form.trigger('reset');
-                    $('#RegisterLotsModal').modal('hide');
+                    $('#EditWarehouseModal').modal('hide');
+                    warehousesTable.draw();
+                },
+                error: function(data){
+                    console.log('Error', data)
+                }
+            })
+        })
 
+        $('body').on('click', '.deleteWarehouse', function(){
+            var url = $(this).data('url');
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡Esta acción no podrá ser revertida!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '¡Sí!',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+                }).then(function(e){
+                if(e.value === true){
+                    $.ajax({
+                        type: 'DELETE',
+                        url: url,
+                        dataType: 'JSON',
+                        success: function(result){
+                            if(result.success == true){
+                                warehousesTable.draw();
+                                Swal.fire({
+                                    toast: true,
+                                    icon: 'success',
+                                    title: 'Registro eliminado',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                                });
+                            }else if(result.success == 'invalid'){
+                                Swal.fire({
+                                    toast: true,
+                                    icon: 'error',
+                                    title: 'Error: Este punto de acopio está relacionado a una guía de internamiento',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                        }
+                                });
+                            }   
+                        },
+                        error: function(result){
+                            console.log('Error', result);
+                        }
+                    });
+                }else{
+                    e.dismiss;
+                }
+                }, function(dismiss){
+                return false;
+                })
+        });
+
+        /*--------- LOT TABLE -----------*/
+
+
+        var lotsTable;
+
+        $('#lots-tab').on('click', function(){
+
+            if(!($('#lots-table_wrapper').length))
+            {
+                var lotsTableEle = $('#lots-table');
+                var getDataLotsUrl = lotsTableEle.data('url');
+                    lotsTable = lotsTableEle.DataTable({
+                    language: DataTableEs,
+                    serverSide: true,
+                    processing: true,
+                    ajax: {
+                        "url": getDataLotsUrl,
+                        "data" : {
+                            "table": "lot"
+                        }
+                    },
+                    columns:[
+                        {data: 'id', name:'id'},
+                        {data: 'name', name:'name'},
+                        {data: 'action', name:'action', orderable: false, searchable: false},
+                    ]
+                });
+            }
+        })
+
+        $('#RegisterLotsModal').on('show.bs.modal', function(event){
+            var button = $(event.relatedTarget)
+            var url = button.data('url');
+            var text = button.data('text');
+            var placeholder = button.data('placeholder');
+            var modal = $(this);
+            var form =  modal.find('#registerLotForm');
+            form.attr('action', url);
+            modal.find('#txt-context-element').html(text);
+            modal.find('#inputName').attr('placeholder', placeholder)
+        })
+
+        $('#btn-save-lot').on('click', function(e){
+            e.preventDefault();
+            var form = $('#registerLotForm');
+
+            var passValidation = true;
+            form.find('.required-input').each(function(){
+                $(this).removeClass('required');
+                if($(this).val() == ''){
+                    $(this).addClass('required');
+                    passValidation = false;
+                }
+            })
+
+            if(passValidation)
+            {
+                var loadSpinner = form.find('.loadSpinner');
+                loadSpinner.toggleClass('active');
+                var formData = form.serialize();
+                $.ajax({
+                    url: form.attr('action'),
+                    method: form.attr('method'),
+                    data: formData,
+                    dataType: 'JSON',
+                    success: function(data){
+                        Swal.fire({
+                            toast: true,
+                            icon: 'success',
+                            title: '¡Registrado exitosamente!',
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                        });
+
+                        loadSpinner.toggleClass('active');
+                        form.trigger('reset');
+                        $('#RegisterLotsModal').modal('hide');
+
+                        lotsTable.draw();
+                    },
+                    error: function(data){
+                        console.log('Error', data)
+                    }
+                })
+            }
+            else{
+                showInvalidateMessage();
+            }
+        })
+
+        $('#EditLotModal').on('show.bs.modal', function(event){
+            var button = $(event.relatedTarget)
+            var url = button.data('url');
+            var getDataUrl = button.data('send');
+            var modal = $(this);
+
+            $.ajax({
+                type: 'GET',
+                url: getDataUrl,
+                dataType: 'JSON',
+                success: function(data)
+                {
+                    modal.find('#inputName').val(data.name);
+                }
+            });
+
+            modal.find('#editLotsForm').attr('action', url);
+        })
+        $('#editLotsForm').on('submit', function(e){
+            e.preventDefault();
+            var loadSpinner = $(this).find('.loadSpinner')
+            loadSpinner.toggleClass('active');
+            var form = this;
+
+            $.ajax({
+                url: $(this).attr('action'),
+                method: $(this).attr('method'),
+                data: $(form).serialize(),
+                dataType: 'JSON',
+                success: function(data){
+                    Swal.fire({
+                        toast: true,
+                        icon: 'success',
+                        title: '¡Lote actualizado exitosamente!',
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                    });
+                    loadSpinner.toggleClass('active');
+                    $('#EditLotModal').modal('hide');
                     lotsTable.draw();
                 },
                 error: function(data){
                     console.log('Error', data)
                 }
             })
-        }
-        else{
-            showInvalidateMessage();
-        }
-    })
-
-    $('#EditLotModal').on('show.bs.modal', function(event){
-        var button = $(event.relatedTarget)
-        var url = button.data('url');
-        var getDataUrl = button.data('send');
-        var modal = $(this);
-
-        $.ajax({
-            type: 'GET',
-            url: getDataUrl,
-            dataType: 'JSON',
-            success: function(data)
-            {
-                modal.find('#inputName').val(data.name);
-            }
-        });
-
-        modal.find('#editLotsForm').attr('action', url);
-    })
-    $('#editLotsForm').on('submit', function(e){
-        e.preventDefault();
-        var loadSpinner = $(this).find('.loadSpinner')
-        loadSpinner.toggleClass('active');
-        var form = this;
-
-        $.ajax({
-            url: $(this).attr('action'),
-            method: $(this).attr('method'),
-            data: $(form).serialize(),
-            dataType: 'JSON',
-            success: function(data){
-                Swal.fire({
-                    toast: true,
-                    icon: 'success',
-                    title: '¡Lote actualizado exitosamente!',
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+        })
+        
+        $('body').on('click', '.deleteLot', function(){
+            var url = $(this).data('url');
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡Esta acción no podrá ser revertida!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '¡Sí!',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+                }).then(function(e){
+                if(e.value === true){
+                    $.ajax({
+                        type: 'DELETE',
+                        url: url,
+                        dataType: 'JSON',
+                        success: function(result){
+                            if(result.success == true){
+                                lotsTable.draw();
+                                Swal.fire({
+                                    toast: true,
+                                    icon: 'success',
+                                    title: 'Registro eliminado',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                        }
+                                });
+                            }else if(result.success == 'invalid'){
+                                Swal.fire({
+                                    toast: true,
+                                    icon: 'error',
+                                    title: 'Error: Este Lote está relacionado a un punto de acopio',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                        }
+                                });
+                            }   
+                        },
+                        error: function(result){
+                            console.log('Error', result);
                         }
-                });
-                loadSpinner.toggleClass('active');
-                $('#EditLotModal').modal('hide');
-                lotsTable.draw();
-            },
-            error: function(data){
-                console.log('Error', data)
-            }
+                    });
+                }else{
+                    e.dismiss;
+                }
+                }, function(dismiss){
+                return false;
+                })
         })
-    })
-    
-    $('body').on('click', '.deleteLot', function(){
-        var url = $(this).data('url');
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: "¡Esta acción no podrá ser revertida!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: '¡Sí!',
-            cancelButtonText: 'Cancelar',
-            reverseButtons: true,
-            }).then(function(e){
-            if(e.value === true){
-                $.ajax({
-                    type: 'DELETE',
-                    url: url,
-                    dataType: 'JSON',
-                    success: function(result){
-                        if(result.success == true){
-                            lotsTable.draw();
-                            Swal.fire({
-                                toast: true,
-                                icon: 'success',
-                                title: 'Registro eliminado',
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                    }
-                            });
-                        }else if(result.success == 'invalid'){
-                            Swal.fire({
-                                toast: true,
-                                icon: 'error',
-                                title: 'Error: Este Lote está relacionado a un punto de acopio',
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                    }
-                            });
-                        }   
+
+        /* -------- STAGE TABLE -----------*/
+
+        var stagesTable;
+
+        $('#stages-tab').on('click', function(){
+
+            if(!($('#stage-table_wrapper').length))
+            {
+                var stageTableEle = $('#stage-table');
+                var getDataStagesUrl = stageTableEle.data('url');
+                    stagesTable = stageTableEle.DataTable({
+                    language: DataTableEs,
+                    serverSide: true,
+                    processing: true,
+                    ajax: {
+                        "url": getDataStagesUrl,
+                        "data" : {
+                            "table": "stage"
+                        }
                     },
-                    error: function(result){
-                        console.log('Error', result);
-                    }
+                    columns:[
+                        {data: 'id', name:'id'},
+                        {data: 'name', name:'name'},
+                        {data: 'action', name:'action', orderable: false, searchable: false},
+                    ]
                 });
-            }else{
-                e.dismiss;
             }
-            }, function(dismiss){
-            return false;
-            })
-    })
-
-    /* -------- STAGE TABLE -----------*/
-
-    var stagesTable;
-
-    $('#stages-tab').on('click', function(){
-
-        if(!($('#stage-table_wrapper').length))
-        {
-            var stageTableEle = $('#stage-table');
-            var getDataStagesUrl = stageTableEle.data('url');
-                stagesTable = stageTableEle.DataTable({
-                language: DataTableEs,
-                serverSide: true,
-                processing: true,
-                ajax: {
-                    "url": getDataStagesUrl,
-                    "data" : {
-                        "table": "stage"
-                    }
-                },
-                columns:[
-                    {data: 'id', name:'id'},
-                    {data: 'name', name:'name'},
-                    {data: 'action', name:'action', orderable: false, searchable: false},
-                ]
-            });
-        }
-    })  
+        })  
     
-    $('#RegisterStagesModal').on('show.bs.modal', function(event){
-        var button = $(event.relatedTarget)
-        var url = button.data('url');
-        var text = button.data('text');
-        var placeholder = button.data('placeholder');
-        var modal = $(this);
-        var form =  modal.find('#registerStageForm');
-        form.attr('action', url);
-        modal.find('#txt-context-element').html(text);
-        modal.find('#inputName').attr('placeholder', placeholder)
-    })
+        $('#RegisterStagesModal').on('show.bs.modal', function(event){
+            var button = $(event.relatedTarget)
+            var url = button.data('url');
+            var text = button.data('text');
+            var placeholder = button.data('placeholder');
+            var modal = $(this);
+            var form =  modal.find('#registerStageForm');
+            form.attr('action', url);
+            modal.find('#txt-context-element').html(text);
+            modal.find('#inputName').attr('placeholder', placeholder)
+        })
 
-    $('#btn-save-stage').on('click', function(e){
-        e.preventDefault();
-        var form = $('#registerStageForm');
+        $('#btn-save-stage').on('click', function(e){
+            e.preventDefault();
+            var form = $('#registerStageForm');
 
-        var passValidation = true;
-        form.find('.required-input').each(function(){
-            $(this).removeClass('required');
-            if($(this).val() == ''){
-                $(this).addClass('required');
-                passValidation = false;
+            var passValidation = true;
+            form.find('.required-input').each(function(){
+                $(this).removeClass('required');
+                if($(this).val() == ''){
+                    $(this).addClass('required');
+                    passValidation = false;
+                }
+            })
+
+            if(passValidation)
+            {
+                var loadSpinner = form.find('.loadSpinner');
+                loadSpinner.toggleClass('active');
+                var formData = form.serialize();
+                $.ajax({
+                    url: form.attr('action'),
+                    method: form.attr('method'),
+                    data: formData,
+                    dataType: 'JSON',
+                    success: function(data){
+                        Swal.fire({
+                            toast: true,
+                            icon: 'success',
+                            title: '¡Registrado exitosamente!',
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                        });
+
+                        loadSpinner.toggleClass('active');
+                        form.trigger('reset');
+                        $('#RegisterStagesModal').modal('hide');
+
+                        stagesTable.draw();
+                    },
+                    error: function(data){
+                        console.log('Error', data)
+                    }
+                })
+            }
+            else{
+                showInvalidateMessage();
             }
         })
 
-        if(passValidation)
-        {
-            var loadSpinner = form.find('.loadSpinner');
-            loadSpinner.toggleClass('active');
-            var formData = form.serialize();
+        $('#EditStageModal').on('show.bs.modal', function(event){
+            var button = $(event.relatedTarget)
+            var url = button.data('url');
+            var getDataUrl = button.data('send');
+            var modal = $(this);
+
             $.ajax({
-                url: form.attr('action'),
-                method: form.attr('method'),
-                data: formData,
+                type: 'GET',
+                url: getDataUrl,
+                dataType: 'JSON',
+                success: function(data)
+                {
+                    modal.find('#inputStageName').val(data.name);
+                }
+            });
+
+            modal.find('#editStageForm').attr('action', url);
+        })
+        $('#editStageForm').on('submit', function(e){
+            e.preventDefault();
+            var loadSpinner = $(this).find('.loadSpinner')
+            loadSpinner.toggleClass('active');
+            var form = this;
+
+            $.ajax({
+                url: $(this).attr('action'),
+                method: $(this).attr('method'),
+                data: $(form).serialize(),
                 dataType: 'JSON',
                 success: function(data){
                     Swal.fire({
                         toast: true,
                         icon: 'success',
-                        title: '¡Registrado exitosamente!',
+                        title: '¡Etapa actualizada exitosamente!',
                         position: 'top-end',
                         showConfirmButton: false,
                         timer: 3000,
@@ -1422,205 +1482,205 @@ $(function() {
                             toast.addEventListener('mouseleave', Swal.resumeTimer)
                             }
                     });
-
                     loadSpinner.toggleClass('active');
-                    form.trigger('reset');
-                    $('#RegisterStagesModal').modal('hide');
-
+                    $('#EditStageModal').modal('hide');
                     stagesTable.draw();
                 },
                 error: function(data){
                     console.log('Error', data)
                 }
             })
-        }
-        else{
-            showInvalidateMessage();
-        }
-    })
+        })
 
-    $('#EditStageModal').on('show.bs.modal', function(event){
-        var button = $(event.relatedTarget)
-        var url = button.data('url');
-        var getDataUrl = button.data('send');
-        var modal = $(this);
-
-        $.ajax({
-            type: 'GET',
-            url: getDataUrl,
-            dataType: 'JSON',
-            success: function(data)
-            {
-                modal.find('#inputStageName').val(data.name);
-            }
-        });
-
-        modal.find('#editStageForm').attr('action', url);
-    })
-    $('#editStageForm').on('submit', function(e){
-        e.preventDefault();
-        var loadSpinner = $(this).find('.loadSpinner')
-        loadSpinner.toggleClass('active');
-        var form = this;
-
-        $.ajax({
-            url: $(this).attr('action'),
-            method: $(this).attr('method'),
-            data: $(form).serialize(),
-            dataType: 'JSON',
-            success: function(data){
-                Swal.fire({
-                    toast: true,
-                    icon: 'success',
-                    title: '¡Etapa actualizada exitosamente!',
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+        $('body').on('click', '.deleteStage', function(){
+            var url = $(this).data('url');
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡Esta acción no podrá ser revertida!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '¡Sí!',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+                }).then(function(e){
+                if(e.value === true){
+                    $.ajax({
+                        type: 'DELETE',
+                        url: url,
+                        dataType: 'JSON',
+                        success: function(result){
+                            if(result.success == true){
+                                stagesTable.draw();
+                                Swal.fire({
+                                    toast: true,
+                                    icon: 'success',
+                                    title: 'Registro eliminado',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                        }
+                                });
+                            }else if(result.success == 'invalid'){
+                                Swal.fire({
+                                    toast: true,
+                                    icon: 'error',
+                                    title: 'Error: Este registro está relacionado a un punto de acopio',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                        }
+                                });
+                            }   
+                        },
+                        error: function(result){
+                            console.log('Error', result);
                         }
-                });
-                loadSpinner.toggleClass('active');
-                $('#EditStageModal').modal('hide');
-                stagesTable.draw();
-            },
-            error: function(data){
-                console.log('Error', data)
-            }
+                    });
+                }else{
+                    e.dismiss;
+                }
+                }, function(dismiss){
+                return false;
+                })
         })
-    })
 
-    $('body').on('click', '.deleteStage', function(){
-        var url = $(this).data('url');
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: "¡Esta acción no podrá ser revertida!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: '¡Sí!',
-            cancelButtonText: 'Cancelar',
-            reverseButtons: true,
-            }).then(function(e){
-            if(e.value === true){
-                $.ajax({
-                    type: 'DELETE',
-                    url: url,
-                    dataType: 'JSON',
-                    success: function(result){
-                        if(result.success == true){
-                            stagesTable.draw();
-                            Swal.fire({
-                                toast: true,
-                                icon: 'success',
-                                title: 'Registro eliminado',
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                    }
-                            });
-                        }else if(result.success == 'invalid'){
-                            Swal.fire({
-                                toast: true,
-                                icon: 'error',
-                                title: 'Error: Este registro está relacionado a un punto de acopio',
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                    }
-                            });
-                        }   
+        /* ----------- LOCATION TABLE --------*/
+
+        var locationsTable;
+
+        $('#locations-tab').on('click', function(){
+
+            if(!($('#location-table_wrapper').length))
+            {
+                var locationTableEle = $('#location-table');
+                var getDataLocationsUrl = locationTableEle.data('url');
+                    locationsTable = locationTableEle.DataTable({
+                    language: DataTableEs,
+                    serverSide: true,
+                    processing: true,
+                    ajax: {
+                        "url": getDataLocationsUrl,
+                        "data" : {
+                            "table": "location"
+                        }
                     },
-                    error: function(result){
-                        console.log('Error', result);
-                    }
+                    columns:[
+                        {data: 'id', name:'id'},
+                        {data: 'name', name:'name'},
+                        {data: 'action', name:'action', orderable: false, searchable: false},
+                    ]
                 });
-            }else{
-                e.dismiss;
-            }
-            }, function(dismiss){
-            return false;
-            })
-    })
-
-    /* ----------- LOCATION TABLE --------*/
-
-    var locationsTable;
-
-    $('#locations-tab').on('click', function(){
-
-        if(!($('#location-table_wrapper').length))
-        {
-            var locationTableEle = $('#location-table');
-            var getDataLocationsUrl = locationTableEle.data('url');
-                locationsTable = locationTableEle.DataTable({
-                language: DataTableEs,
-                serverSide: true,
-                processing: true,
-                ajax: {
-                    "url": getDataLocationsUrl,
-                    "data" : {
-                        "table": "location"
-                    }
-                },
-                columns:[
-                    {data: 'id', name:'id'},
-                    {data: 'name', name:'name'},
-                    {data: 'action', name:'action', orderable: false, searchable: false},
-                ]
-            });
-        }
-    })
-
-    $('#RegisterLocationsModal').on('show.bs.modal', function(event){
-        var button = $(event.relatedTarget)
-        var url = button.data('url');
-        var text = button.data('text');
-        var placeholder = button.data('placeholder');
-        var modal = $(this);
-        var form =  modal.find('#registerLocationForm');
-        form.attr('action', url);
-        modal.find('#txt-context-element').html(text);
-        modal.find('#inputName').attr('placeholder', placeholder)
-    })
-
-    $('#btn-save-location').on('click', function(e){
-        e.preventDefault();
-        var form = $('#registerLocationForm');
-
-        var passValidation = true;
-        form.find('.required-input').each(function(){
-            $(this).removeClass('required');
-            if($(this).val() == ''){
-                $(this).addClass('required');
-                passValidation = false;
             }
         })
 
-        if(passValidation)
-        {
-            var loadSpinner = form.find('.loadSpinner');
-            loadSpinner.toggleClass('active');
-            var formData = form.serialize();
+        $('#RegisterLocationsModal').on('show.bs.modal', function(event){
+            var button = $(event.relatedTarget)
+            var url = button.data('url');
+            var text = button.data('text');
+            var placeholder = button.data('placeholder');
+            var modal = $(this);
+            var form =  modal.find('#registerLocationForm');
+            form.attr('action', url);
+            modal.find('#txt-context-element').html(text);
+            modal.find('#inputName').attr('placeholder', placeholder)
+        })
+
+        $('#btn-save-location').on('click', function(e){
+            e.preventDefault();
+            var form = $('#registerLocationForm');
+
+            var passValidation = true;
+            form.find('.required-input').each(function(){
+                $(this).removeClass('required');
+                if($(this).val() == ''){
+                    $(this).addClass('required');
+                    passValidation = false;
+                }
+            })
+
+            if(passValidation)
+            {
+                var loadSpinner = form.find('.loadSpinner');
+                loadSpinner.toggleClass('active');
+                var formData = form.serialize();
+                $.ajax({
+                    url: form.attr('action'),
+                    method: form.attr('method'),
+                    data: formData,
+                    dataType: 'JSON',
+                    success: function(data){
+                        Swal.fire({
+                            toast: true,
+                            icon: 'success',
+                            title: '¡Registrado exitosamente!',
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                        });
+
+                        loadSpinner.toggleClass('active');
+                        form.trigger('reset');
+                        $('#RegisterLocationsModal').modal('hide');
+
+                        locationsTable.draw();
+                    },
+                    error: function(data){
+                        console.log('Error', data)
+                    }
+                })
+            }
+            else{
+                showInvalidateMessage();
+            }
+        })
+
+        $('#EditLocationModal').on('show.bs.modal', function(event){
+            var button = $(event.relatedTarget)
+            var url = button.data('url');
+            var getDataUrl = button.data('send');
+            var modal = $(this);
+
             $.ajax({
-                url: form.attr('action'),
-                method: form.attr('method'),
-                data: formData,
+                type: 'GET',
+                url: getDataUrl,
+                dataType: 'JSON',
+                success: function(data)
+                {
+                    modal.find('#inputLocationName').val(data.name);
+                }
+            });
+
+            modal.find('#editLocationForm').attr('action', url);
+        })
+        $('#editLocationForm').on('submit', function(e){
+            e.preventDefault();
+            var loadSpinner = $(this).find('.loadSpinner')
+            loadSpinner.toggleClass('active');
+            var form = this;
+
+            $.ajax({
+                url: $(this).attr('action'),
+                method: $(this).attr('method'),
+                data: $(form).serialize(),
                 dataType: 'JSON',
                 success: function(data){
                     Swal.fire({
                         toast: true,
                         icon: 'success',
-                        title: '¡Registrado exitosamente!',
+                        title: '¡Locación actualizada exitosamente!',
                         position: 'top-end',
                         showConfirmButton: false,
                         timer: 3000,
@@ -1630,205 +1690,207 @@ $(function() {
                             toast.addEventListener('mouseleave', Swal.resumeTimer)
                             }
                     });
-
                     loadSpinner.toggleClass('active');
-                    form.trigger('reset');
-                    $('#RegisterLocationsModal').modal('hide');
-
+                    $('#EditLocationModal').modal('hide');
                     locationsTable.draw();
                 },
                 error: function(data){
                     console.log('Error', data)
                 }
             })
-        }
-        else{
-            showInvalidateMessage();
-        }
-    })
+        })
 
-    $('#EditLocationModal').on('show.bs.modal', function(event){
-        var button = $(event.relatedTarget)
-        var url = button.data('url');
-        var getDataUrl = button.data('send');
-        var modal = $(this);
-
-        $.ajax({
-            type: 'GET',
-            url: getDataUrl,
-            dataType: 'JSON',
-            success: function(data)
-            {
-                modal.find('#inputLocationName').val(data.name);
-            }
-        });
-
-        modal.find('#editLocationForm').attr('action', url);
-    })
-    $('#editLocationForm').on('submit', function(e){
-        e.preventDefault();
-        var loadSpinner = $(this).find('.loadSpinner')
-        loadSpinner.toggleClass('active');
-        var form = this;
-
-        $.ajax({
-            url: $(this).attr('action'),
-            method: $(this).attr('method'),
-            data: $(form).serialize(),
-            dataType: 'JSON',
-            success: function(data){
-                Swal.fire({
-                    toast: true,
-                    icon: 'success',
-                    title: '¡Locación actualizada exitosamente!',
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+        $('body').on('click', '.deleteLocation', function(){
+            var url = $(this).data('url');
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡Esta acción no podrá ser revertida!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '¡Sí!',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+                }).then(function(e){
+                if(e.value === true){
+                    $.ajax({
+                        type: 'DELETE',
+                        url: url,
+                        dataType: 'JSON',
+                        success: function(result){
+                            if(result.success == true){
+                                locationsTable.draw();
+                                Swal.fire({
+                                    toast: true,
+                                    icon: 'success',
+                                    title: 'Registro eliminado',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                        }
+                                });
+                            }else if(result.success == 'invalid'){
+                                Swal.fire({
+                                    toast: true,
+                                    icon: 'error',
+                                    title: 'Error: Este registro está relacionado a un punto de acopio',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                        }
+                                });
+                            }   
+                        },
+                        error: function(result){
+                            console.log('Error', result);
                         }
-                });
-                loadSpinner.toggleClass('active');
-                $('#EditLocationModal').modal('hide');
-                locationsTable.draw();
-            },
-            error: function(data){
-                console.log('Error', data)
-            }
+                    });
+                }else{
+                    e.dismiss;
+                }
+                }, function(dismiss){
+                return false;
+                })
         })
-    })
 
-    $('body').on('click', '.deleteLocation', function(){
-        var url = $(this).data('url');
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: "¡Esta acción no podrá ser revertida!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: '¡Sí!',
-            cancelButtonText: 'Cancelar',
-            reverseButtons: true,
-            }).then(function(e){
-            if(e.value === true){
-                $.ajax({
-                    type: 'DELETE',
-                    url: url,
-                    dataType: 'JSON',
-                    success: function(result){
-                        if(result.success == true){
-                            locationsTable.draw();
-                            Swal.fire({
-                                toast: true,
-                                icon: 'success',
-                                title: 'Registro eliminado',
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                    }
-                            });
-                        }else if(result.success == 'invalid'){
-                            Swal.fire({
-                                toast: true,
-                                icon: 'error',
-                                title: 'Error: Este registro está relacionado a un punto de acopio',
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                    }
-                            });
-                        }   
+        /* ------------  PROJECT TABLE -------------*/
+
+        var projectTable;
+
+        $('#projects-tab').on('click', function(){
+
+            if(!($('#project-table_wrapper').length))
+            {
+                var projectTableEle = $('#project-table');
+                var getDataProjectsUrl = projectTableEle.data('url');
+                    projectTable = projectTableEle.DataTable({
+                    language: DataTableEs,
+                    serverSide: true,
+                    processing: true,
+                    ajax: {
+                        "url": getDataProjectsUrl,
+                        "data" : {
+                            "table": "project"
+                        }
                     },
-                    error: function(result){
-                        console.log('Error', result);
-                    }
+                    columns:[
+                        {data: 'id', name:'id'},
+                        {data: 'name', name:'name'},
+                        {data: 'action', name:'action', orderable: false, searchable: false},
+                    ]
                 });
-            }else{
-                e.dismiss;
-            }
-            }, function(dismiss){
-            return false;
-            })
-    })
-
-    /* ------------  PROJECT TABLE -------------*/
-
-    var projectTable;
-
-    $('#projects-tab').on('click', function(){
-
-        if(!($('#project-table_wrapper').length))
-        {
-            var projectTableEle = $('#project-table');
-            var getDataProjectsUrl = projectTableEle.data('url');
-                projectTable = projectTableEle.DataTable({
-                language: DataTableEs,
-                serverSide: true,
-                processing: true,
-                ajax: {
-                    "url": getDataProjectsUrl,
-                    "data" : {
-                        "table": "project"
-                    }
-                },
-                columns:[
-                    {data: 'id', name:'id'},
-                    {data: 'name', name:'name'},
-                    {data: 'action', name:'action', orderable: false, searchable: false},
-                ]
-            });
-        }
-    })
-
-    $('#RegisterProjectsModal').on('show.bs.modal', function(event){
-        var button = $(event.relatedTarget)
-        var url = button.data('url');
-        var text = button.data('text');
-        var placeholder = button.data('placeholder');
-        var modal = $(this);
-        var form =  modal.find('#registerProjectForm');
-        form.attr('action', url);
-        modal.find('#txt-context-element').html(text);
-        modal.find('#inputName').attr('placeholder', placeholder)
-    })
-
-    $('#btn-save-project').on('click', function(e){
-        e.preventDefault();
-        var form = $('#registerProjectForm');
-
-        var passValidation = true;
-        form.find('.required-input').each(function(){
-            $(this).removeClass('required');
-            if($(this).val() == ''){
-                $(this).addClass('required');
-                passValidation = false;
             }
         })
 
-        if(passValidation)
-        {
-            var loadSpinner = form.find('.loadSpinner');
-            loadSpinner.toggleClass('active');
-            var formData = form.serialize();
+        $('#RegisterProjectsModal').on('show.bs.modal', function(event){
+            var button = $(event.relatedTarget)
+            var url = button.data('url');
+            var text = button.data('text');
+            var placeholder = button.data('placeholder');
+            var modal = $(this);
+            var form =  modal.find('#registerProjectForm');
+            form.attr('action', url);
+            modal.find('#txt-context-element').html(text);
+            modal.find('#inputName').attr('placeholder', placeholder)
+        })
+
+        $('#btn-save-project').on('click', function(e){
+            e.preventDefault();
+            var form = $('#registerProjectForm');
+
+            var passValidation = true;
+            form.find('.required-input').each(function(){
+                $(this).removeClass('required');
+                if($(this).val() == ''){
+                    $(this).addClass('required');
+                    passValidation = false;
+                }
+            })
+
+            if(passValidation)
+            {
+                var loadSpinner = form.find('.loadSpinner');
+                loadSpinner.toggleClass('active');
+                var formData = form.serialize();
+                $.ajax({
+                    url: form.attr('action'),
+                    method: form.attr('method'),
+                    data: formData,
+                    dataType: 'JSON',
+                    success: function(data){
+                        Swal.fire({
+                            toast: true,
+                            icon: 'success',
+                            title: '¡Registrado exitosamente!',
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                        });
+
+                        loadSpinner.toggleClass('active');
+                        form.trigger('reset');
+                        $('#RegisterProjectsModal').modal('hide');
+
+                        projectTable.draw();
+                    },
+                    error: function(data){
+                        console.log('Error', data)
+                    }
+                })
+            }
+            else{
+                showInvalidateMessage();
+            }
+        })
+
+
+        $('#EditProjectModal').on('show.bs.modal', function(event){
+            var button = $(event.relatedTarget)
+            var url = button.data('url');
+            var getDataUrl = button.data('send');
+            var modal = $(this);
+
             $.ajax({
-                url: form.attr('action'),
-                method: form.attr('method'),
-                data: formData,
+                type: 'GET',
+                url: getDataUrl,
+                dataType: 'JSON',
+                success: function(data)
+                {
+                    modal.find('#inputProjectName').val(data.name);
+                }
+            });
+
+            modal.find('#editProjectForm').attr('action', url);
+        })
+
+        $('#editProjectForm').on('submit', function(e){
+            e.preventDefault();
+            var loadSpinner = $(this).find('.loadSpinner')
+            loadSpinner.toggleClass('active');
+            var form = this;
+
+            $.ajax({
+                url: $(this).attr('action'),
+                method: $(this).attr('method'),
+                data: $(form).serialize(),
                 dataType: 'JSON',
                 success: function(data){
                     Swal.fire({
                         toast: true,
                         icon: 'success',
-                        title: '¡Registrado exitosamente!',
+                        title: '¡Área de proyecto actualizada exitosamente!',
                         position: 'top-end',
                         showConfirmButton: false,
                         timer: 3000,
@@ -1838,209 +1900,209 @@ $(function() {
                             toast.addEventListener('mouseleave', Swal.resumeTimer)
                             }
                     });
-
                     loadSpinner.toggleClass('active');
-                    form.trigger('reset');
-                    $('#RegisterProjectsModal').modal('hide');
-
+                    $('#EditProjectModal').modal('hide');
                     projectTable.draw();
                 },
                 error: function(data){
                     console.log('Error', data)
                 }
             })
-        }
-        else{
-            showInvalidateMessage();
-        }
-    })
+        })
 
-
-    $('#EditProjectModal').on('show.bs.modal', function(event){
-        var button = $(event.relatedTarget)
-        var url = button.data('url');
-        var getDataUrl = button.data('send');
-        var modal = $(this);
-
-        $.ajax({
-            type: 'GET',
-            url: getDataUrl,
-            dataType: 'JSON',
-            success: function(data)
-            {
-                modal.find('#inputProjectName').val(data.name);
-            }
-        });
-
-        modal.find('#editProjectForm').attr('action', url);
-    })
-    $('#editProjectForm').on('submit', function(e){
-        e.preventDefault();
-        var loadSpinner = $(this).find('.loadSpinner')
-        loadSpinner.toggleClass('active');
-        var form = this;
-
-        $.ajax({
-            url: $(this).attr('action'),
-            method: $(this).attr('method'),
-            data: $(form).serialize(),
-            dataType: 'JSON',
-            success: function(data){
-                Swal.fire({
-                    toast: true,
-                    icon: 'success',
-                    title: '¡Área de proyecto actualizada exitosamente!',
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+        $('body').on('click', '.deleteProject', function(){
+            var url = $(this).data('url');
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡Esta acción no podrá ser revertida!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '¡Sí!',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+                }).then(function(e){
+                if(e.value === true){
+                    $.ajax({
+                        type: 'DELETE',
+                        url: url,
+                        dataType: 'JSON',
+                        success: function(result){
+                            if(result.success == true){
+                                projectTable.draw();
+                                Swal.fire({
+                                    toast: true,
+                                    icon: 'success',
+                                    title: 'Registro eliminado',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                        }
+                                });
+                            }else if(result.success == 'invalid'){
+                                Swal.fire({
+                                    toast: true,
+                                    icon: 'error',
+                                    title: 'Error: Este registro está relacionado a un punto de acopio',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                        }
+                                });
+                            }   
+                        },
+                        error: function(result){
+                            console.log('Error', result);
                         }
+                    });
+                }else{
+                    e.dismiss;
+                }
+                }, function(dismiss){
+                return false;
+                })
+        })
+
+
+        /* ------------ COMPANY TABLE -------------*/
+
+        var companyTable;
+
+        $('#companies-tab').on('click', function(){
+
+            if(!($('#company-table_wrapper').length))
+            {
+                var companyTableEle = $('#company-table');
+                var getDataCompanysUrl = companyTableEle.data('url');
+                    companyTable = companyTableEle.DataTable({
+                    language: DataTableEs,
+                    serverSide: true,
+                    processing: true,
+                    ajax: {
+                        "url": getDataCompanysUrl,
+                        "data" : {
+                            "table": "company"
+                        }
+                    },
+                    columns:[
+                        {data: 'id', name:'id'},
+                        {data: 'name', name:'name'},
+                        {data: 'ruc', name:'ruc'},
+                        {data: 'action', name:'action', orderable: false, searchable: false},
+                    ]
                 });
-                loadSpinner.toggleClass('active');
-                $('#EditProjectModal').modal('hide');
-                projectTable.draw();
-            },
-            error: function(data){
-                console.log('Error', data)
             }
         })
-    })
-
-    $('body').on('click', '.deleteProject', function(){
-        var url = $(this).data('url');
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: "¡Esta acción no podrá ser revertida!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: '¡Sí!',
-            cancelButtonText: 'Cancelar',
-            reverseButtons: true,
-            }).then(function(e){
-            if(e.value === true){
-                $.ajax({
-                    type: 'DELETE',
-                    url: url,
-                    dataType: 'JSON',
-                    success: function(result){
-                        if(result.success == true){
-                            projectTable.draw();
-                            Swal.fire({
-                                toast: true,
-                                icon: 'success',
-                                title: 'Registro eliminado',
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                    }
-                            });
-                        }else if(result.success == 'invalid'){
-                            Swal.fire({
-                                toast: true,
-                                icon: 'error',
-                                title: 'Error: Este registro está relacionado a un punto de acopio',
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                    }
-                            });
-                        }   
-                    },
-                    error: function(result){
-                        console.log('Error', result);
-                    }
-                });
-            }else{
-                e.dismiss;
-            }
-            }, function(dismiss){
-            return false;
-            })
-    })
-
-
-    /* ------------ COMPANY TABLE -------------*/
-
-    var companyTable;
-
-    $('#companies-tab').on('click', function(){
-
-        if(!($('#company-table_wrapper').length))
-        {
-            var companyTableEle = $('#company-table');
-            var getDataCompanysUrl = companyTableEle.data('url');
-                companyTable = companyTableEle.DataTable({
-                language: DataTableEs,
-                serverSide: true,
-                processing: true,
-                ajax: {
-                    "url": getDataCompanysUrl,
-                    "data" : {
-                        "table": "company"
-                    }
-                },
-                columns:[
-                    {data: 'id', name:'id'},
-                    {data: 'name', name:'name'},
-                    {data: 'ruc', name:'ruc'},
-                    {data: 'action', name:'action', orderable: false, searchable: false},
-                ]
-            });
-        }
-    })
 
     
-    $('#RegisterCompaniesModal').on('show.bs.modal', function(event){
-        var button = $(event.relatedTarget)
-        var url = button.data('url');
-        var text = button.data('text');
-        var placeholder = button.data('placeholder');
-        var modal = $(this);
-        var form =  modal.find('#registerCompanyForm');
-        form.attr('action', url);
-        modal.find('#txt-context-element').html(text);
-        modal.find('#inputName').attr('placeholder', placeholder)
-    })
+        $('#RegisterCompaniesModal').on('show.bs.modal', function(event){
+            var button = $(event.relatedTarget)
+            var url = button.data('url');
+            var text = button.data('text');
+            var placeholder = button.data('placeholder');
+            var modal = $(this);
+            var form =  modal.find('#registerCompanyForm');
+            form.attr('action', url);
+            modal.find('#txt-context-element').html(text);
+            modal.find('#inputName').attr('placeholder', placeholder)
+        })
 
-    $('#btn-save-company').on('click', function(e){
-        e.preventDefault();
-        var form = $('#registerCompanyForm');
+        $('#btn-save-company').on('click', function(e){
+            e.preventDefault();
+            var form = $('#registerCompanyForm');
 
-        var passValidation = true;
-        form.find('.required-input').each(function(){
-            $(this).removeClass('required');
-            if($(this).val() == ''){
-                $(this).addClass('required');
-                passValidation = false;
+            var passValidation = true;
+            form.find('.required-input').each(function(){
+                $(this).removeClass('required');
+                if($(this).val() == ''){
+                    $(this).addClass('required');
+                    passValidation = false;
+                }
+            })
+
+            if(passValidation)
+            {
+                var loadSpinner = form.find('.loadSpinner');
+                loadSpinner.toggleClass('active');
+                var formData = form.serialize();
+                $.ajax({
+                    url: form.attr('action'),
+                    method: form.attr('method'),
+                    data: formData,
+                    dataType: 'JSON',
+                    success: function(data){
+                        Swal.fire({
+                            toast: true,
+                            icon: 'success',
+                            title: '¡Registrado exitosamente!',
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                        });
+
+                        loadSpinner.toggleClass('active');
+                        form.trigger('reset');
+                        $('#RegisterCompaniesModal').modal('hide');
+
+                        companyTable.draw();
+                    },
+                    error: function(data){
+                        console.log('Error', data)
+                    }
+                })
+            }
+            else{
+                showInvalidateMessage();
             }
         })
 
-        if(passValidation)
-        {
-            var loadSpinner = form.find('.loadSpinner');
-            loadSpinner.toggleClass('active');
-            var formData = form.serialize();
+        $('#EditCompanyModal').on('show.bs.modal', function(event){
+            var button = $(event.relatedTarget)
+            var url = button.data('url');
+            var getDataUrl = button.data('send');
+            var modal = $(this);
+
             $.ajax({
-                url: form.attr('action'),
-                method: form.attr('method'),
-                data: formData,
+                type: 'GET',
+                url: getDataUrl,
+                dataType: 'JSON',
+                success: function(data)
+                {
+                    modal.find('#inputCompanyName').val(data.name);
+                    modal.find('#inputCompanyRuc').val(data.ruc);
+                }
+            });
+            modal.find('#editCompanyForm').attr('action', url);
+        })
+
+        $('#editCompanyForm').on('submit', function(e){
+            e.preventDefault();
+            var loadSpinner = $(this).find('.loadSpinner')
+            loadSpinner.toggleClass('active');
+            var form = this;
+
+            $.ajax({
+                url: $(this).attr('action'),
+                method: $(this).attr('method'),
+                data: $(form).serialize(),
                 dataType: 'JSON',
                 success: function(data){
                     Swal.fire({
                         toast: true,
                         icon: 'success',
-                        title: '¡Registrado exitosamente!',
+                        title: '¡Empresa actualizada exitosamente!',
                         position: 'top-end',
                         showConfirmButton: false,
                         timer: 3000,
@@ -2050,205 +2112,205 @@ $(function() {
                             toast.addEventListener('mouseleave', Swal.resumeTimer)
                             }
                     });
-
                     loadSpinner.toggleClass('active');
-                    form.trigger('reset');
-                    $('#RegisterCompaniesModal').modal('hide');
-
+                    $('#EditCompanyModal').modal('hide');
                     companyTable.draw();
                 },
                 error: function(data){
                     console.log('Error', data)
                 }
             })
-        }
-        else{
-            showInvalidateMessage();
-        }
-    })
+        })
 
-    $('#EditCompanyModal').on('show.bs.modal', function(event){
-        var button = $(event.relatedTarget)
-        var url = button.data('url');
-        var getDataUrl = button.data('send');
-        var modal = $(this);
-
-        $.ajax({
-            type: 'GET',
-            url: getDataUrl,
-            dataType: 'JSON',
-            success: function(data)
-            {
-                modal.find('#inputCompanyName').val(data.name);
-                modal.find('#inputCompanyRuc').val(data.ruc);
-            }
-        });
-        modal.find('#editCompanyForm').attr('action', url);
-    })
-    $('#editCompanyForm').on('submit', function(e){
-        e.preventDefault();
-        var loadSpinner = $(this).find('.loadSpinner')
-        loadSpinner.toggleClass('active');
-        var form = this;
-
-        $.ajax({
-            url: $(this).attr('action'),
-            method: $(this).attr('method'),
-            data: $(form).serialize(),
-            dataType: 'JSON',
-            success: function(data){
-                Swal.fire({
-                    toast: true,
-                    icon: 'success',
-                    title: '¡Empresa actualizada exitosamente!',
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+        $('body').on('click', '.deleteCompany', function(){
+            var url = $(this).data('url');
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡Esta acción no podrá ser revertida!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '¡Sí!',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+                }).then(function(e){
+                if(e.value === true){
+                    $.ajax({
+                        type: 'DELETE',
+                        url: url,
+                        dataType: 'JSON',
+                        success: function(result){
+                            if(result.success == true){
+                                companyTable.draw();
+                                Swal.fire({
+                                    toast: true,
+                                    icon: 'success',
+                                    title: 'Registro eliminado',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                        }
+                                });
+                            }else if(result.success == 'invalid'){
+                                Swal.fire({
+                                    toast: true,
+                                    icon: 'error',
+                                    title: 'Error: Este registro está relacionado a un punto de acopio',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                        }
+                                });
+                            }   
+                        },
+                        error: function(result){
+                            console.log('Error', result);
                         }
-                });
-                loadSpinner.toggleClass('active');
-                $('#EditCompanyModal').modal('hide');
-                companyTable.draw();
-            },
-            error: function(data){
-                console.log('Error', data)
-            }
+                    });
+                }else{
+                    e.dismiss;
+                }
+                }, function(dismiss){
+                return false;
+                })
         })
-    })
 
-    $('body').on('click', '.deleteCompany', function(){
-        var url = $(this).data('url');
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: "¡Esta acción no podrá ser revertida!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: '¡Sí!',
-            cancelButtonText: 'Cancelar',
-            reverseButtons: true,
-            }).then(function(e){
-            if(e.value === true){
-                $.ajax({
-                    type: 'DELETE',
-                    url: url,
-                    dataType: 'JSON',
-                    success: function(result){
-                        if(result.success == true){
-                            companyTable.draw();
-                            Swal.fire({
-                                toast: true,
-                                icon: 'success',
-                                title: 'Registro eliminado',
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                    }
-                            });
-                        }else if(result.success == 'invalid'){
-                            Swal.fire({
-                                toast: true,
-                                icon: 'error',
-                                title: 'Error: Este registro está relacionado a un punto de acopio',
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                    }
-                            });
-                        }   
+        /* ------- FRONT TABLE -----------*/
+
+        var frontTable;
+
+        $('#fronts-tab').on('click', function(){
+
+            if(!($('#front-table_wrapper').length))
+            {
+                var frontTableEle = $('#front-table');
+                var getDataFrontsUrl = frontTableEle.data('url');
+                    frontTable = frontTableEle.DataTable({
+                    language: DataTableEs,
+                    serverSide: true,
+                    processing: true,
+                    ajax: {
+                        "url": getDataFrontsUrl,
+                        "data" : {
+                            "table": "front"
+                        }
                     },
-                    error: function(result){
-                        console.log('Error', result);
-                    }
+                    columns:[
+                        {data: 'id', name:'id'},
+                        {data: 'name', name:'name'},
+                        {data: 'action', name:'action', orderable: false, searchable: false},
+                    ]
                 });
-            }else{
-                e.dismiss;
-            }
-            }, function(dismiss){
-            return false;
-            })
-    })
-
-    /* ------- FRONT TABLE -----------*/
-
-    var frontTable;
-
-    $('#fronts-tab').on('click', function(){
-
-        if(!($('#front-table_wrapper').length))
-        {
-            var frontTableEle = $('#front-table');
-            var getDataFrontsUrl = frontTableEle.data('url');
-                frontTable = frontTableEle.DataTable({
-                language: DataTableEs,
-                serverSide: true,
-                processing: true,
-                ajax: {
-                    "url": getDataFrontsUrl,
-                    "data" : {
-                        "table": "front"
-                    }
-                },
-                columns:[
-                    {data: 'id', name:'id'},
-                    {data: 'name', name:'name'},
-                    {data: 'action', name:'action', orderable: false, searchable: false},
-                ]
-            });
-        }
-    })
-
-    $('#RegisterFrontsModal').on('show.bs.modal', function(event){
-        var button = $(event.relatedTarget)
-        var url = button.data('url');
-        var text = button.data('text');
-        var placeholder = button.data('placeholder');
-        var modal = $(this);
-        var form =  modal.find('#registerFrontForm');
-        form.attr('action', url);
-        modal.find('#txt-context-element').html(text);
-        modal.find('#inputName').attr('placeholder', placeholder)
-    })
-
-    $('#btn-save-front').on('click', function(e){
-        e.preventDefault();
-        var form = $('#registerFrontForm');
-
-        var passValidation = true;
-        form.find('.required-input').each(function(){
-            $(this).removeClass('required');
-            if($(this).val() == ''){
-                $(this).addClass('required');
-                passValidation = false;
             }
         })
 
-        if(passValidation)
-        {
-            var loadSpinner = form.find('.loadSpinner');
-            loadSpinner.toggleClass('active');
-            var formData = form.serialize();
+        $('#RegisterFrontsModal').on('show.bs.modal', function(event){
+            var button = $(event.relatedTarget)
+            var url = button.data('url');
+            var text = button.data('text');
+            var placeholder = button.data('placeholder');
+            var modal = $(this);
+            var form =  modal.find('#registerFrontForm');
+            form.attr('action', url);
+            modal.find('#txt-context-element').html(text);
+            modal.find('#inputName').attr('placeholder', placeholder)
+        })
+
+        $('#btn-save-front').on('click', function(e){
+            e.preventDefault();
+            var form = $('#registerFrontForm');
+
+            var passValidation = true;
+            form.find('.required-input').each(function(){
+                $(this).removeClass('required');
+                if($(this).val() == ''){
+                    $(this).addClass('required');
+                    passValidation = false;
+                }
+            })
+
+            if(passValidation)
+            {
+                var loadSpinner = form.find('.loadSpinner');
+                loadSpinner.toggleClass('active');
+                var formData = form.serialize();
+                $.ajax({
+                    url: form.attr('action'),
+                    method: form.attr('method'),
+                    data: formData,
+                    dataType: 'JSON',
+                    success: function(data){
+                        Swal.fire({
+                            toast: true,
+                            icon: 'success',
+                            title: '¡Registrado exitosamente!',
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                        });
+
+                        loadSpinner.toggleClass('active');
+                        form.trigger('reset');
+                        $('#RegisterFrontsModal').modal('hide');
+
+                        frontTable.draw();
+                    },
+                    error: function(data){
+                        console.log('Error', data)
+                    }
+                })
+            }
+            else{
+                showInvalidateMessage();
+            }
+        })
+
+        $('#EditFrontModal').on('show.bs.modal', function(event){
+            var button = $(event.relatedTarget)
+            var url = button.data('url');
+            var getDataUrl = button.data('send');
+            var modal = $(this);
+
             $.ajax({
-                url: form.attr('action'),
-                method: form.attr('method'),
-                data: formData,
+                type: 'GET',
+                url: getDataUrl,
+                dataType: 'JSON',
+                success: function(data)
+                {
+                    modal.find('#inputFrontName').val(data.name);
+                }
+            });
+            modal.find('#editFrontForm').attr('action', url);
+        })
+
+        $('#editFrontForm').on('submit', function(e){
+            e.preventDefault();
+            var loadSpinner = $(this).find('.loadSpinner')
+            loadSpinner.toggleClass('active');
+            var form = this;
+
+            $.ajax({
+                url: $(this).attr('action'),
+                method: $(this).attr('method'),
+                data: $(form).serialize(),
                 dataType: 'JSON',
                 success: function(data){
                     Swal.fire({
                         toast: true,
                         icon: 'success',
-                        title: '¡Registrado exitosamente!',
+                        title: '¡Frente actualizado exitosamente!',
                         position: 'top-end',
                         showConfirmButton: false,
                         timer: 3000,
@@ -2258,134 +2320,75 @@ $(function() {
                             toast.addEventListener('mouseleave', Swal.resumeTimer)
                             }
                     });
-
                     loadSpinner.toggleClass('active');
-                    form.trigger('reset');
-                    $('#RegisterFrontsModal').modal('hide');
-
+                    $('#EditFrontModal').modal('hide');
                     frontTable.draw();
                 },
                 error: function(data){
                     console.log('Error', data)
                 }
             })
-        }
-        else{
-            showInvalidateMessage();
-        }
-    })
-
-    $('#EditFrontModal').on('show.bs.modal', function(event){
-        var button = $(event.relatedTarget)
-        var url = button.data('url');
-        var getDataUrl = button.data('send');
-        var modal = $(this);
-
-        $.ajax({
-            type: 'GET',
-            url: getDataUrl,
-            dataType: 'JSON',
-            success: function(data)
-            {
-                modal.find('#inputFrontName').val(data.name);
-            }
-        });
-        modal.find('#editFrontForm').attr('action', url);
-    })
-    $('#editFrontForm').on('submit', function(e){
-        e.preventDefault();
-        var loadSpinner = $(this).find('.loadSpinner')
-        loadSpinner.toggleClass('active');
-        var form = this;
-
-        $.ajax({
-            url: $(this).attr('action'),
-            method: $(this).attr('method'),
-            data: $(form).serialize(),
-            dataType: 'JSON',
-            success: function(data){
-                Swal.fire({
-                    toast: true,
-                    icon: 'success',
-                    title: '¡Frente actualizado exitosamente!',
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                });
-                loadSpinner.toggleClass('active');
-                $('#EditFrontModal').modal('hide');
-                frontTable.draw();
-            },
-            error: function(data){
-                console.log('Error', data)
-            }
         })
-    })
 
-    $('body').on('click', '.deleteFront', function(){
-        var url = $(this).data('url');
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: "¡Esta acción no podrá ser revertida!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: '¡Sí!',
-            cancelButtonText: 'Cancelar',
-            reverseButtons: true,
-            }).then(function(e){
-            if(e.value === true){
-                $.ajax({
-                    type: 'DELETE',
-                    url: url,
-                    dataType: 'JSON',
-                    success: function(result){
-                        if(result.success == true){
-                            frontTable.draw();
-                            Swal.fire({
-                                toast: true,
-                                icon: 'success',
-                                title: 'Registro eliminado',
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                    }
-                            });
-                        }else if(result.success == 'invalid'){
-                            Swal.fire({
-                                toast: true,
-                                icon: 'error',
-                                title: 'Error: Este registro está relacionado a un punto de acopio',
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                    }
-                            });
-                        }   
-                    },
-                    error: function(result){
-                        console.log('Error', result);
-                    }
-                });
-            }else{
-                e.dismiss;
-            }
-            }, function(dismiss){
-            return false;
-            })
-    })
+        $('body').on('click', '.deleteFront', function(){
+            var url = $(this).data('url');
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡Esta acción no podrá ser revertida!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '¡Sí!',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+                }).then(function(e){
+                if(e.value === true){
+                    $.ajax({
+                        type: 'DELETE',
+                        url: url,
+                        dataType: 'JSON',
+                        success: function(result){
+                            if(result.success == true){
+                                frontTable.draw();
+                                Swal.fire({
+                                    toast: true,
+                                    icon: 'success',
+                                    title: 'Registro eliminado',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                        }
+                                });
+                            }else if(result.success == 'invalid'){
+                                Swal.fire({
+                                    toast: true,
+                                    icon: 'error',
+                                    title: 'Error: Este registro está relacionado a un punto de acopio',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                        }
+                                });
+                            }   
+                        },
+                        error: function(result){
+                            console.log('Error', result);
+                        }
+                    });
+                }else{
+                    e.dismiss;
+                }
+                }, function(dismiss){
+                return false;
+                })
+        })
     }
 
 
@@ -2411,7 +2414,7 @@ $(function() {
             {data: 'id', name:'id'},
             {data: 'name', name:'name'},
             {data: 'symbol', name:'symbol'},
-            {data: 'types', name:'types'},
+            {data: 'types', name:'types', orderable: false},
             {data: 'action', name:'action', orderable: false, searchable: false},
         ]
     });
@@ -2986,71 +2989,71 @@ $(function() {
                                     <i class="fa-solid fa-x"></i> \
                             </button> \
                         </td>');
-        })
+    })
 
 
-        $('#package-type-table').on('click', '#resetpackageTypeEdit', function(){
+    $('#package-type-table').on('click', '#resetpackageTypeEdit', function(){
         var column = $(this).closest('tr');
         column.toggleClass('edit-ready');
 
         column.find('.input-type-edit').remove();
         $('#form-package-type-edit-container').remove();
-        })
+    })
 
 
 
-        $('#package-type-table').on('click', '.btn-update-package-type', function(){
-        var column = $(this).closest('tr');
-        var value = column.find('.input-type-edit input').val();
-        var url = column.find('.editType').data('url');
+    $('#package-type-table').on('click', '.btn-update-package-type', function(){
+    var column = $(this).closest('tr');
+    var value = column.find('.input-type-edit input').val();
+    var url = column.find('.editType').data('url');
 
-        if(value.length == 0)
-        {
-            Swal.fire({
-                toast: true,
-                icon: 'warning',
-                title: '¡El campo está vacío!',
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 2000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                    }
-            });
-        }
-        else{
-            $.ajax({
-                url: url,
-                method: 'POST',
-                data: {
-                    "value": value
-                },
-                dataType: "JSON",
-                success: function(result){
-                    Swal.fire({
-                        toast: true,
-                        icon: 'success',
-                        title: '¡Registrado exitosamente!',
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                            }
-                    });
-
-                    packageTypeTable.draw();
-                },
-                error: function(result){
-                    console.log(result)
+    if(value.length == 0)
+    {
+        Swal.fire({
+            toast: true,
+            icon: 'warning',
+            title: '¡El campo está vacío!',
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
                 }
-            });
-        }
         });
+    }
+    else{
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: {
+                "value": value
+            },
+            dataType: "JSON",
+            success: function(result){
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: '¡Registrado exitosamente!',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                });
+
+                packageTypeTable.draw();
+            },
+            error: function(result){
+                console.log(result)
+            }
+        });
+    }
+    });
 
 
         /*-------------- DELETE --------------*/
@@ -3139,6 +3142,106 @@ $(function() {
 
     /* ------------- GUIDES ADMIN --------------*/
 
+    if($('#guide-approved-table-admin').length)
+    {
+        var guideAdminApprovedTableEle = $('#guide-approved-table-admin');
+        var getDataUrl = guideAdminApprovedTableEle.data('url');
+        var guideAdminApprovedTable = guideAdminApprovedTableEle.DataTable({
+            order: [[1, 'desc']],
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax:  {
+                "url": getDataUrl,
+                "data": {
+                    "table" : "approved"
+                }
+            },
+            columns:[
+                {data: 'code', name:'code'},
+                {data: 'created_at', name:'created_at'},
+                {data: 'warehouse.lot.name', name:'warehouse.lot.name', orderable: false},
+                {data: 'warehouse.stage.name', name:'warehouse.stage.name', orderable: false},
+                {data: 'warehouse.location.name', name:'warehouse.location.name', orderable: false},
+                {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name', orderable: false},
+                {data: 'warehouse.company.name', name:'warehouse.company.name', orderable: false},
+                {data: 'warehouse.front.name', name:'warehouse.front.name', orderable: false},
+                {data: 'stat_approved', name:'stat_approved', orderable: false},
+                {data: 'stat_recieved', name:'stat_recieved', orderable: false},
+                {data: 'stat_verified', name:'stat_verified', orderable: false},
+                {data: 'action', name:'action', orderable: false, searchable: false},
+            ]
+        });
+    }   
+
+
+    if($('#guide-pending-table-admin').length){
+        var guideAdminPendingTableEle = $('#guide-pending-table-admin');
+        var getDataUrl = guideAdminPendingTableEle.data('url');
+        var guideAdminPendingTable = guideAdminPendingTableEle.DataTable({
+            order: [[1, 'desc']],
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax:  {
+                "url": getDataUrl,
+                "data": {
+                    "table" : "pending"
+                }
+            },
+            columns:[
+                {data: 'code', name:'code'},
+                {data: 'created_at', name:'created_at'},
+                {data: 'warehouse.lot.name', name:'warehouse.lot.name', orderable: false},
+                {data: 'warehouse.stage.name', name:'warehouse.stage.name', orderable: false},
+                {data: 'warehouse.location.name', name:'warehouse.location.name', orderable: false},
+                {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name', orderable: false},
+                {data: 'warehouse.company.name', name:'warehouse.company.name', orderable: false},
+                {data: 'warehouse.front.name', name:'warehouse.front.name', orderable: false},
+                {data: 'stat_approved', name:'stat_approved', orderable: false},
+                {data: 'stat_recieved', name:'stat_recieved', orderable: false},
+                {data: 'stat_verified', name:'stat_verified', orderable: false},
+                {data: 'action', name:'action', orderable: false, searchable: false},
+            ]
+        });
+    }
+
+
+    if($('#guide-rejected-table-admin').length){
+        var guideAdminRejectedTableEle = $('#guide-rejected-table-admin');
+        var getDataUrl = guideAdminRejectedTableEle.data('url');
+        var guideAdminRejectedTable = guideAdminRejectedTableEle.DataTable({
+            order: [[1, 'desc']],
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax:  {
+                "url": getDataUrl,
+                "data": {
+                    "table" : "rejected"
+                }
+            },
+            columns:[
+                {data: 'code', name:'code'},
+                {data: 'created_at', name:'created_at'},
+                {data: 'warehouse.lot.name', name:'warehouse.lot.name', orderable: false},
+                {data: 'warehouse.stage.name', name:'warehouse.stage.name', orderable: false},
+                {data: 'warehouse.location.name', name:'warehouse.location.name', orderable: false},
+                {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name', orderable: false},
+                {data: 'warehouse.company.name', name:'warehouse.company.name', orderable: false},
+                {data: 'warehouse.front.name', name:'warehouse.front.name', orderable: false},
+                {data: 'stat_approved', name:'stat_approved', orderable: false},
+                {data: 'stat_recieved', name:'stat_recieved', orderable: false},
+                {data: 'stat_verified', name:'stat_verified', orderable: false},
+                {data: 'action', name:'action', orderable: false, searchable: false},
+            ]
+        });
+    }
+
+
+
+    /*  --- GENERATED WASTES ADMIN ----------*/
+
     if($('#daterange-btn-wastes-admin').length){
 
         $('.date-range-input').val('Todos los registros');
@@ -3172,134 +3275,36 @@ $(function() {
     }
 
 
-    if($('#guide-approved-table-admin').length)
-    {
-        var guideAdminApprovedTableEle = $('#guide-approved-table-admin');
-        var getDataUrl = guideAdminApprovedTableEle.data('url');
-        var guideAdminApprovedTable = guideAdminApprovedTableEle.DataTable({
-            order: [[1, 'desc']],
-            language: DataTableEs,
-            serverSide: true,
-            processing: true,
-            ajax:  {
-                "url": getDataUrl,
-                "data": {
-                    "table" : "approved"
-                }
-            },
-            columns:[
-                {data: 'code', name:'code'},
-                {data: 'date', name:'date'},
-                {data: 'lot', name:'lot'},
-                {data: 'stage', name:'stage'},
-                {data: 'location', name:'location'},
-                {data: 'proyect', name:'proyect'},
-                {data: 'company', name:'company'},
-                {data: 'front', name:'front'},
-                {data: 'stat_approved', name:'stat_approved'},
-                {data: 'stat_recieved', name:'stat_recieved'},
-                {data: 'stat_verified', name:'stat_verified'},
-                {data: 'action', name:'action', orderable: false, searchable: false},
-            ]
-        });
-    }   
-
-
-    if($('#guide-pending-table-admin').length){
-        var guideAdminPendingTableEle = $('#guide-pending-table-admin');
-        var getDataUrl = guideAdminPendingTableEle.data('url');
-        var guideAdminPendingTable = guideAdminPendingTableEle.DataTable({
-            order: [[1, 'desc']],
-            language: DataTableEs,
-            serverSide: true,
-            processing: true,
-            ajax:  {
-                "url": getDataUrl,
-                "data": {
-                    "table" : "pending"
-                }
-            },
-            columns:[
-                {data: 'code', name:'code'},
-                {data: 'date', name:'date'},
-                {data: 'lot', name:'lot'},
-                {data: 'stage', name:'stage'},
-                {data: 'location', name:'location'},
-                {data: 'proyect', name:'proyect'},
-                {data: 'company', name:'company'},
-                {data: 'front', name:'front'},
-                {data: 'stat_approved', name:'stat_approved'},
-                {data: 'stat_recieved', name:'stat_recieved'},
-                {data: 'stat_verified', name:'stat_verified'},
-                {data: 'action', name:'action', orderable: false, searchable: false},
-            ]
-        });
-    }
-
-
-    if($('#guide-rejected-table-admin').length){
-        var guideAdminRejectedTableEle = $('#guide-rejected-table-admin');
-        var getDataUrl = guideAdminRejectedTableEle.data('url');
-        var guideAdminRejectedTable = guideAdminRejectedTableEle.DataTable({
-            order: [[1, 'desc']],
-            language: DataTableEs,
-            serverSide: true,
-            processing: true,
-            ajax:  {
-                "url": getDataUrl,
-                "data": {
-                    "table" : "rejected"
-                }
-            },
-            columns:[
-                {data: 'code', name:'code'},
-                {data: 'date', name:'date'},
-                {data: 'lot', name:'lot'},
-                {data: 'stage', name:'stage'},
-                {data: 'location', name:'location'},
-                {data: 'proyect', name:'proyect'},
-                {data: 'company', name:'company'},
-                {data: 'front', name:'front'},
-                {data: 'stat_approved', name:'stat_approved'},
-                {data: 'stat_recieved', name:'stat_recieved'},
-                {data: 'stat_verified', name:'stat_verified'},
-                {data: 'action', name:'action', orderable: false, searchable: false},
-            ]
-        });
-    }
-
-
-
-    /*  --- GENERATED WASTES ADMIN ----------*/
-
     if($('#generated-wastes-table-admin').length){
         var generatedWastesAdminTableEle = $('#generated-wastes-table-admin');
         var getDataUrl = generatedWastesAdminTableEle.data('url');
         var generatedWastesAdminTable = generatedWastesAdminTableEle.DataTable({
-            order: [[1, 'desc']],
+            order: [[9, 'desc']],
             language: DataTableEs,
-            serverSide: true,
-            processing: true,
             ajax: {
                 "url": getDataUrl,
-                "data": function(data){
-                    data.from_date = $('#daterange-btn-wastes-admin').data('daterangepicker').startDate.format('YYYY-MM-DD');
-                    data.end_date = $('#daterange-btn-wastes-admin').data('daterangepicker').endDate.format('YYYY-MM-DD');
-                }
+                // "data": function(data){
+                //     data.from_date = $('#daterange-btn-wastes-admin').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                //     data.end_date = $('#daterange-btn-wastes-admin').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                // }
             },
             columns:[
-                {data: 'code', name:'code'},
-                {data: 'date', name:'date'},
-                {data: 'lot', name:'lot'},
-                {data: 'stage', name:'stage'},
-                {data: 'location', name:'location'},
-                {data: 'proyect', name:'proyect'},
-                {data: 'company', name:'company'},
-                {data: 'front', name:'front'},
-                {data: 'class', name:'class'},
-                {data: 'waste', name:'waste'},
-                {data: 'weight', name:'weight'},
-                {data: 'packages', name:'packages'},
+                {data: 'id', name:'id'}, 
+                {data: 'packing_guide.cod_guide', name:'packingGuide.cod_guide'}, //
+                {data: 'guide.code', name:'guide.code'},//
+                {data: 'waste.classes_wastes', name:'waste.classesWastes.symbol', orderable: false},//
+                {data: 'waste.name', name:'waste.name', orderable: false},///
+                {data: 'package.name', name:'package.name', orderable: false},//
+                {data: 'actual_weight', name:'actual_weight', orderable: false},//
+                {data: 'package_quantity', name:'package_quantity', orderable: false},////
+                {data: 'guide.warehouse.company.name', name:'guide.warehouse.company.name'},//
+                {data: 'guide.date_verified', name:'guide.date_verified'}, 
+                {data: 'packing_guide.date_guides_departure', name:'packingGuide.date_guides_departure'}, // FECHA SALIDA DEL RESIDUO
+                {data: 'date_departure', name:'date_departure', orderable: false, searchable: false},  // FECHA SALIDA MALVINAS
+                {data: 'packing_guide.volum', name:'packingGuide.volum', orderable: false, searchable: false},//
+            ],
+            columnDefs : [
+                { 'visible': false, 'targets': [10, 11] }
             ],
             dom: 'Bfrtip',
             buttons: [
@@ -3321,9 +3326,31 @@ $(function() {
                         return 'residuos-generados_administrador-'+name+'_'+from_date+'_' + end_date + '_' + moment().format("hh-mm-ss");
                     }
                 }   
-            ]
+            ],
+            initComplete: function () {
+                $.fn.dataTable.ext.search.push(
+                    function( settings, data, dataIndex ) {
+                    
+                    if ( settings.nTable.id !== 'generated-wastes-table-admin' ) {
+                        return true;
+                    }  
+
+                    var min = moment($('#daterange-btn-wastes-admin').data('daterangepicker').startDate.format('YYYY-MM-DD')).toDate();
+                    var max = moment($('#daterange-btn-wastes-admin').data('daterangepicker').endDate.format('YYYY-MM-DD')).toDate();
+                    var startDate = moment(data[9]).toDate();
+
+                    console.log(startDate)
+                    if (min == null && max == null) { return true; }
+                    if (min == null && startDate <= max) { return true;}
+                    if(max == null && startDate >= min) {return true;}
+                    if (startDate <= max && startDate >= min) { return true; }
+                    return false;
+                    }
+                );
+            }
         });
     }
+
 
 
 
@@ -3332,79 +3359,6 @@ $(function() {
 
     /* ----------- GUIDES APPLICANTT -----------*/
 
-    if($('#daterange-btn-wastes-applicant').length){
-
-        $('.date-range-input').val('Todos los registros');
-
-        $('.daterange-cus').daterangepicker({
-            locale: {format: 'YYYY-MM-DD'},
-            drops: 'down',
-            opens: 'right'
-          });
-          
-          $('#daterange-btn-wastes-applicant').daterangepicker({
-            ranges: {
-              'Todo' : [moment('1970-01-01'), moment().add(1, 'days')],
-              'Hoy'   : [moment(), moment().add(1, 'days')],
-              'Ayer'   : [moment().subtract(1, 'days'), moment()],
-              'Últimos 7 días' : [moment().subtract(6, 'days'), moment().add(1, 'days')],
-              'Últimos 30 días': [moment().subtract(29, 'days'), moment().add(1, 'days')],
-              'Este mes'  : [moment().startOf('month'), moment().endOf('month').add(1, 'days')],
-              'Último mes'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month').add(1, 'days')]
-            },
-            startDate: moment('1970-01-01'),
-            endDate  : moment().add(1, 'days'),
-          }, function (start, end) {
-            if(start.format('YYYY-MM-DD') == '1970-01-01'){
-                $('.date-range-input').val('Todos los registros');
-            }else{
-                $('.date-range-input').val('Del: ' + start.format('YYYY-MM-DD') + ' hasta el: ' + end.format('YYYY-MM-DD'))
-            }
-            generatedWastesApplicantTable.draw();
-        });
-    }
-
-
-    if($('#guide-table-applicant').length){
-        var guideApplicantTableEle = $('#guide-table-applicant');
-        var getDataUrl = guideApplicantTableEle.data('url');
-        var guideApplicantTable = guideApplicantTableEle.DataTable({
-            order: [[1, 'desc']],
-            language: DataTableEs,
-            serverSide: true,
-            processing: true,
-            ajax:  {
-                "url": getDataUrl,
-                "data": {
-                    "table" : "index"
-                }
-            },
-            columns:[
-                {data: 'code', name:'code'},
-                {data: 'date', name:'date'},
-                {data: 'lot', name:'lot'},
-                {data: 'stage', name:'stage'},
-                {data: 'location', name:'location'},
-                {data: 'proyect', name:'proyect'},
-                {data: 'company', name:'company'},
-                {data: 'front', name:'front'},
-                {data: 'stat_approved', name:'stat_approved'},
-                {data: 'stat_recieved', name:'stat_recieved'},
-                {data: 'stat_verified', name:'stat_verified'},
-                {data: 'action', name:'action', orderable: false, searchable: false},
-            ],
-            dom: 'Bfrtip',
-            buttons: [
-                {
-                    text: 'EXCEL',
-                    extend: 'excelHtml5',
-                    exportOptions: {
-                        columns: ':visible:not(.not-export-col)'
-                    }
-                }   
-            ]
-        });
-    }
 
 
     if($('#guide-pending-table-applicant').length){
@@ -3423,16 +3377,16 @@ $(function() {
             },
             columns:[
                 {data: 'code', name:'code'},
-                {data: 'date', name:'date'},
-                {data: 'lot', name:'lot'},
-                {data: 'stage', name:'stage'},
-                {data: 'location', name:'location'},
-                {data: 'proyect', name:'proyect'},
-                {data: 'company', name:'company'},
-                {data: 'front', name:'front'},
-                {data: 'stat_approved', name:'stat_approved'},
-                {data: 'stat_recieved', name:'stat_recieved'},
-                {data: 'stat_verified', name:'stat_verified'},
+                {data: 'created_at', name:'created_at'},
+                {data: 'warehouse.lot.name', name:'warehouse.lot.name', orderable: false},
+                {data: 'warehouse.stage.name', name:'warehouse.stage.name', orderable: false},
+                {data: 'warehouse.location.name', name:'warehouse.location.name', orderable: false},
+                {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name', orderable: false},
+                {data: 'warehouse.company.name', name:'warehouse.company.name', orderable: false},
+                {data: 'warehouse.front.name', name:'warehouse.front.name', orderable: false},
+                {data: 'stat_approved', name:'stat_approved', orderable: false},
+                {data: 'stat_recieved', name:'stat_recieved', orderable: false},
+                {data: 'stat_verified', name:'stat_verified', orderable: false},
                 {data: 'action', name:'action', orderable: false, searchable: false},
             ]
         });
@@ -3455,16 +3409,16 @@ $(function() {
             },
             columns:[
                 {data: 'code', name:'code'},
-                {data: 'date', name:'date'},
-                {data: 'lot', name:'lot'},
-                {data: 'stage', name:'stage'},
-                {data: 'location', name:'location'},
-                {data: 'proyect', name:'proyect'},
-                {data: 'company', name:'company'},
-                {data: 'front', name:'front'},
-                {data: 'stat_approved', name:'stat_approved'},
-                {data: 'stat_recieved', name:'stat_recieved'},
-                {data: 'stat_verified', name:'stat_verified'},
+                {data: 'created_at', name:'created_at'},
+                {data: 'warehouse.lot.name', name:'warehouse.lot.name', orderable: false},
+                {data: 'warehouse.stage.name', name:'warehouse.stage.name', orderable: false},
+                {data: 'warehouse.location.name', name:'warehouse.location.name', orderable: false},
+                {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name', orderable: false},
+                {data: 'warehouse.company.name', name:'warehouse.company.name', orderable: false},
+                {data: 'warehouse.front.name', name:'warehouse.front.name', orderable: false},
+                {data: 'stat_approved', name:'stat_approved', orderable: false},
+                {data: 'stat_recieved', name:'stat_recieved', orderable: false},
+                {data: 'stat_verified', name:'stat_verified', orderable: false},
                 {data: 'action', name:'action', orderable: false, searchable: false},
             ]
         });
@@ -3486,23 +3440,22 @@ $(function() {
             },
             columns:[
                 {data: 'code', name:'code'},
-                {data: 'date', name:'date'},
-                {data: 'lot', name:'lot'},
-                {data: 'stage', name:'stage'},
-                {data: 'location', name:'location'},
-                {data: 'proyect', name:'proyect'},
-                {data: 'company', name:'company'},
-                {data: 'front', name:'front'},
-                {data: 'stat_approved', name:'stat_approved'},
-                {data: 'stat_recieved', name:'stat_recieved'},
-                {data: 'stat_verified', name:'stat_verified'},
+                {data: 'created_at', name:'created_at'},
+                {data: 'warehouse.lot.name', name:'warehouse.lot.name', orderable: false},
+                {data: 'warehouse.stage.name', name:'warehouse.stage.name', orderable: false},
+                {data: 'warehouse.location.name', name:'warehouse.location.name', orderable: false},
+                {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name', orderable: false},
+                {data: 'warehouse.company.name', name:'warehouse.company.name', orderable: false},
+                {data: 'warehouse.front.name', name:'warehouse.front.name', orderable: false},
+                {data: 'stat_approved', name:'stat_approved', orderable: false},
+                {data: 'stat_recieved', name:'stat_recieved', orderable: false},
+                {data: 'stat_verified', name:'stat_verified', orderable: false},
                 {data: 'action', name:'action', orderable: false, searchable: false},
             ]
         });
     }
 
-
-     if($('#registerGuideForm').length){
+    if($('#registerGuideForm').length){
 
         var guideWarehouseSelect = $('#guide-warehouse-select');
         guideWarehouseSelect.select2({
@@ -3763,35 +3716,72 @@ $(function() {
     }
 
 
+
+
+    if($('#daterange-btn-wastes-applicant').length){
+
+        $('.date-range-input').val('Todos los registros');
+
+        $('.daterange-cus').daterangepicker({
+            locale: {format: 'YYYY-MM-DD'},
+            drops: 'down',
+            opens: 'right'
+          });
+          
+          $('#daterange-btn-wastes-applicant').daterangepicker({
+            ranges: {
+              'Todo' : [moment('1970-01-01'), moment().add(1, 'days')],
+              'Hoy'   : [moment(), moment().add(1, 'days')],
+              'Ayer'   : [moment().subtract(1, 'days'), moment()],
+              'Últimos 7 días' : [moment().subtract(6, 'days'), moment().add(1, 'days')],
+              'Últimos 30 días': [moment().subtract(29, 'days'), moment().add(1, 'days')],
+              'Este mes'  : [moment().startOf('month'), moment().endOf('month').add(1, 'days')],
+              'Último mes'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month').add(1, 'days')]
+            },
+            startDate: moment('1970-01-01'),
+            endDate  : moment().add(1, 'days'),
+          }, function (start, end) {
+            if(start.format('YYYY-MM-DD') == '1970-01-01'){
+                $('.date-range-input').val('Todos los registros');
+            }else{
+                $('.date-range-input').val('Del: ' + start.format('YYYY-MM-DD') + ' hasta el: ' + end.format('YYYY-MM-DD'))
+            }
+            generatedWastesApplicantTable.draw();
+        });
+    }
+
+
     if($('#generated-wastes-table-applicant').length){
         
         var generatedWastesApplicantTableEle = $('#generated-wastes-table-applicant');
         var getDataUrl = generatedWastesApplicantTableEle.data('url');
         var generatedWastesApplicantTable = generatedWastesApplicantTableEle.DataTable({
-            order: [[1, 'desc']],
+            order: [[9, 'desc']],
             language: DataTableEs,
-            serverSide: true,
-            processing: true,
             ajax: {
                 "url": getDataUrl,
-                "data": function(data){
-                    data.from_date = $('#daterange-btn-wastes-applicant').data('daterangepicker').startDate.format('YYYY-MM-DD');
-                    data.end_date = $('#daterange-btn-wastes-applicant').data('daterangepicker').endDate.format('YYYY-MM-DD');
-                }
+                // "data": function(data){
+                //     data.from_date = $('#daterange-btn-wastes-applicant').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                //     data.end_date = $('#daterange-btn-wastes-applicant').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                // }
             },
             columns:[
-                {data: 'code', name:'code'},
-                {data: 'date', name:'date'},
-                {data: 'lot', name:'lot'},
-                {data: 'stage', name:'stage'},
-                {data: 'location', name:'location'},
-                {data: 'proyect', name:'proyect'},
-                {data: 'company', name:'company'},
-                {data: 'front', name:'front'},
-                {data: 'class', name:'class'},
-                {data: 'waste', name:'waste'},
-                {data: 'weight', name:'weight'},
-                {data: 'packages', name:'packages'},
+                {data: 'id', name:'id'}, 
+                {data: 'packing_guide.cod_guide', name:'packingGuide.cod_guide'}, //
+                {data: 'guide.code', name:'guide.code'},//
+                {data: 'waste.classes_wastes', name:'waste.classesWastes.symbol', orderable: false},//
+                {data: 'waste.name', name:'waste.name', orderable: false},///
+                {data: 'package.name', name:'package.name', orderable: false},//
+                {data: 'actual_weight', name:'actual_weight', orderable: false},//
+                {data: 'package_quantity', name:'package_quantity', orderable: false},////
+                {data: 'guide.warehouse.company.name', name:'guide.warehouse.company.name'},//
+                {data: 'guide.date_verified', name:'guide.date_verified'}, 
+                {data: 'packing_guide.date_guides_departure', name:'packingGuide.date_guides_departure'}, // FECHA SALIDA DEL RESIDUO
+                {data: 'date_departure', name:'date_departure', orderable: false, searchable: false},  // FECHA SALIDA MALVINAS
+                {data: 'packing_guide.volum', name:'packingGuide.volum', orderable: false, searchable: false},//
+            ],
+            columnDefs : [
+                { 'visible': false, 'targets': [10, 11] }
             ],
             dom: 'Bfrtip',
             buttons: [
@@ -3813,7 +3803,28 @@ $(function() {
                         return 'residuos-generados_solicitante-'+name+'_'+from_date+'_' + end_date + '_' + moment().format("hh-mm-ss");
                     }
                 }   
-            ]
+            ],
+            initComplete: function () {
+                $.fn.dataTable.ext.search.push(
+                    function( settings, data, dataIndex ) {
+                    
+                    if ( settings.nTable.id !== 'generated-wastes-table-applicant' ) {
+                        return true;
+                    }  
+
+                    var min = moment($('#daterange-btn-wastes-applicant').data('daterangepicker').startDate.format('YYYY-MM-DD')).toDate();
+                    var max = moment($('#daterange-btn-wastes-applicant').data('daterangepicker').endDate.format('YYYY-MM-DD')).toDate();
+                    var startDate = moment(data[9]).toDate();
+
+                    console.log(startDate)
+                    if (min == null && max == null) { return true; }
+                    if (min == null && startDate <= max) { return true;}
+                    if(max == null && startDate >= min) {return true;}
+                    if (startDate <= max && startDate >= min) { return true; }
+                    return false;
+                    }
+                );
+            }
         })
     }
 
@@ -3830,6 +3841,144 @@ $(function() {
 
 
     /* -------------- APPROVING --------------------*/
+
+
+    
+     
+
+    if($('#guide-pending-table-approvant').length){
+    
+    var guidePendingTableEle = $('#guide-pending-table-approvant');
+    var getDataUrl = guidePendingTableEle.data('url');
+    var guidePendingTable = guidePendingTableEle.DataTable({
+        language: DataTableEs,
+        serverSide: true,
+        processing: true,
+        ajax: {
+            "url": getDataUrl,
+            "data": {
+                "table" : "pending"
+            }
+        },
+        columns:[
+            {data: 'code', name:'code'},
+            {data: 'created_at', name:'created_at'},
+            {data: 'warehouse.lot.name', name:'warehouse.lot.name', orderable: false},
+            {data: 'warehouse.stage.name', name:'warehouse.stage.name', orderable: false},
+            {data: 'warehouse.location.name', name:'warehouse.location.name', orderable: false},
+            {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name', orderable: false},
+            {data: 'warehouse.company.name', name:'warehouse.company.name', orderable: false},
+            {data: 'warehouse.front.name', name:'warehouse.front.name', orderable: false},
+            {data: 'action', name:'action', orderable: false, searchable: false},
+        ]
+    });
+
+    }  
+
+
+    if($('#register-approved-guide-form').length)
+    {
+
+    $('#button-save-approved-guide').on('click', function(e){
+        e.preventDefault();
+        var form = $('#register-approved-guide-form');
+
+        Swal.fire({
+            title: 'Confirmar Aprobación',
+            text: '¡Esta acción no se podrá deshacer!',
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true,
+            }).then((result)=>{
+            if (result.isConfirmed) {
+                form.submit();
+                }
+            }, function(dismiss){
+            return false;
+            })
+    })
+
+    $('#button-rejected-guide').on('click', function(e){
+        e.preventDefault();
+        var form = $('#form-reject-guide');
+        Swal.fire({
+            title: 'Rechazar solicitud',
+            text: 'Luego se podrá deshacer esta acción',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Rechazar',
+            cancelButtonText: 'Atrás',
+            reverseButtons: true,
+            }).then((result)=>{
+            if (result.isConfirmed) {
+                form.submit();
+                }
+            }, function(dismiss){
+            return false;
+            })
+
+    })
+    }
+
+
+    if($('#guide-approved-table-approvant').length)
+    {
+    var guideApprovedTableEle = $('#guide-approved-table-approvant');
+    var getDataUrl = guideApprovedTableEle.data('url');
+    var guideApprovedTable = guideApprovedTableEle.DataTable({
+        language: DataTableEs,
+        serverSide: true,
+        processing: true,
+        ajax: {
+            "url": getDataUrl,
+            "data": {
+                "table" : "approved"
+            }
+        },
+        columns:[
+            {data: 'code', name:'code'},
+            {data: 'created_at', name:'created_at'},
+            {data: 'warehouse.lot.name', name:'warehouse.lot.name', orderable: false},
+            {data: 'warehouse.stage.name', name:'warehouse.stage.name', orderable: false},
+            {data: 'warehouse.location.name', name:'warehouse.location.name', orderable: false},
+            {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name', orderable: false},
+            {data: 'warehouse.company.name', name:'warehouse.company.name', orderable: false},
+            {data: 'warehouse.front.name', name:'warehouse.front.name', orderable: false},
+            {data: 'action', name:'action', orderable: false, searchable: false},
+        ]
+    });
+    }
+
+
+    if($('#guide-rejected-table-approvant').length)
+    {
+        var guideRejectedTableEle = $('#guide-rejected-table-approvant');
+        var getDataUrl = guideRejectedTableEle.data('url');
+        var guideApprovedTable = guideRejectedTableEle.DataTable({
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax: {
+                "url": getDataUrl,
+                "data": {
+                    "table" : "rejected"
+                }
+            },
+            columns:[
+                {data: 'code', name:'code'},
+                {data: 'created_at', name:'created_at'},
+                {data: 'warehouse.lot.name', name:'warehouse.lot.name', orderable: false},
+                {data: 'warehouse.stage.name', name:'warehouse.stage.name', orderable: false},
+                {data: 'warehouse.location.name', name:'warehouse.location.name', orderable: false},
+                {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name', orderable: false},
+                {data: 'warehouse.company.name', name:'warehouse.company.name', orderable: false},
+                {data: 'warehouse.front.name', name:'warehouse.front.name', orderable: false},
+                {data: 'action', name:'action', orderable: false, searchable: false},
+            ]
+        });
+    }
 
 
     if($('#daterange-btn-wastes-approver').length){
@@ -3864,171 +4013,37 @@ $(function() {
         });
     }
      
-
-     if($('#guide-pending-table-approvant').length){
-        
-        var guidePendingTableEle = $('#guide-pending-table-approvant');
-        var getDataUrl = guidePendingTableEle.data('url');
-        var guidePendingTable = guidePendingTableEle.DataTable({
-            language: DataTableEs,
-            serverSide: true,
-            processing: true,
-            ajax: {
-                "url": getDataUrl,
-                "data": {
-                    "table" : "pending"
-                }
-            },
-            columns:[
-                {data: 'code', name:'code'},
-                {data: 'date', name:'date'},
-                {data: 'lot', name:'lot'},
-                {data: 'stage', name:'stage'},
-                {data: 'location', name:'location'},
-                {data: 'proyect', name:'proyect'},
-                {data: 'company', name:'company'},
-                {data: 'front', name:'front'},
-                {data: 'action', name:'action', orderable: false, searchable: false},
-            ]
-        });
-
-     }  
-
-
-     if($('#register-approved-guide-form').length)
-     {
-
-        $('#button-save-approved-guide').on('click', function(e){
-            e.preventDefault();
-            var form = $('#register-approved-guide-form');
-
-            Swal.fire({
-                title: 'Confirmar Aprobación',
-                text: '¡Esta acción no se podrá deshacer!',
-                icon: 'info',
-                showCancelButton: true,
-                confirmButtonText: 'Confirmar',
-                cancelButtonText: 'Cancelar',
-                reverseButtons: true,
-                }).then((result)=>{
-                if (result.isConfirmed) {
-                    form.submit();
-                    }
-                }, function(dismiss){
-                return false;
-                })
-        })
-
-        $('#button-rejected-guide').on('click', function(e){
-            e.preventDefault();
-            var form = $('#form-reject-guide');
-            Swal.fire({
-                title: 'Rechazar solicitud',
-                text: 'Luego se podrá deshacer esta acción',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Rechazar',
-                cancelButtonText: 'Atrás',
-                reverseButtons: true,
-              }).then((result)=>{
-                if (result.isConfirmed) {
-                    form.submit();
-                  }
-              }, function(dismiss){
-                return false;
-              })
-
-        })
-     }
-
-
-     if($('#guide-approved-table-approvant').length)
-     {
-        var guideApprovedTableEle = $('#guide-approved-table-approvant');
-        var getDataUrl = guideApprovedTableEle.data('url');
-        var guideApprovedTable = guideApprovedTableEle.DataTable({
-            language: DataTableEs,
-            serverSide: true,
-            processing: true,
-            ajax: {
-                "url": getDataUrl,
-                "data": {
-                    "table" : "approved"
-                }
-            },
-            columns:[
-                {data: 'code', name:'code'},
-                {data: 'date', name:'date'},
-                {data: 'lot', name:'lot'},
-                {data: 'stage', name:'stage'},
-                {data: 'location', name:'location'},
-                {data: 'proyect', name:'proyect'},
-                {data: 'company', name:'company'},
-                {data: 'front', name:'front'},
-                {data: 'action', name:'action', orderable: false, searchable: false},
-            ]
-        });
-     }
-
-
-     if($('#guide-rejected-table-approvant').length)
-     {
-        var guideRejectedTableEle = $('#guide-rejected-table-approvant');
-        var getDataUrl = guideRejectedTableEle.data('url');
-        var guideApprovedTable = guideRejectedTableEle.DataTable({
-            language: DataTableEs,
-            serverSide: true,
-            processing: true,
-            ajax: {
-                "url": getDataUrl,
-                "data": {
-                    "table" : "rejected"
-                }
-            },
-            columns:[
-                {data: 'code', name:'code'},
-                {data: 'date', name:'date'},
-                {data: 'lot', name:'lot'},
-                {data: 'stage', name:'stage'},
-                {data: 'location', name:'location'},
-                {data: 'proyect', name:'proyect'},
-                {data: 'company', name:'company'},
-                {data: 'front', name:'front'},
-                {data: 'action', name:'action', orderable: false, searchable: false},
-            ]
-        });
-     }
-
-     
     if($('#generated-wastes-table-approver').length){
         
         var generatedWastesApproverTableEle = $('#generated-wastes-table-approver');
         var getDataUrl = generatedWastesApproverTableEle.data('url');
         var generatedWastesApproverTable = generatedWastesApproverTableEle.DataTable({
-            order: [[11, 'desc']],
+            order: [[9, 'desc']],
             language: DataTableEs,
-            serverSide: true,
-            processing: true,
             ajax: {
                 "url": getDataUrl,
-                "data": function(data){
-                    data.from_date = $('#daterange-btn-wastes-approver').data('daterangepicker').startDate.format('YYYY-MM-DD');
-                    data.end_date = $('#daterange-btn-wastes-approver').data('daterangepicker').endDate.format('YYYY-MM-DD');
-                }
+                // "data": function(data){
+                //     data.from_date = $('#daterange-btn-wastes-approver').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                //     data.end_date = $('#daterange-btn-wastes-approver').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                // }
             },
+            columnDefs : [
+                { 'visible': false, 'targets': [10, 11] }
+            ],
             columns:[
-                {data: 'guide.code', name:'guide.code'},
-                {data: 'waste.classes_wastes', name:'waste.classesWastes.symbol', orderable: false},
-                {data: 'waste.name', name:'waste.name'},
-                {data: 'actual_weight', name:'actual_weight'},
-                {data: 'package_quantity', name:'package_quantity'},
-                {data: 'guide.warehouse.lot.name', name:'guide.warehouse.lot.name', orderable: false},
-                {data: 'guide.warehouse.stage.name', name:'guide.warehouse.stage.name', orderable: false},
-                {data: 'guide.warehouse.location.name', name:'guide.warehouse.location.name', orderable: false},
-                {data: 'guide.warehouse.project_area.name', name:'guide.warehouse.projectArea.name', orderable: false},
-                {data: 'guide.warehouse.company.name', name:'guide.warehouse.company.name', orderable: false},
-                {data: 'guide.warehouse.front.name', name:'guide.warehouse.front.name', orderable: false},
-                {data: 'guide.date_verified', name:'guide.date_verified'},
+                {data: 'id', name:'id'}, 
+                {data: 'packing_guide.cod_guide', name:'packingGuide.cod_guide'}, //
+                {data: 'guide.code', name:'guide.code'},//
+                {data: 'waste.classes_wastes', name:'waste.classesWastes.symbol', orderable: false},//
+                {data: 'waste.name', name:'waste.name', orderable: false},///
+                {data: 'package.name', name:'package.name', orderable: false},//
+                {data: 'actual_weight', name:'actual_weight', orderable: false},//
+                {data: 'package_quantity', name:'package_quantity', orderable: false},////
+                {data: 'guide.warehouse.company.name', name:'guide.warehouse.company.name'},//
+                {data: 'guide.date_verified', name:'guide.date_verified'}, 
+                {data: 'packing_guide.date_guides_departure', name:'packingGuide.date_guides_departure'}, // FECHA SALIDA DEL RESIDUO
+                {data: 'date_departure', name:'date_departure', orderable: false, searchable: false},  // FECHA SALIDA MALVINAS
+                {data: 'packing_guide.volum', name:'packingGuide.volum', orderable: false, searchable: false},//
             ],
             dom: 'Bfrtip',
             buttons: [
@@ -4050,7 +4065,28 @@ $(function() {
                         return 'residuos-generados_aprobante-'+name+'_'+from_date+'_' + end_date + '_' + moment().format("hh-mm-ss");
                     }
                 }   
-            ]
+            ],
+            initComplete: function () {
+                $.fn.dataTable.ext.search.push(
+                    function( settings, data, dataIndex ) {
+                    
+                    if ( settings.nTable.id !== 'generated-wastes-table-approver' ) {
+                        return true;
+                    }  
+
+                    var min = moment($('#daterange-btn-wastes-approver').data('daterangepicker').startDate.format('YYYY-MM-DD')).toDate();
+                    var max = moment($('#daterange-btn-wastes-approver').data('daterangepicker').endDate.format('YYYY-MM-DD')).toDate();
+                    var startDate = moment(data[9]).toDate();
+
+                    console.log(startDate)
+                    if (min == null && max == null) { return true; }
+                    if (min == null && startDate <= max) { return true;}
+                    if(max == null && startDate >= min) {return true;}
+                    if (startDate <= max && startDate >= min) { return true; }
+                    return false;
+                    }
+                );
+            }
         })
     }
 
@@ -4061,64 +4097,33 @@ $(function() {
 
     /* -------------- RECIEVER ---------------*/
 
-    if($('#daterange-btn-wastes-reciever').length){
-
-        $('.date-range-input').val('Todos los registros');
-
-        $('.daterange-cus').daterangepicker({
-            locale: {format: 'YYYY-MM-DD'},
-            drops: 'down',
-            opens: 'right'
-          });
-          
-          $('#daterange-btn-wastes-reciever').daterangepicker({
-            ranges: {
-              'Todo' : [moment('1970-01-01'), moment().add(1, 'days')],
-              'Hoy'   : [moment(), moment().add(1, 'days')],
-              'Ayer'   : [moment().subtract(1, 'days'), moment()],
-              'Últimos 7 días' : [moment().subtract(6, 'days'), moment().add(1, 'days')],
-              'Últimos 30 días': [moment().subtract(29, 'days'), moment().add(1, 'days')],
-              'Este mes'  : [moment().startOf('month'), moment().endOf('month').add(1, 'days')],
-              'Último mes'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month').add(1, 'days')]
-            },
-            startDate: moment('1970-01-01'),
-            endDate  : moment().add(1, 'days'),
-          }, function (start, end) {
-            if(start.format('YYYY-MM-DD') == '1970-01-01'){
-                $('.date-range-input').val('Todos los registros');
-            }else{
-                $('.date-range-input').val('Del: ' + start.format('YYYY-MM-DD') + ' hasta el: ' + end.format('YYYY-MM-DD'))
-            }
-            generatedWastesRecieverTable.draw();
-        });
-    }
-
+    
     if($('#guide-pending-table-reciever').length){
     
-    var guideRecieverPendingTableEle = $('#guide-pending-table-reciever');
-    var getDataUrl = guideRecieverPendingTableEle.data('url');
-    var guideRecieverPendingTable = guideRecieverPendingTableEle.DataTable({
-        language: DataTableEs,
-        serverSide: true,
-        processing: true,
-        ajax: {
-            "url": getDataUrl,
-            "data": {
-                "table" : "pending"
-            }
-        },
-        columns:[
-            {data: 'code', name:'code'},
-            {data: 'created_at', name:'created_at'},
-            {data: 'warehouse.lot.name', name: 'warehouse.lot.name'},
-            {data: 'warehouse.stage.name', name:'warehouse.stage.name'},
-            {data: 'warehouse.location.name', name:'warehouse.location.name'},
-            {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name'},
-            {data: 'warehouse.company.name', name:'warehouse.company.name'},
-            {data: 'warehouse.front.name', name:'warehouse.front.name'},
-            {data: 'action', name:'action', orderable: false, searchable: false},
-        ]
-    });
+        var guideRecieverPendingTableEle = $('#guide-pending-table-reciever');
+        var getDataUrl = guideRecieverPendingTableEle.data('url');
+        var guideRecieverPendingTable = guideRecieverPendingTableEle.DataTable({
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax: {
+                "url": getDataUrl,
+                "data": {
+                    "table" : "pending"
+                }
+            },
+            columns:[
+                {data: 'code', name:'code'},
+                {data: 'created_at', name:'created_at'},
+                {data: 'warehouse.lot.name', name: 'warehouse.lot.name'},
+                {data: 'warehouse.stage.name', name:'warehouse.stage.name'},
+                {data: 'warehouse.location.name', name:'warehouse.location.name'},
+                {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name'},
+                {data: 'warehouse.company.name', name:'warehouse.company.name'},
+                {data: 'warehouse.front.name', name:'warehouse.front.name'},
+                {data: 'action', name:'action', orderable: false, searchable: false},
+            ]
+        });
 
     } 
 
@@ -4217,13 +4222,13 @@ $(function() {
         },
         columns:[
             {data: 'code', name:'code'},
-            {data: 'date', name:'date'},
-            {data: 'lot', name:'lot'},
-            {data: 'stage', name:'stage'},
-            {data: 'location', name:'location'},
-            {data: 'proyect', name:'proyect'},
-            {data: 'company', name:'company'},
-            {data: 'front', name:'front'},
+            {data: 'created_at', name:'created_at'},
+            {data: 'warehouse.lot.name', name: 'warehouse.lot.name'},
+            {data: 'warehouse.stage.name', name:'warehouse.stage.name'},
+            {data: 'warehouse.location.name', name:'warehouse.location.name'},
+            {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name'},
+            {data: 'warehouse.company.name', name:'warehouse.company.name'},
+            {data: 'warehouse.front.name', name:'warehouse.front.name'},
             {data: 'action', name:'action', orderable: false, searchable: false},
         ]
     });
@@ -4245,48 +4250,75 @@ $(function() {
         },
         columns:[
             {data: 'code', name:'code'},
-            {data: 'date', name:'date'},
-            {data: 'lot', name:'lot'},
-            {data: 'stage', name:'stage'},
-            {data: 'location', name:'location'},
-            {data: 'proyect', name:'proyect'},
-            {data: 'company', name:'company'},
-            {data: 'front', name:'front'},
+            {data: 'created_at', name:'created_at'},
+            {data: 'warehouse.lot.name', name: 'warehouse.lot.name'},
+            {data: 'warehouse.stage.name', name:'warehouse.stage.name'},
+            {data: 'warehouse.location.name', name:'warehouse.location.name'},
+            {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name'},
+            {data: 'warehouse.company.name', name:'warehouse.company.name'},
+            {data: 'warehouse.front.name', name:'warehouse.front.name'},
             {data: 'action', name:'action', orderable: false, searchable: false},
         ]
     });
     }
 
 
+    if($('#daterange-btn-wastes-reciever').length){
+
+        $('.date-range-input').val('Todos los registros');
+
+        $('.daterange-cus').daterangepicker({
+            locale: {format: 'YYYY-MM-DD'},
+            drops: 'down',
+            opens: 'right'
+          });
+          
+          $('#daterange-btn-wastes-reciever').daterangepicker({
+            ranges: {
+              'Todo' : [moment('1970-01-01'), moment().add(1, 'days')],
+              'Hoy'   : [moment(), moment().add(1, 'days')],
+              'Ayer'   : [moment().subtract(1, 'days'), moment()],
+              'Últimos 7 días' : [moment().subtract(6, 'days'), moment().add(1, 'days')],
+              'Últimos 30 días': [moment().subtract(29, 'days'), moment().add(1, 'days')],
+              'Este mes'  : [moment().startOf('month'), moment().endOf('month').add(1, 'days')],
+              'Último mes'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month').add(1, 'days')]
+            },
+            startDate: moment('1970-01-01'),
+            endDate  : moment().add(1, 'days'),
+          }, function (start, end) {
+            if(start.format('YYYY-MM-DD') == '1970-01-01'){
+                $('.date-range-input').val('Todos los registros');
+            }else{
+                $('.date-range-input').val('Del: ' + start.format('YYYY-MM-DD') + ' hasta el: ' + end.format('YYYY-MM-DD'))
+            }
+            generatedWastesRecieverTable.draw();
+        });
+    }
+
     if($('#generated-wastes-table-reciever').length){
         
         var generatedWastesRecieverTableEle = $('#generated-wastes-table-reciever');
         var getDataUrl = generatedWastesRecieverTableEle.data('url');
         var generatedWastesRecieverTable = generatedWastesRecieverTableEle.DataTable({
-            order: [[11, 'desc']],
+            order: [[9, 'desc']],
             language: DataTableEs,
-            serverSide: true,
-            processing: true,
             ajax: {
-                "url": getDataUrl,
-                "data": function(data){
-                    data.from_date = $('#daterange-btn-wastes-reciever').data('daterangepicker').startDate.format('YYYY-MM-DD');
-                    data.end_date = $('#daterange-btn-wastes-reciever').data('daterangepicker').endDate.format('YYYY-MM-DD');
-                }
+                "url": getDataUrl
             },
             columns:[
-                {data: 'guide.code', name:'guide.code'},
-                {data: 'waste.classes_wastes', name:'waste.classesWastes.symbol', orderable: false},
-                {data: 'waste.name', name:'waste.name'},
-                {data: 'actual_weight', name:'actual_weight'},
-                {data: 'package_quantity', name:'package_quantity'},
-                {data: 'guide.warehouse.lot.name', name:'guide.warehouse.lot.name', orderable: false},
-                {data: 'guide.warehouse.stage.name', name:'guide.warehouse.stage.name', orderable: false},
-                {data: 'guide.warehouse.location.name', name:'guide.warehouse.location.name', orderable: false},
-                {data: 'guide.warehouse.project_area.name', name:'guide.warehouse.projectArea.name', orderable: false},
-                {data: 'guide.warehouse.company.name', name:'guide.warehouse.company.name', orderable: false},
-                {data: 'guide.warehouse.front.name', name:'guide.warehouse.front.name', orderable: false},
-                {data: 'guide.date_verified', name:'guide.date_verified'},
+                {data: 'id', name:'id'}, 
+                {data: 'packing_guide.cod_guide', name:'packingGuide.cod_guide'}, //
+                {data: 'guide.code', name:'guide.code'},//
+                {data: 'waste.classes_wastes', name:'waste.classesWastes.symbol', orderable: false},//
+                {data: 'waste.name', name:'waste.name', orderable: false},///
+                {data: 'package.name', name:'package.name', orderable: false},//
+                {data: 'actual_weight', name:'actual_weight', orderable: false},//
+                {data: 'package_quantity', name:'package_quantity', orderable: false},////
+                {data: 'guide.warehouse.company.name', name:'guide.warehouse.company.name'},//
+                {data: 'guide.date_verified', name:'guide.date_verified'}, 
+                {data: 'packing_guide.date_guides_departure', name:'packingGuide.date_guides_departure'}, // FECHA SALIDA DEL RESIDUO
+                {data: 'date_departure', name:'date_departure', orderable: false, searchable: false},  // FECHA SALIDA MALVINAS
+                {data: 'packing_guide.volum', name:'packingGuide.volum', orderable: false, searchable: false},//
             ],
             dom: 'Bfrtip',
             buttons: [
@@ -4308,7 +4340,28 @@ $(function() {
                         return 'residuos-generados_receptor-'+name+'_'+from_date+'_' + end_date + '_' + moment().format("hh-mm-ss");
                     }
                 }   
-            ]
+            ],
+            initComplete: function () {
+                $.fn.dataTable.ext.search.push(
+                    function( settings, data, dataIndex ) {
+                    
+                    if ( settings.nTable.id !== 'generated-wastes-table-reciever' ) {
+                        return true;
+                    }  
+
+                    var min = moment($('#daterange-btn-wastes-reciever').data('daterangepicker').startDate.format('YYYY-MM-DD')).toDate();
+                    var max = moment($('#daterange-btn-wastes-reciever').data('daterangepicker').endDate.format('YYYY-MM-DD')).toDate();
+                    var startDate = moment(data[9]).toDate();
+
+                    console.log(startDate)
+                    if (min == null && max == null) { return true; }
+                    if (min == null && startDate <= max) { return true;}
+                    if(max == null && startDate >= min) {return true;}
+                    if (startDate <= max && startDate >= min) { return true; }
+                    return false;
+                    }
+                );
+            }
         })
     }
 
@@ -4367,13 +4420,13 @@ $(function() {
             },
             columns:[
                 {data: 'code', name:'code'},
-                {data: 'date', name:'date'},
-                {data: 'lot', name:'lot'},
-                {data: 'stage', name:'stage'},
-                {data: 'location', name:'location'},
-                {data: 'proyect', name:'proyect'},
-                {data: 'company', name:'company'},
-                {data: 'front', name:'front'},
+                {data: 'created_at', name:'created_at'},
+                {data: 'warehouse.lot.name', name: 'warehouse.lot.name'},
+                {data: 'warehouse.stage.name', name:'warehouse.stage.name'},
+                {data: 'warehouse.location.name', name:'warehouse.location.name'},
+                {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name'},
+                {data: 'warehouse.company.name', name:'warehouse.company.name'},
+                {data: 'warehouse.front.name', name:'warehouse.front.name'},
                 {data: 'action', name:'action', orderable: false, searchable: false},
             ]
         });
@@ -4447,13 +4500,13 @@ $(function() {
             },
             columns:[
                 {data: 'code', name:'code'},
-                {data: 'date', name:'date'},
-                {data: 'lot', name:'lot'},
-                {data: 'stage', name:'stage'},
-                {data: 'location', name:'location'},
-                {data: 'proyect', name:'proyect'},
-                {data: 'company', name:'company'},
-                {data: 'front', name:'front'},
+                {data: 'created_at', name:'created_at'},
+                {data: 'warehouse.lot.name', name: 'warehouse.lot.name'},
+                {data: 'warehouse.stage.name', name:'warehouse.stage.name'},
+                {data: 'warehouse.location.name', name:'warehouse.location.name'},
+                {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name'},
+                {data: 'warehouse.company.name', name:'warehouse.company.name'},
+                {data: 'warehouse.front.name', name:'warehouse.front.name'},
                 {data: 'action', name:'action', orderable: false, searchable: false},
             ]
         });
@@ -4474,48 +4527,43 @@ $(function() {
             },
             columns:[
                 {data: 'code', name:'code'},
-                {data: 'date', name:'date'},
-                {data: 'lot', name:'lot'},
-                {data: 'stage', name:'stage'},
-                {data: 'location', name:'location'},
-                {data: 'proyect', name:'proyect'},
-                {data: 'company', name:'company'},
-                {data: 'front', name:'front'},
+                {data: 'created_at', name:'created_at'},
+                {data: 'warehouse.lot.name', name: 'warehouse.lot.name'},
+                {data: 'warehouse.stage.name', name:'warehouse.stage.name'},
+                {data: 'warehouse.location.name', name:'warehouse.location.name'},
+                {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name'},
+                {data: 'warehouse.company.name', name:'warehouse.company.name'},
+                {data: 'warehouse.front.name', name:'warehouse.front.name'},
                 {data: 'action', name:'action', orderable: false, searchable: false},
             ]
         });
      }
 
 
-     if($('#generated-wastes-table-verificator').length){
+    if($('#generated-wastes-table-verificator').length){
         
         var generatedWastesCheckerTableEle = $('#generated-wastes-table-verificator');
         var getDataUrl = generatedWastesCheckerTableEle.data('url');
         var generatedWastesCheckerTable = generatedWastesCheckerTableEle.DataTable({
-            order: [[11, 'desc']],
+            order: [[9, 'desc']],
             language: DataTableEs,
-            serverSide: true,
-            processing: true,
             ajax: {
-                "url": getDataUrl,
-                "data": function(data){
-                    data.from_date = $('#daterange-btn-wastes-verificator').data('daterangepicker').startDate.format('YYYY-MM-DD');
-                    data.end_date = $('#daterange-btn-wastes-verificator').data('daterangepicker').endDate.format('YYYY-MM-DD');
-                }
+                "url": getDataUrl
             },
             columns:[
-                {data: 'guide.code', name:'guide.code'},
-                {data: 'waste.classes_wastes', name:'waste.classesWastes.symbol', orderable: false},
-                {data: 'waste.name', name:'waste.name'},
-                {data: 'actual_weight', name:'actual_weight'},
-                {data: 'package_quantity', name:'package_quantity'},
-                {data: 'guide.warehouse.lot.name', name:'guide.warehouse.lot.name', orderable: false},
-                {data: 'guide.warehouse.stage.name', name:'guide.warehouse.stage.name', orderable: false},
-                {data: 'guide.warehouse.location.name', name:'guide.warehouse.location.name', orderable: false},
-                {data: 'guide.warehouse.project_area.name', name:'guide.warehouse.projectArea.name', orderable: false},
-                {data: 'guide.warehouse.company.name', name:'guide.warehouse.company.name', orderable: false},
-                {data: 'guide.warehouse.front.name', name:'guide.warehouse.front.name', orderable: false},
-                {data: 'guide.date_verified', name:'guide.date_verified'},
+                {data: 'id', name:'id'}, 
+                {data: 'packing_guide.cod_guide', name:'packingGuide.cod_guide'}, //
+                {data: 'guide.code', name:'guide.code'},//
+                {data: 'waste.classes_wastes', name:'waste.classesWastes.symbol', orderable: false},//
+                {data: 'waste.name', name:'waste.name', orderable: false},///
+                {data: 'package.name', name:'package.name', orderable: false},//
+                {data: 'actual_weight', name:'actual_weight', orderable: false},//
+                {data: 'package_quantity', name:'package_quantity', orderable: false},////
+                {data: 'guide.warehouse.company.name', name:'guide.warehouse.company.name'},//
+                {data: 'guide.date_verified', name:'guide.date_verified'}, 
+                {data: 'packing_guide.date_guides_departure', name:'packingGuide.date_guides_departure'}, // FECHA SALIDA DEL RESIDUO
+                {data: 'date_departure', name:'date_departure', orderable: false, searchable: false},  // FECHA SALIDA MALVINAS
+                {data: 'packing_guide.volum', name:'packingGuide.volum', orderable: false, searchable: false},//
             ],
             dom: 'Bfrtip',
             buttons: [
@@ -4537,9 +4585,32 @@ $(function() {
                         return 'residuos-generados_supervisor-'+name+'_'+from_date+'_' + end_date + '_' + moment().format("hh-mm-ss");
                     }
                 }   
-            ]
+            ],
+            initComplete: function () {
+                $.fn.dataTable.ext.search.push(
+                    function( settings, data, dataIndex ) {
+                    
+                    if ( settings.nTable.id !== 'generated-wastes-table-verificator' ) {
+                        return true;
+                    }  
+
+                    var min = moment($('#daterange-btn-wastes-verificator').data('daterangepicker').startDate.format('YYYY-MM-DD')).toDate();
+                    var max = moment($('#daterange-btn-wastes-verificator').data('daterangepicker').endDate.format('YYYY-MM-DD')).toDate();
+                    var startDate = moment(data[9]).toDate();
+
+                    console.log(startDate)
+                    if (min == null && max == null) { return true; }
+                    if (min == null && startDate <= max) { return true;}
+                    if(max == null && startDate >= min) {return true;}
+                    if (startDate <= max && startDate >= min) { return true; }
+                    return false;
+                    }
+                );
+            }
         })
     }
+
+
 
 
 
@@ -4579,6 +4650,9 @@ $(function() {
 
     
      /* -----------  MANAGER STOCK ------------*/
+
+
+     /* --------- PACKING WASTES ------------*/
 
     if($('#daterange-btn-wastespg-manager').length){
 
@@ -4646,11 +4720,7 @@ $(function() {
         });
     }
 
-
     if($('#interment-wastes-table-manager').length){
-
-        /* --------- FILTER GUIDES PG -----------*/
-
 
         $('input[name=filter-wastespg]').on('change', function(){
             intermentWasteManagerTable.column(9).search($(this).val()).draw()
@@ -5228,6 +5298,783 @@ $(function() {
             }, function(dismiss){
             return false;
             })
+        })
+
+    }
+
+
+    /* ------------- DEPARTURES -------------*/
+
+    if($('#daterange-btn-departures-manager').length){
+
+        $('#date-range-input-departures').val('Todos los registros');
+
+        $('.daterange-cus').daterangepicker({
+            locale: {format: 'YYYY-MM-DD'},
+            drops: 'down',
+            opens: 'right'
+          });
+          
+          $('#daterange-btn-departures-manager').daterangepicker({
+            ranges: {
+              'Todo' : [moment('1970-01-01'), moment('3000-01-01')],
+              'Hoy'   : [moment(), moment().add(1, 'days')],
+              'Ayer'   : [moment().subtract(1, 'days'), moment()],
+              'Últimos 7 días' : [moment().subtract(6, 'days'), moment().add(1, 'days')],
+              'Últimos 30 días': [moment().subtract(29, 'days'), moment().add(1, 'days')],
+              'Este mes'  : [moment().startOf('month'), moment().endOf('month').add(1, 'days')],
+              'Último mes'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month').add(1, 'days')]
+            },
+            startDate: moment('1970-01-01'),
+            endDate  : moment('3000-01-01'),
+          }, function (start, end) {
+            if(start.format('YYYY-MM-DD') == '1970-01-01'){
+                $('#date-range-input-departures').val('Todos los registros');
+            }else{
+                $('#date-range-input-departures').val('Del: ' + start.format('YYYY-MM-DD') + ' hasta el: ' + end.format('YYYY-MM-DD'))
+            }
+
+            departuresManagerTable.draw()
+        });
+    }
+
+
+    if($('#departures-table-manager').length){
+
+        $('input[name=filter-departures-stat-arrival]').on('change', function(){
+            departuresManagerTable.column(19).search($(this).val()).draw()
+        })
+
+        $('input[name=filter-departures-stat-departure]').on('change', function(){
+            departuresManagerTable.column(20).search($(this).val()).draw()
+        })
+
+
+        /* --------- CHECKBOX FILTER ---------*/
+
+        $('body').on('click', '.checkbox-waste-label', function(){
+            var input = $('#'+$(this).attr('for'));
+            var status_arrival_array = []
+            var status_departure_array = []
+
+            var status_arrival = false;
+            var status_departure = false;
+            if(!input.is(':checked')){
+                status_arrival_array.push(input.data('status-arrival'))
+                status_departure_array.push([input.data('status-arrival'), input.data('status-departure')])
+            }
+
+            $('input[name="wastes-selected[]"]:checked').each(function(){
+                if($(this).attr('id') != input.attr('id')){
+                    status_arrival_array.push($(this).data('status-arrival'))
+                    status_departure_array.push([$(this).data('status-arrival'), $(this).data('status-departure')])
+                }
+            })
+
+            $.each(status_arrival_array, function(index, value){
+                if(value == 1){
+                    status_arrival = false;
+                    return false;
+                }else{
+                    status_arrival = true;
+                }
+            })
+
+            $.each(status_departure_array, function(index, value){
+                if(value[0] == 0 || value[1] == 1){
+                    status_departure = false;
+                    return false;
+                }else{
+                    status_departure = true;
+                }
+            })
+
+            var btn_container = $('#btn-register-arrival-container');
+            var btn_departure_container = $('#btn-register-departure-container');
+
+            if(status_arrival){
+                btn_container.html('<button id="btn-register-arrival-modal" class="btn btn-primary"> \
+                                        <i class="fa-solid fa-square-plus"></i> &nbsp; <span class="me-1"> Dar llegada </span> \
+                                        <i class="fa-solid fa-spinner fa-spin loadSpinner"></i> \
+                                    </button>');
+            }else{
+                btn_container.html('<div class="btn btn-secondary" style="pointer-events: none;"> \
+                                        <i class="fa-solid fa-square-plus"></i> &nbsp; <span class="me-1"> Dar llegada </span>\
+                                    </div>');
+            }
+
+            if(status_departure){
+                btn_departure_container.html('<button id="btn-register-departure-modal" class="btn btn-primary"> \
+                                                <i class="fa-solid fa-square-plus"></i> &nbsp; <span class="me-1"> Dar salida </span> \
+                                                <i class="fa-solid fa-spinner fa-spin loadSpinner"></i> \
+                                            </button>')
+            }else{
+                btn_departure_container.html('<div class="btn btn-secondary" style="pointer-events: none;"> \
+                                                <i class="fa-solid fa-square-plus"></i> &nbsp; <span class="me-1"> Dar salida </span>\
+                                            </div>')
+            }
+        })
+       
+       
+        var departuresManagerTableEle = $('#departures-table-manager');
+        var getDataUrl = departuresManagerTableEle.data('url');
+        var departuresManagerTable = departuresManagerTableEle.DataTable({
+            order: [[9,'desc']],
+            language: DataTableEs,
+            ajax: {
+                "url": getDataUrl
+            },
+            columns:[
+                {data: 'choose', name:'choose', orderable: false, searchable: false, className: 'not-export-col'},
+                {data: 'packing_guide.cod_guide', name:'packingGuide.code_guide', orderable: false},
+                {data: 'ppc_code', name:'ppc_code', orderable: false},
+                {data: 'waste.classes_wastes', name:'waste.classesWastes.symbol', orderable: false},
+                {data: 'waste.name', name:'waste.name', orderable: false},
+                {data: 'package.name', name:'package.name', orderable: false},
+                {data: 'actual_weight', name:'actual_weight', orderable: false},
+                {data: 'package_quantity', name:'package_quantity', orderable: false},
+                {data: 'guide.warehouse.company.name', name:'guide.warehouse.company.name', orderable: false},
+                {data: 'date_departure', name:'date_departure'},
+                {data: 'gc_code', name:'gc_code', orderable: false, searchable:false},
+                {data: 'date_arrival', name:'date_arrival', orderable: false, searchable:false},
+                {data: 'date_retirement', name:'date_retirement', orderable: false, searchable:false},
+                {data: 'departure.code_green_care', name:'departure.code_green_care', orderable: false, searchable:false},
+                {data: 'departure.destination', name:'departure.destination', orderable: false, searchable:false},
+                {data: 'departure.plate', name:'departure.plate', orderable: false, searchable:false},
+                {data: 'departure.weigth', name:'departure.weigth', orderable: false, searchable:false},
+                {data: 'departure.weigth_diff', name:'departure.weigth_diff', orderable: false, searchable:false},
+                {data: 'departure.date_departure', name:'departure.date_departure', orderable: false, searchable:false},
+                {data: 'stat_arrival', name:'stat_arrival'},
+                {data: 'stat_transport_departure', name:'stat_transport_departure'}
+            ],
+            columnDefs : [
+                { 'visible': false, 'targets': [10,11,12,13,14,15,16,17,18] }
+            ],
+            dom: 'lBfrtip',
+            buttons: [
+                {
+                    text: '<i class="fa-solid fa-download"></i> &nbsp; Descargar Excel',
+                    extend: 'excelHtml5',
+                    exportOptions: {
+                        columns: ':not(.not-export-col)'
+                    },
+                    title:    function () {
+                        var from_date = $('#daterange-btn-departures-manager').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                        var end_date = $('#daterange-btn-departures-manager').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                        var name = $('#excel-generated-departures-info').data('name');
+                        if(from_date == '1970-01-01'){from_date = 'El principio', end_date = 'El final'};
+                         return 'DETALLE TRANSPORTE - GESTOR: '+name+' - DESDE: '+from_date+ ' - ' + 'HASTA: ' + end_date; 
+                    },
+                    filename: function () {
+                        var from_date = $('#daterange-btn-departures-manager').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                        var end_date = $('#daterange-btn-departures-manager').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                        var name = $('#excel-generated-departures-info').data('name');
+                        if(from_date == '1970-01-01'){from_date = 'todos', end_date = 'todos'};
+                        return 'detalle-transporte_gestor-'+name+'_'+from_date+'_' + end_date + '_' + moment().format("hh-mm-ss");
+                    }
+                }
+            ],
+            initComplete: function () {
+                $.fn.dataTable.ext.search.push(
+                  function( settings, data, dataIndex ) {
+                    
+                    if ( settings.nTable.id !== 'departures-table-manager' ) {
+                      return true;
+                    }
+
+                    var min = moment($('#daterange-btn-departures-manager').data('daterangepicker').startDate.format('YYYY-MM-DD')).toDate();
+                    var max = moment($('#daterange-btn-departures-manager').data('daterangepicker').endDate.format('YYYY-MM-DD')).toDate();
+                    var startDate = moment(data[9]).toDate();
+                    if (min == null && max == null) { return true; }
+                    if (min == null && startDate <= max) { return true;}
+                    if(max == null && startDate >= min) {return true;}
+                    if (startDate <= max && startDate >= min) { return true; }
+                    return false;
+                  }
+                );
+              }
+        })
+
+        departuresManagerTable.on('draw.dt', function () {
+            var btn_container = $('#btn-register-arrival-container')
+            var btn_departure_container = $('#btn-register-departure-container');
+            btn_container.html('<div class="btn btn-secondary" style="pointer-events: none;"> \
+                                        <i class="fa-solid fa-square-plus"></i> &nbsp; <span class="me-1"> Dar llegada </span>\
+                                </div>');
+            btn_departure_container.html('<div class="btn btn-secondary" style="pointer-events: none;"> \
+                                            <i class="fa-solid fa-square-plus"></i> &nbsp; <span class="me-1"> Dar salida </span>\
+                                        </div>')
+
+            $('input[name="wastes-selected[]"]:checked').each(function(){
+                $(this).prop('checked', false)
+            })
+        });
+
+
+        /* --------- REGISTER ARRIVAL -----------*/
+
+
+        $('body').on('click', '#btn-register-arrival-modal',function(){
+            var button = $(this);
+            var modal = $('#RegisterArrivalModal');
+            var spinner = button.find('.loadSpinner');
+            var values = [];
+            var url = $('#btn-register-arrival-container').data('url');
+            var tbody = $('#t-body-arrival-wastes-manager')
+
+            spinner.toggleClass('active');
+            tbody.html('');
+            
+            $('input[name="wastes-selected[]"]:checked').each(function(){
+                values.push($(this).val())
+            });
+            
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: {
+                    "values": values,
+                    "table": "arrival"
+                },
+                dataType: 'JSON',
+                success: function(data){
+
+                    /* ----------------------------------------------------*/
+
+                    $.each(data['wastes'], function(key, values){
+
+                        tbody.append('<tr> \
+                                        <input name="wastes-arrival-ids[]" type="hidden" value="'+values.id+'"> \
+                                        <td>'+values['packing_guide'].cod_guide+'</td> \
+                                        <td>'+values.ppc_code+'</td> \
+                                        <td>'+values['waste']['classes_wastes'][0].symbol+'</td> \
+                                        <td>'+values['waste'].name+'</td> \
+                                        <td>'+values['package'].name+'</td> \
+                                        <td>'+values.actual_weight+'</td> \
+                                        <td>'+values.package_quantity+'</td> \
+                                        <td>'+values['guide']['warehouse']['company'].name+'</td> \
+                                        <td>'+values.date_departure+'</td> \
+                                    </tr>');
+                    })
+
+                    spinner.toggleClass('active')
+                    modal.modal('show')
+                },
+                error: function(data){
+                    console.log(data)
+                }
+            });
+
+        })
+
+        $('#register-arrival-form').on('submit', function(e){
+            e.preventDefault();
+            var form = $(this);
+            var spinner = form.find('.loadSpinner')
+            var url = form.attr('action');
+            var modal = $('#RegisterArrivalModal')
+            var btn_container = $('#btn-register-arrival-container');
+
+            Swal.fire({
+                title: 'Confirmar',
+                text: '¡Esta acción no se podrá deshacer!',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Registrar',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+            }).then((result)=>{
+            if (result.isConfirmed) {
+
+                spinner.toggleClass('active');
+
+                $.ajax({
+                    method: form.attr('method'),
+                    url: url,
+                    data: form.serialize(),
+                    dataType: 'JSON',
+                    success: function(data){
+                        Swal.fire({
+                            toast: true,
+                            icon: 'success',
+                            text: '¡Registrado exitosamente!',
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        });
+    
+                        btn_container.html('<div class="btn btn-secondary" style="pointer-events: none;"> \
+                                                <i class="fa-solid fa-square-plus"></i> &nbsp; Dar llegada \
+                                            </div>');
+    
+                        departuresManagerTable.ajax.reload()
+                        spinner.toggleClass('active')
+                        modal.modal('hide')
+                        
+                        modal.find('input[name=n-guide-gc]').val('')
+                    },
+                    error: function(data){
+                        console.log(data);
+                    }
+                });
+            }
+            }, function(dismiss){
+            return false;
+            })
+            
+           
+        })
+
+
+        /* ------------ REGISTER DEPARTURE ------------*/
+
+        $('body').on('click', '#btn-register-departure-modal',function(){
+            var button = $(this);
+            var modal = $('#RegisterDepartureModal');
+            var spinner = button.find('.loadSpinner');
+            var values = [];
+            var url = $('#btn-register-departure-container').data('url');
+            var tbody = $('#t-body-departure-wastes-manager')
+
+            spinner.toggleClass('active');
+            tbody.html('');
+            
+            $('input[name="wastes-selected[]"]:checked').each(function(){
+                values.push($(this).val())
+            });
+            
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: {
+                    "values": values
+                },
+                dataType: 'JSON',
+                success: function(data){
+
+                    /* ----------------------------------------------------*/
+
+                    $.each(data['wastes'], function(key, values){
+
+                        tbody.append('<tr> \
+                                        <input name="wastes-departure-ids[]" type="hidden" value="'+values.id+'"> \
+                                        <td>'+values.ppc_code+'</td> \
+                                        <td>'+values.gc_code+'</td> \
+                                        <td>'+values['waste']['classes_wastes'][0].symbol+'</td> \
+                                        <td>'+values['waste'].name+'</td> \
+                                        <td>'+values['package'].name+'</td> \
+                                        <td>'+values.actual_weight+'</td> \
+                                        <td>'+values.package_quantity+'</td> \
+                                        <td>'+values['guide']['warehouse']['company'].name+'</td> \
+                                    </tr>');
+                    })
+
+                    spinner.toggleClass('active')
+                    modal.modal('show')
+                },
+                error: function(data){
+                    console.log(data)
+                }
+            });
+
+        })
+
+        $('#register-departure-form').on('submit', function(e){
+            e.preventDefault();
+            var form = $(this);
+            var spinner = form.find('.loadSpinner')
+            var url = form.attr('action');
+            var modal = $('#RegisterDepartureModal')
+            var btn_container = $('#btn-register-departure-container');
+
+            Swal.fire({
+                title: 'Confirmar',
+                text: '¡Esta acción no se podrá deshacer!',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Registrar',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+            }).then((result)=>{
+            if (result.isConfirmed) {
+
+                spinner.toggleClass('active');
+
+                $.ajax({
+                    method: form.attr('method'),
+                    url: url,
+                    data: form.serialize(),
+                    dataType: 'JSON',
+                    success: function(data){
+                        Swal.fire({
+                            toast: true,
+                            icon: 'success',
+                            text: '¡Registrado exitosamente!',
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        });
+    
+                        btn_container.html('<div class="btn btn-secondary" style="pointer-events: none;"> \
+                                                <i class="fa-solid fa-square-plus"></i> &nbsp; Dar salida \
+                                            </div>');
+    
+                        departuresManagerTable.ajax.reload()
+                        spinner.toggleClass('active')
+                        modal.modal('hide')
+                        
+                        modal.find('input[name=destination]').val('')
+                        modal.find('input[name=plate]').val('')
+                        modal.find('input[name=n-green-care-guide]').val('')
+                        modal.find('input[name=retrieved-weight]').val('')
+                        modal.find('input[name=weight-diff]').val('')
+
+                    },
+                    error: function(data){
+                        console.log(data);
+                    }
+                });
+            }
+            }, function(dismiss){
+            return false;
+            })
+            
+           
+        })
+
+    }
+
+
+    /* ------------ DISPOSITIONS --------------*/
+
+    if($('#daterange-btn-dispositions-manager').length){
+
+        $('#date-range-input-dispositions').val('Todos los registros');
+
+        $('.daterange-cus').daterangepicker({
+            locale: {format: 'YYYY-MM-DD'},
+            drops: 'down',
+            opens: 'right'
+          });
+          
+          $('#daterange-btn-dispositions-manager').daterangepicker({
+            ranges: {
+              'Todo' : [moment('1970-01-01'), moment('3000-01-01')],
+              'Hoy'   : [moment(), moment().add(1, 'days')],
+              'Ayer'   : [moment().subtract(1, 'days'), moment()],
+              'Últimos 7 días' : [moment().subtract(6, 'days'), moment().add(1, 'days')],
+              'Últimos 30 días': [moment().subtract(29, 'days'), moment().add(1, 'days')],
+              'Este mes'  : [moment().startOf('month'), moment().endOf('month').add(1, 'days')],
+              'Último mes'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month').add(1, 'days')]
+            },
+            startDate: moment('1970-01-01'),
+            endDate  : moment('3000-01-01'),
+          }, function (start, end) {
+            if(start.format('YYYY-MM-DD') == '1970-01-01'){
+                $('#date-range-input-dispositions').val('Todos los registros');
+            }else{
+                $('#date-range-input-dispositions').val('Del: ' + start.format('YYYY-MM-DD') + ' hasta el: ' + end.format('YYYY-MM-DD'))
+            }
+
+            dispositionManagerTable.draw()
+        });
+    }
+
+    if($('#dispositions-table-manager').length){
+
+        var dispositionPlaceSelect = $('#registerDispositionSelect');
+        dispositionPlaceSelect.select2({
+            dropdownParent: $("#register-disposition-form"),
+            placeholder: 'Selecciona un lugar de disposición'
+        });
+
+        $('input[name=filter-departures-stat-disposition]').on('change', function(){
+            dispositionManagerTable.column(29).search($(this).val()).draw()
+        })
+
+
+        /* --------- CHECKBOX FILTER ---------*/
+
+        $('body').on('click', '.checkbox-waste-label', function(){
+            var input = $('#'+$(this).attr('for'));
+            var status_disposition_array = []
+
+            var status_disposition = false;
+
+            if(!input.is(':checked')){
+                status_disposition_array.push(input.data('status-disposition'))
+            }
+
+            $('input[name="wastes-selected[]"]:checked').each(function(){
+                if($(this).attr('id') != input.attr('id')){
+                    status_disposition_array.push($(this).data('status-disposition'))
+                }
+            })
+
+            $.each(status_disposition_array, function(index, value){
+                if(value == 1){
+                    status_disposition = false;
+                    return false;
+                }else{
+                    status_disposition = true;
+                }
+            })
+
+            var btn_container = $('#btn-register-disposition-container');
+
+            if(status_disposition){
+                btn_container.html('<button id="btn-register-disposition-modal" class="btn btn-primary"> \
+                                        <i class="fa-solid fa-square-plus"></i> &nbsp; <span class="me-1"> Disposición </span> \
+                                        <i class="fa-solid fa-spinner fa-spin loadSpinner"></i> \
+                                    </button>');
+            }else{
+                btn_container.html('<div class="btn btn-secondary" style="pointer-events: none;"> \
+                                        <i class="fa-solid fa-square-plus"></i> &nbsp; <span class="me-1"> Disposición </span>\
+                                    </div>');
+            }
+        })
+
+        /* ------------ TABLE --------------*/
+       
+       
+        var dispositionsManagerTableEle = $('#dispositions-table-manager');
+        var getDataUrl = dispositionsManagerTableEle.data('url');
+        var dispositionManagerTable = dispositionsManagerTableEle.DataTable({
+            order: [[17,'desc']],
+            language: DataTableEs,
+            ajax: {
+                "url": getDataUrl
+            },
+            columns:[
+                {data: 'choose', name:'choose', orderable: false, searchable: false, className: 'not-export-col'},
+                {data: 'packing_guide.cod_guide', name:'packingGuide.code_guide', orderable: false},
+                {data: 'departure.code_green_care', name:'departure.code_green_care', orderable: false},
+                {data: 'waste.classes_wastes', name:'waste.classesWastes.symbol', orderable: false},
+                {data: 'waste.name', name:'waste.name', orderable: false},
+                {data: 'package.name', name:'package.name', orderable: false},
+                {data: 'actual_weight', name:'actual_weight', orderable: false},
+                {data: 'package_quantity', name:'package_quantity', orderable: false},
+                {data: 'guide.warehouse.company.name', name:'guide.warehouse.company.name', orderable: false, searchable: false},  // 8
+
+                {data: 'gc_code', name:'gc_code', orderable: false, searchable:false}, // 9
+                {data: 'date_arrival', name:'date_arrival', orderable: false, searchable:false}, // 10
+                {data: 'date_retirement', name:'date_retirement', orderable: false, searchable:false}, //11
+                {data: 'departure.code_green_care', name:'departure.code_green_care', orderable: false, searchable:false}, // 12
+
+                {data: 'departure.destination', name:'departure.destination', orderable: false},
+                {data: 'departure.plate', name:'departure.plate', orderable: false},
+                {data: 'departure.weigth', name:'departure.weigth', orderable: false},
+                {data: 'departure.weigth_diff', name:'departure.weigth_diff', orderable: false},
+                {data: 'departure.date_departure', name:'departure.date_departure'},
+
+                {data: 'disposition.code_dff', name:'disposition.code_dff', orderable: false, searchable:false}, // 18
+                {data: 'disposition.weigth', name:'disposition.weigth', orderable: false, searchable:false}, // 19
+                {data: 'disposition.weigth_diff', name:'disposition.weigth_diff', orderable: false, searchable:false}, // 20
+                {data: 'disposition.disposition_place', name:'disposition.disposition_place', orderable: false, searchable:false}, // 21
+                {data: 'disposition.code_invoice', name:'disposition.code_invoice', orderable: false, searchable:false}, // 22
+                {data: 'disposition.code_certification', name:'disposition.code_certification', orderable: false, searchable:false}, // 23
+                {data: 'disposition.plate', name:'disposition.plate', orderable: false, searchable:false}, // 24
+                {data: 'disposition.managment_report', name:'disposition.managment_report', orderable: false, searchable:false}, // 25
+                {data: 'disposition.observations', name:'disposition.observations', orderable: false, searchable:false}, // 26
+                {data: 'disposition.date_arrival', name:'disposition.date_arrival', orderable: false, searchable:false}, // 27
+                {data: 'disposition.date_dff', name:'disposition.date_dff', orderable: false, searchable:false}, // 28
+                
+                {data: 'stat_disposition', name:'stat_disposition'},
+            ],
+            columnDefs : [
+                { 'visible': false, 'targets': [8,9,10,11,12,18,19,20,21,22,23,24,25,26,27,28] }
+            ],
+            dom: 'lBfrtip',
+            buttons: [
+                {
+                    text: '<i class="fa-solid fa-download"></i> &nbsp; Descargar Excel',
+                    extend: 'excelHtml5',
+                    exportOptions: {
+                        columns: ':not(.not-export-col)'
+                    },
+                    title:    function () {
+                        var from_date = $('#daterange-btn-dispositions-manager').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                        var end_date = $('#daterange-btn-dispositions-manager').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                        var name = $('#excel-generated-departures-info').data('name');
+                        if(from_date == '1970-01-01'){from_date = 'El principio'; end_date = 'El final'};
+                         return 'DETALLE DISPOSICIÓN - GESTOR: '+name+' - DESDE: '+from_date+ ' - ' + 'HASTA: ' + end_date; 
+                    },
+                    filename: function () {
+                        var from_date = $('#daterange-btn-dispositions-manager').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                        var end_date = $('#daterange-btn-dispositions-manager').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                        var name = $('#excel-generated-departures-info').data('name');
+                        if(from_date == '1970-01-01'){from_date = 'todos'; end_date = 'todos'};
+                        return 'detalle-disposición_gestor-'+name+'_'+from_date+'_' + end_date + '_' + moment().format("hh-mm-ss");
+                    }
+                }
+            ],
+            initComplete: function () {
+                $.fn.dataTable.ext.search.push(
+                  function( settings, data, dataIndex ) {
+                    
+                    if ( settings.nTable.id !== 'dispositions-table-manager' ) {
+                      return true;
+                    }
+
+                    var min = moment($('#daterange-btn-dispositions-manager').data('daterangepicker').startDate.format('YYYY-MM-DD')).toDate();
+                    var max = moment($('#daterange-btn-dispositions-manager').data('daterangepicker').endDate.format('YYYY-MM-DD')).toDate();
+                    var startDate = moment(data[17]).toDate();
+                    if (min == null && max == null) { return true; }
+                    if (min == null && startDate <= max) { return true;}
+                    if(max == null && startDate >= min) {return true;}
+                    if (startDate <= max && startDate >= min) { return true; }
+                    return false;
+                  }
+                );
+            }
+        })
+
+        dispositionManagerTable.on('draw.dt', function () {
+            var btn_container = $('#btn-register-disposition-container')
+
+            btn_container.html('<div class="btn btn-secondary" style="pointer-events: none;"> \
+                                        <i class="fa-solid fa-square-plus"></i> &nbsp; <span class="me-1"> Disposición </span>\
+                                </div>');
+
+            $('input[name="wastes-selected[]"]:checked').each(function(){
+                $(this).prop('checked', false)
+            })
+        });
+
+        /* ------------ REGISTER DEPARTURE ------------*/
+
+        $('body').on('click', '#btn-register-disposition-modal',function(){
+            var button = $(this);
+            var modal = $('#RegisterDispositionModal');
+            var spinner = button.find('.loadSpinner');
+            var values = [];
+            var url = $('#btn-register-disposition-container').data('url');
+            var tbody = $('#t-body-disposition-wastes-manager')
+
+            spinner.toggleClass('active');
+            tbody.html('');
+            
+            $('input[name="wastes-selected[]"]:checked').each(function(){
+                values.push($(this).val())
+            });
+            
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: {
+                    "values": values
+                },
+                dataType: 'JSON',
+                success: function(data){
+
+                    /* ----------------------------------------------------*/
+
+                    $.each(data['wastes'], function(key, values){
+
+                        tbody.append('<tr> \
+                                        <input name="wastes-disposition-ids[]" type="hidden" value="'+values.id+'"> \
+                                        <td>'+values['packing_guide'].cod_guide+'</td> \
+                                        <td>'+values['departure'].code_green_care+'</td> \
+                                        <td>'+values['waste']['classes_wastes'][0].symbol+'</td> \
+                                        <td>'+values['waste'].name+'</td> \
+                                        <td>'+values['package'].name+'</td> \
+                                        <td>'+values.actual_weight+'</td> \
+                                        <td>'+values.package_quantity+'</td> \
+                                        <td>'+values['departure'].destination+'</td> \
+                                        <td>'+values['departure'].plate+'</td> \
+                                    </tr>');
+                    })
+
+                    spinner.toggleClass('active')
+                    modal.modal('show')
+                },
+                error: function(data){
+                    console.log(data)
+                }
+            });
+
+        })
+
+        $('#register-disposition-form').on('submit', function(e){
+            e.preventDefault();
+            var form = $(this);
+            var spinner = form.find('.loadSpinner')
+            var url = form.attr('action');
+            var modal = $('#RegisterDispositionModal')
+            var btn_container = $('#btn-register-disposition-container');
+
+            Swal.fire({
+                title: 'Confirmar',
+                text: '¡Esta acción no se podrá deshacer!',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Registrar',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+            }).then((result)=>{
+            if (result.isConfirmed) {
+
+                spinner.toggleClass('active');
+
+                $.ajax({
+                    method: form.attr('method'),
+                    url: url,
+                    data: form.serialize(),
+                    dataType: 'JSON',
+                    success: function(data){
+                        Swal.fire({
+                            toast: true,
+                            icon: 'success',
+                            text: '¡Registrado exitosamente!',
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        });
+    
+                        btn_container.html('<div class="btn btn-secondary" style="pointer-events: none;"> \
+                                                <i class="fa-solid fa-square-plus"></i> &nbsp; Disposición \
+                                            </div>');
+    
+                        dispositionManagerTable.ajax.reload()
+                        spinner.toggleClass('active')
+                        modal.modal('hide')
+                        
+                        modal.find('input[name=n-ddff-guide]').val('')
+                        modal.find('input[name=ddff-weight]').val('')
+                        modal.find('input[name=weight-diff]').val('')
+                        modal.find('select[name=disposition-place]').val('').change()
+                        modal.find('input[name=n-invoice]').val('')
+                        modal.find('input[name=n-certification]').val('')
+                        modal.find('input[name=plate]').val('')
+                        modal.find('input[name=report]').val('')
+                        modal.find('input[name=observation]').val('')
+
+                    },
+                    error: function(data){
+                        console.log(data);
+                    }
+                });
+            }
+            }, function(dismiss){
+            return false;
+            })
+            
+           
         })
 
     }

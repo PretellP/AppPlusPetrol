@@ -20,58 +20,37 @@ class WarehouseController extends Controller
 {
     public function index(Request $request)
     {
-
         if($request->ajax())
         {
-            if($request['table'] == 'warehouse')
-            {
-                $warehouses = Warehouse::with('company')
-                                ->with('front')
-                                ->with('location')
-                                ->with('lot')
-                                ->with('projectArea')
-                                ->with('stage')
-                                ->get();
+            if($request['table'] == 'warehouse'){
+                    $warehouses = Warehouse::query()->with(['company',
+                                                            'front',
+                                                            'location',
+                                                            'lot',
+                                                            'projectArea',
+                                                            'stage'
+                                                    ]);
 
-                $allWarehouses = DataTables::of($warehouses)
-                ->addColumn('lot', function($warehouse){
-                    return $warehouse->lot->name;
-                })
-                ->addColumn('stage', function($warehouse){
-                    return $warehouse->stage->name;
-                })
-                ->addColumn('location', function($warehouse){
-                    return $warehouse->location->name;
-                })
-                ->addColumn('project', function($warehouse){
-                    return $warehouse->projectArea->name;
-                })
-                ->addColumn('company', function($warehouse){
-                    return $warehouse->company->name;
-                })
-                ->addColumn('front', function($warehouse){
-                    return $warehouse->front->name;
-                })
-                ->addColumn('action', function($warehouse){
-                    $btn = '<button data-toggle="modal" data-id="'.
-                            $warehouse->id.'" data-url="'.route('warehouses.update', $warehouse).'" 
-                            data-send="'.route('warehouses.edit', $warehouse).'"
-                            data-original-title="edit" class="me-3 edit btn btn-warning btn-sm
-                            editWarehouse"><i class="fa-solid fa-pen-to-square"></i></button>';
-                    $btn.= '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.
-                            $warehouse->id.'" data-original-title="delete"
-                            data-url="'.route('warehouses.delete', $warehouse).'" class="ms-3 edit btn btn-danger btn-sm
-                            deleteWarehouse"><i class="fa-solid fa-trash-can"></i></a>';
-                    return $btn;
-                })
-                ->rawColumns(['action'])
-                ->make(true);
-                return $allWarehouses;
+                    $allWarehouses = DataTables::of($warehouses)
+                                    ->addColumn('action', function($warehouse){
+                                        $btn = '<button data-toggle="modal" data-id="'.
+                                                $warehouse->id.'" data-url="'.route('warehouses.update', $warehouse).'" 
+                                                data-send="'.route('warehouses.edit', $warehouse).'"
+                                                data-original-title="edit" class="me-3 edit btn btn-warning btn-sm
+                                                editWarehouse"><i class="fa-solid fa-pen-to-square"></i></button>';
+                                        $btn.= '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.
+                                                $warehouse->id.'" data-original-title="delete"
+                                                data-url="'.route('warehouses.delete', $warehouse).'" class="ms-3 edit btn btn-danger btn-sm
+                                                deleteWarehousse"><i class="fa-solid fa-trash-can"></i></a>';
+                                        return $btn;
+                                    })
+                                    ->rawColumns(['action'])
+                                    ->make(true);
+                                    return $allWarehouses;
             }
-            elseif($request['table'] == 'lot')
-            {
-                $lots = Lot::all();
-                $allLots = DataTables::of($lots)
+
+            elseif($request['table'] == 'lot'){
+                $allLots = DataTables::of(Lot::query())
                 ->addColumn('action', function($lot){
                     $btn = '<button data-toggle="modal" data-target="#EditLotModal" data-id="'.
                             $lot->id.'" data-url="'.route('lots.update', $lot).'" 
@@ -90,8 +69,7 @@ class WarehouseController extends Controller
             }
             elseif($request['table'] == 'stage')
             {
-                $stages = Stage::all();
-                $allStages = DataTables::of($stages)
+                $allStages = DataTables::of(Stage::query())
                 ->addColumn('action', function($stage){
                     $btn = '<button data-toggle="modal" data-target="#EditStageModal" data-id="'.
                             $stage->id.'" data-url="'.route('stages.update', $stage).'" 
@@ -110,8 +88,7 @@ class WarehouseController extends Controller
             }
             elseif($request['table'] == 'location')
             {
-                $locations = Location::all();
-                $allLocations = DataTables::of($locations)
+                $allLocations = DataTables::of(Location::query())
                 ->addColumn('action', function($location){
                     $btn = '<button data-toggle="modal" data-target="#EditLocationModal" data-id="'.
                             $location->id.'" data-url="'.route('locations.update', $location).'" 
@@ -130,8 +107,7 @@ class WarehouseController extends Controller
             }
             elseif($request['table'] == 'project')
             {
-                $projects = ProjectArea::all();
-                $allProjects = DataTables::of($projects)
+                $allProjects = DataTables::of(ProjectArea::query())
                 ->addColumn('action', function($project){
                     $btn = '<button data-toggle="modal" data-target="#EditProjectModal" data-id="'.
                             $project->id.'" data-url="'.route('projects.update', $project).'" 
@@ -150,8 +126,7 @@ class WarehouseController extends Controller
             }
             elseif($request['table'] == 'company')
             {
-                $companies = Company::all();
-                $allCompanies = DataTables::of($companies)
+                $allCompanies = DataTables::of(Company::query())
                 ->addColumn('action', function($company){
                     $btn = '<button data-toggle="modal" data-target="#EditCompanyModal" data-id="'.
                             $company->id.'" data-url="'.route('companies.update', $company).'" 
@@ -170,8 +145,7 @@ class WarehouseController extends Controller
             }
             elseif($request['table'] == 'front')
             {
-                $fronts = Front::all();
-                $allFronts = DataTables::of($fronts)
+                $allFronts = DataTables::of(Front::query())
                 ->addColumn('action', function($front){
                     $btn = '<button data-toggle="modal" data-target="#EditFrontModal" data-id="'.
                             $front->id.'" data-url="'.route('fronts.update', $front).'" 

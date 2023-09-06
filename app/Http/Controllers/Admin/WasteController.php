@@ -13,13 +13,11 @@ class WasteController extends Controller
 {
     public function index(Request $request)
     {
-        $wasteTypes = WasteType::all();
-
         if($request->ajax())
         {
             if($request['table'] == 'class')
             {
-                $wasteClasses = WasteClass::all();
+                $wasteClasses = WasteClass::query();
                 $allClasses = DataTables::of($wasteClasses)
                     ->addColumn('types', function($class){
                         $types = $class->classesWastes;
@@ -52,6 +50,7 @@ class WasteController extends Controller
             }
             else if($request['table'] == 'type')
             {
+                $wasteTypes = WasteType::query();
                 $allTypes = DataTables::of($wasteTypes)
                     ->addColumn('action', function($type){
                         $btn = '<button data-id="'.
@@ -73,9 +72,7 @@ class WasteController extends Controller
             }
         }
 
-        return view('principal.viewAdmin.wastes.index', [
-            'wasteTypes' => $wasteTypes
-        ]);
+        return view('principal.viewAdmin.wastes.index');
     }
 
     public function create(Request $request)

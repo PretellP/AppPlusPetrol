@@ -18,7 +18,7 @@ class PackageController extends Controller
     public function index(Request $request)
     {
         if($request->ajax()){
-            $packageTypes =PackageType::all();
+            $packageTypes =PackageType::query();
 
             $allTypes = DataTables::of($packageTypes)
                     ->addColumn('action', function($type){
