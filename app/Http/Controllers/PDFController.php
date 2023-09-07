@@ -41,6 +41,6 @@ class PDFController extends Controller
             "packages" => $packages
         ]);
 
-        return $pdf->stream('pdf-prueba.pdf');
+        return $pdf->stream('guía-internamiento-'.$guide->code.'.pdf');
     }
 }
