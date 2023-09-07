@@ -1,7 +1,8 @@
 <?php
 
 use App\Http\Controllers\{
-    HomeController
+    HomeController,
+    PDFController
 };
 use App\Http\Controllers\Admin\{
     AdminController,
@@ -39,7 +40,12 @@ use App\Http\Controllers\Manager\{
     DispositionController
 };
 
+use App\Mail\{
+    NotificationApproverMail
+};
+
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Mail;
 
 
 Route::get('/', function(){
@@ -151,7 +157,7 @@ Route::group(['middleware' => ['auth', 'check.valid.user']], function(){
     });
 
 
-     // RUTAS DE LA INTERFAZ ADMINISTRADOR ------------------ 
+    // RUTAS DE LA INTERFAZ ADMINISTRADOR ------------------ 
 
 
     Route::group(['middleware' => 'check.role:ADMINISTRADOR'], function(){
@@ -165,6 +171,8 @@ Route::group(['middleware' => ['auth', 'check.valid.user']], function(){
             Route::get('/administrador/guías-de-internamiento/pendientes/ver/{guide}', 'pendingShow')->name('guidesAdminPending.show');
             Route::get('/administrador/guías-de-internamiento/rechazadas/ver/{guide}', 'rejectedShow')->name('guidesAdminRejected.show');
         });
+
+        Route::get('/administrador/guía-de-internamiento/{guide}/pdf', [PDFController::class, 'internmentGuidePdf'])->name('generateIntermentGuidePdf.admin');
 
 
 
@@ -248,4 +256,5 @@ Route::group(['middleware' => ['auth', 'check.valid.user']], function(){
 
        
     });
+
 });

@@ -1338,6 +1338,20 @@ ul.select2-selection__rendered {
 }
 
 
+/* PDF BUTTON STYLES -----*/
+
+.icon-pdf-generate
+{
+    line-height: 2.3em;
+}
+
+.icon-pdf-generate i
+{
+    font-size: 1.8em;
+    color: rgb(224, 9, 9);
+}
+
+
 /* -------- PENDING GUIDES STYLES --------*/
 
 
@@ -1539,17 +1553,17 @@ ul.select2-selection__rendered {
 
 .manager-links:nth-child(1n) i
 {
-    color: #ff7d41;
+    color: #41b3ff;
 }
 
 .manager-links:nth-child(2n) i
 {
-    color: #2b87c5;
+    color: #1587d3;
 }
 
 .manager-links:nth-child(3n) i
 {
-    color: #3fc951;
+    color: rgb(87, 106, 216);
 }
 
 

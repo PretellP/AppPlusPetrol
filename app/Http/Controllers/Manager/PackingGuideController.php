@@ -179,7 +179,7 @@ class PackingGuideController extends Controller
 
             return response()->json([
                 "wastes" => $wastes,
-                "weight" => $weight,
+                "weight" => round($weight, 2),
                 "packages" => $packages
             ]);
         }
@@ -242,7 +242,7 @@ class PackingGuideController extends Controller
 
         return response()->json([
             "guide" => $guide,
-            "weight" => $weight,
+            "weight" => round($weight, 2),
             "packages" => $packages
         ]);
     }

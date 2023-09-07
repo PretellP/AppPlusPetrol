@@ -3170,6 +3170,7 @@ $(function() {
                 {data: 'stat_recieved', name:'stat_recieved', orderable: false},
                 {data: 'stat_verified', name:'stat_verified', orderable: false},
                 {data: 'action', name:'action', orderable: false, searchable: false},
+                {data: 'pdf', name:'pdf', orderable: false, searchable: false, className: 'text-center'},
             ]
         });
     }   
@@ -4813,7 +4814,7 @@ $(function() {
         var getDataPackingUrl = packingGuideManagerTableEle.data('url');
         var packingGuideManagerTable = packingGuideManagerTableEle.DataTable({
             language: DataTableEs,
-            order: [[9,'asc']],
+            order: [[9,'desc']],
             // serverSide: true,
             // processing: true,
             ajax: {

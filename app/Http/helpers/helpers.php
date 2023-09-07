@@ -5,7 +5,6 @@ use Carbon\Carbon;
 use App\Models\{
     User
 };
-
 date_default_timezone_set("America/Lima");
 
 
@@ -27,6 +26,19 @@ function getCurrentDate()
 function getUserStatusClass(User $user)
 {
     return $user->status == 1 ? 'active' : '';
+}
+
+function getUserCompany(User $user)
+{
+    $company = null;
+    
+    if($user->company != null){
+       $company = $user->company->name;
+    }elseif($user->ownerCompany != null){
+        $company = $user->ownerCompany->name;
+    }
+
+    return $company;
 }
 
 ?>

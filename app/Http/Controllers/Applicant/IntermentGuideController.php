@@ -16,6 +16,10 @@ use App\Models\{Warehouse,
                 PackageType,
                 GuideWaste
             };
+use App\Mail\{
+    NotificationApproverMail
+};
+use Illuminate\Support\Facades\Mail;
 
 class IntermentGuideController extends Controller
 {
@@ -366,6 +370,14 @@ class IntermentGuideController extends Controller
             ]);
         }
 
+        if($guide){
+            $approver_email = $guide->approvant->email;
+
+            Mail::to($approver_email)
+                ->send(new NotificationApproverMail($guide));
+            // return new NotificationApproverMail($user, $guide);
+        }
+        
         return redirect()->route('guidesPending.index');
     }
 

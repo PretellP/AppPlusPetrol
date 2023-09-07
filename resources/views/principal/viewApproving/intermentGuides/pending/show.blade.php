@@ -158,21 +158,25 @@
 
                     </div>
 
-                    <div class="mt-5 button-save-guide-container">
+                    @if ($guide->stat_approved == 0 && $guide->stat_rejected == 0)
+                        <div class="mt-5 button-save-guide-container">
 
-                        <button id="button-rejected-guide" class="btn btn-danger me-5">
-                            <i class="fa-solid fa-circle-xmark fa-xl"></i> &nbsp;
-                            Rechazar
-                            <i class="fa-solid fa-spinner fa-spin loadSpinner ms-1"></i>
-                        </button>
+                            <button id="button-rejected-guide" class="btn btn-danger me-5">
+                                <i class="fa-solid fa-circle-xmark fa-xl"></i> &nbsp;
+                                Rechazar
+                                <i class="fa-solid fa-spinner fa-spin loadSpinner ms-1"></i>
+                            </button>
 
-                        <button type="submit" id="button-save-approved-guide" class="btn btn-primary ms-5">
-                            <i class="fa-solid fa-circle-check fa-xl"></i> &nbsp;
-                            Aprobar
-                            <i class="fa-solid fa-spinner fa-spin loadSpinner ms-1"></i>
-                        </button>
+                            <button type="submit" id="button-save-approved-guide" class="btn btn-primary ms-5">
+                                <i class="fa-solid fa-circle-check fa-xl"></i> &nbsp;
+                                Aprobar
+                                <i class="fa-solid fa-spinner fa-spin loadSpinner ms-1"></i>
+                            </button>
 
-                    </div>
+                        </div>
+                    @endif
+
+                   
 
                 </form>
 
