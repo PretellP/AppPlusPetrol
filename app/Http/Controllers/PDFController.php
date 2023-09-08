@@ -8,6 +8,7 @@ use App\Models\{
 };
 use Auth;
 // use PDF;
+use Barryvdh\DomPDF\PDF;
 
 class PDFController extends Controller
 {
