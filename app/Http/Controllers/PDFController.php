@@ -35,7 +35,7 @@ class PDFController extends Controller
                             return $waste->package_quantity;
                         });
                         
-        $pdf = \PDF::loadView('principal.common.pdf.intermentGuide', [
+        $pdf = PDF::loadView('principal.common.pdf.intermentGuide', [
             "guide" => $guide,
             "weight" => $total_weight,
             "packages" => $packages
