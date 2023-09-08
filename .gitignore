@@ -1,4 +1,5 @@
 \vendor
+/vendor
 .env.backup
 .phpunit.result.cache
 Homestead.json

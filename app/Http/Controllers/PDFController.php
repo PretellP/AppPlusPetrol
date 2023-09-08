@@ -7,8 +7,7 @@ use App\Models\{
     IntermentGuide
 };
 use Auth;
-// use PDF;
-use Barryvdh\DomPDF\PDF;
+use PDF;
 
 class PDFController extends Controller
 {
