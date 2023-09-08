@@ -37,7 +37,7 @@ class PDFController extends Controller
                         
         $pdf = PDF::loadView('principal.common.pdf.intermentGuide', [
             "guide" => $guide,
-            "weight" => $total_weight,
+            "weight" => round($total_weight,2),
             "packages" => $packages
         ]);
 

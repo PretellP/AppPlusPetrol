@@ -173,7 +173,9 @@
         <div class="header-container">
             <div class="left-header-cont">
                 <div class="img-logo-cont">
-                    <img src="{{public_path('assets/common/images/logo.png')}}" alt="">
+                    <img src="data:image/jpg;base64,
+                    {{base64_encode(file_get_contents(base_path('public/assets/common/images/logo.png')))}}" alt="">
+                    {{-- <img src="{{public_path('assets/common/images/logo.png')}}" alt=""> --}}
                 </div>
                 <div class="date-cont">
                     <span class="date-title">
@@ -181,7 +183,7 @@
                     </span>
                     <span class="date">
                         <?php setlocale(LC_TIME, 'es_es.UTF-8'); ?>
-                        {{ strftime('%A, %e %B, %Y %H:%M', time()) }}
+                        {{ strftime('%A, %e de %B, %Y %H:%M', time()) }}
                     </span>
                 </div>
             </div>
@@ -284,7 +286,9 @@
                             Solicitado por:
                         </div>
                         <div class="img-signature-cont border-custom">
-                            <img src="{{public_path('storage/'.$guide->applicant->url_signature)}}" alt="">
+                            <img src="data:image/jpg;base64,
+                            {{base64_encode(file_get_contents(base_path('public/storage/'.$guide->applicant->url_signature)))}}" alt="">
+                            {{-- <img src="{{public_path('storage/'.$guide->applicant->url_signature)}}" alt=""> --}}
                         </div>
                         <div>
                             <table class="table-guide">
@@ -315,7 +319,9 @@
                             Recepcionado por:
                         </div>
                         <div class="img-signature-cont border-custom">
-                            <img src="{{public_path('storage/'.$guide->reciever->url_signature)}}" alt="">
+                            <img src="data:image/jpg;base64,
+                            {{base64_encode(file_get_contents(base_path('public/storage/'.$guide->reciever->url_signature)))}}" alt="">
+                            {{-- <img src="{{public_path('storage/'.$guide->reciever->url_signature)}}" alt=""> --}}
                         </div>
                         <div>
                             <table class="table-guide">
@@ -350,7 +356,9 @@
                             Aprobado por:
                         </div>
                         <div class="img-signature-cont border-custom">
-                            <img src="{{public_path('storage/'.$guide->approvant->url_signature)}}" alt="">
+                            <img src="data:image/jpg;base64,
+                            {{base64_encode(file_get_contents(base_path('public/storage/'.$guide->approvant->url_signature)))}}" alt="">
+                            {{-- <img src="{{public_path('storage/'.$guide->approvant->url_signature)}}" alt=""> --}}
                         </div>
                         <div>
                             <table class="table-guide">
@@ -382,7 +390,9 @@
                             Supervisado por:
                         </div>
                         <div class="img-signature-cont border-custom">
-                            <img src="{{public_path('storage/'.$guide->checker->url_signature)}}" alt="">
+                            <img src="data:image/jpg;base64,
+                            {{base64_encode(file_get_contents(base_path('public/storage/'.$guide->checker->url_signature)))}}" alt="">
+                            {{-- <img src="{{public_path('storage/'.$guide->checker->url_signature)}}" alt=""> --}}
                         </div>
                         <div>
                             <table class="table-guide">
