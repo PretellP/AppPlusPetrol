@@ -73,7 +73,7 @@
                     <table id="warehouses-table" class="table table-hover" data-url="{{route('warehouses.index')}}">
                         <thead>
                             <tr>
-                                <th>#ID</th>
+                                <th>N°</th>
                                 <th>Lote</th>
                                 <th>Etapa</th>
                                 <th>Locación</th>
@@ -98,7 +98,7 @@
                     <table id="lots-table" class="table table-hover" data-url="{{route('warehouses.index')}}">
                         <thead>
                             <tr>
-                                <th>#ID</th>
+                                <th>N°</th>
                                 <th>Descripción lote</th>
                                 <th>Acciones</th>
                             </tr>
@@ -116,7 +116,7 @@
                     <table id="stage-table" class="table table-hover" data-url="{{route('warehouses.index')}}">
                         <thead>
                             <tr>
-                                <th>#ID</th>
+                                <th>N°</th>
                                 <th>Descripción etapa</th>
                                 <th>Acciones</th>
                             </tr>
@@ -135,7 +135,7 @@
                     <table id="location-table" class="table table-hover" data-url="{{route('warehouses.index')}}">
                         <thead>
                             <tr>
-                                <th>#ID</th>
+                                <th>N°</th>
                                 <th>Descripción locación</th>
                                 <th>Acciones</th>
                             </tr>
@@ -154,7 +154,7 @@
                     <table id="project-table" class="table table-hover" data-url="{{route('warehouses.index')}}">
                         <thead>
                             <tr>
-                                <th>#ID</th>
+                                <th>N°</th>
                                 <th>Descripción área proyecto</th>
                                 <th>Acciones</th>
                             </tr>
@@ -173,7 +173,7 @@
                     <table id="company-table" class="table table-hover" data-url="{{route('warehouses.index')}}">
                         <thead>
                             <tr>
-                                <th>#ID</th>
+                                <th>N°</th>
                                 <th>Descripción compañía</th>
                                 <th>No. RUC</th>
                                 <th>Acciones</th>
@@ -192,7 +192,7 @@
                     <table id="front-table" class="table table-hover" data-url="{{route('warehouses.index')}}">
                         <thead>
                             <tr>
-                                <th>#ID</th>
+                                <th>N°</th>
                                 <th>Descripción frente</th>
                                 <th>Acciones</th>
                             </tr>
@@ -264,7 +264,7 @@
                             </select>
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="inputProfile">Área de proyecto *</label>
+                            <label for="inputProfile">Área / Proyecto *</label>
 
                             <select name="project_id" class="form-control select2 required-input" id="registerProjectSelect">
                                 <option value=""></option>
@@ -355,7 +355,7 @@
                             </select>
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="editProjectSelect">Área de proyecto *</label>
+                            <label for="editProjectSelect">Área / Proyecto *</label>
 
                             <select name="project_id" class="form-control select2" id="editProjectSelect" required>
                                 <option value=""></option>

@@ -110,7 +110,18 @@ a
   align-items: center;
   background-color: white;
   padding: 5% 17%;
+  position: relative;
 }
+
+.copy-txt-login
+{
+  position: absolute;
+  bottom: 1px;
+  right: 3%;
+  font-weight: bolder;
+  color: rgb(6, 134, 6);
+}
+
 
 .right-container
 .right-form-container > div
@@ -118,6 +129,7 @@ a
   width: 100%;
   height: 100%;
 }
+
 
 .right-container
 .alert-danger
@@ -213,7 +225,7 @@ a
 .card-body
 .btn-login-submit
 {
-  width: 60%;
+  width: 50%;
 }
 
 .card
@@ -225,8 +237,8 @@ a
 {
   background-color: var(--second-color);
   color: white;
-  padding: 10px;
-  font-size: 1.1em;
+  padding: 8px;
+  font-size: 1em;
   font-family: 'Roboto-condensed', Arial, Helvetica, sans-serif;
   font-weight: 400;
   transition: none;

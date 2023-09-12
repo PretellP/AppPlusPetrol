@@ -32,18 +32,18 @@ class IntermentGuideController extends Controller
         {
             if($request['table'] == 'pending'){
                 $guidesApplicant = $user->applicantGuides()->where('stat_rejected', 0)
-                                                        ->where(function($query){
-                                                            $query->where('stat_approved', 0)
-                                                                ->orWhere('stat_recieved', 0)
-                                                                ->orWhere('stat_verified', 0);
-                                                        })
-                                                        ->with(['warehouse.lot',
-                                                                'warehouse.stage',
-                                                                'warehouse.location',
-                                                                'warehouse.projectArea',
-                                                                'warehouse.company',
-                                                                'warehouse.front'
-                                                        ]);
+                                                            ->where(function($query){
+                                                                $query->where('stat_approved', 0)
+                                                                    ->orWhere('stat_recieved', 0)
+                                                                    ->orWhere('stat_verified', 0);
+                                                            })
+                                                            ->with(['warehouse.lot',
+                                                                    'warehouse.stage',
+                                                                    'warehouse.location',
+                                                                    'warehouse.projectArea',
+                                                                    'warehouse.company',
+                                                                    'warehouse.front'
+                                                            ]);
 
                 $allGuides = DataTables::of($guidesApplicant)
                 ->editColumn('created_at', function($guide){

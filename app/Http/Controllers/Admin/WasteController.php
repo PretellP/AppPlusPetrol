@@ -21,11 +21,11 @@ class WasteController extends Controller
                 $allClasses = DataTables::of($wasteClasses)
                     ->addColumn('types', function($class){
                         $types = $class->classesWastes;
-                        $typesList = '<ul>';
+                        $typesList = '';
                         foreach($types as $type){
-                            $typesList.= '<li>'.$type->name.'</li>';
+                            $typesList.= $type->name.' <br> ';
                         }
-                        $typesList.='</ul>';
+                        // $typesList.='</ul>';
 
                         return $typesList;
                     })

@@ -44,6 +44,9 @@
                         </div>
                         <div class="context-home-text">
                             Guías Aprobadas
+                            <span class="count-text-home">
+                                {{$countApproved}}
+                            </span>
                         </div>
                     </div>
                 </a>
@@ -55,6 +58,9 @@
                         </div>
                         <div class="context-home-text">
                             Guías Pendientes
+                            <span class="count-text-home">
+                                {{$countPending}}
+                            </span>
                         </div>
                     </div>
                 </a>
@@ -66,6 +72,9 @@
                         </div>
                         <div class="context-home-text">
                             Guías Rechazadas
+                            <span class="count-text-home">
+                                {{$countRejected}}
+                            </span>
                         </div>
                     </div>
                 </a>

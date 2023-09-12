@@ -290,19 +290,35 @@ $(function() {
         var getDataUrl = usersTableEle.data('url');
         var usersTable = usersTableEle.DataTable({
             language: DataTableEs,
-            serverSide: true,
-            processing: true,
+            // serverSide: true,
+            // processing: true,
             ajax: getDataUrl,
             columns:[
                 {data: 'id', name:'id'},
                 {data: 'name', name:'name'},
                 {data: 'email', name:'email'},
                 {data: 'phone', name:'phone'},
-                {data: 'role.name', name:'role.name', orderable: false},
-                {data: 'company', name:'company', orderable: false},
+                {data: 'role.name', name:'role.name'},
+                {data: 'company', name:'company'},
+                {data: 'comment', name:'comment'},
                 {data: 'status', name:'status'},
-                {data: 'action', name:'action', orderable: false, searchable: false},
-            ]
+                {data: 'action', name:'action', orderable: false, searchable: false, className: 'not-export-col'},
+            ],
+            columnDefs : [
+                { 'visible': false, 'targets': [6] }
+            ],
+            dom: 'lBfrtip',
+            buttons: [
+                {
+                    text: '<i class="fa-solid fa-download"></i> &nbsp; Descargar Excel',
+                    extend: 'excelHtml5',
+                    exportOptions: {
+                        columns: ':not(.not-export-col)'
+                    },
+                    title:  'USUARIOS_' + moment().format("YY-MM-DD_hh-mm-ss"),
+                    filename: 'usuarios-general_' + moment().format("YY-MM-DD_hh-mm-ss"),
+                }   
+            ],
         });
 
         /* --------  REGISTER USER ---------*/
@@ -482,7 +498,7 @@ $(function() {
                         $('#selectApprovingsRegister').remove();
                     }
 
-                    usersTable.draw();
+                    usersTable.ajax.reload();
                 },
                 error: function(data){
                     console.log('Error', data)
@@ -550,7 +566,7 @@ $(function() {
                         dataType: 'JSON',
                         success: function(result){
                             if(result.success === true){
-                                usersTable.draw();
+                                usersTable.ajax.reload();
                                 Swal.fire({
                                     toast: true,
                                     icon: 'success',
@@ -762,7 +778,7 @@ $(function() {
 
                     loadSpinner.toggleClass('active');
                     $('#EditUserModal').modal('hide');
-                    usersTable.draw();
+                    usersTable.ajax.reload();
                 },
                 error: function(data){
                     console.log('Error', data)
@@ -807,7 +823,7 @@ $(function() {
 
             $('#registerProjectSelect').select2({
                 dropdownParent: $("#registerWarehouseForm"),
-                placeholder: 'Selecciona una área de proyecto'
+                placeholder: 'Selecciona una área / proyecto'
             });
 
             $('#registerCompanySelect').select2({
@@ -837,7 +853,7 @@ $(function() {
 
             $('#editProjectSelect').select2({
                 dropdownParent: $("#editWarehouseForm"),
-                placeholder: 'Selecciona una área de proyecto'
+                placeholder: 'Selecciona una área / proyecto'
             });
 
             $('#editCompanySelect').select2({
@@ -855,8 +871,8 @@ $(function() {
         var getDataWarehouseUrl = warehousesTableEle.data('url');
         var warehousesTable = warehousesTableEle.DataTable({
             language: DataTableEs,
-            serverSide: true,
-            processing: true,
+            // serverSide: true,
+            // processing: true,
             ajax: {
                 "url": getDataWarehouseUrl,
                 "data" : {
@@ -865,14 +881,29 @@ $(function() {
             },
             columns:[
                 {data: 'id', name:'id'},
-                {data: 'lot.name', name:'lot.name', orderable: false},
-                {data: 'stage.name', name:'stage.name', orderable: false},
-                {data: 'location.name', name:'location.name', orderable: false},
-                {data: 'project_area.name', name:'projectArea.name', orderable: false},
-                {data: 'company.name', name:'company.name', orderable: false},
-                {data: 'front.name', name:'front.name', orderable: false},
-                {data: 'action', name:'action', orderable: false, searchable: false},
-            ]
+                {data: 'lot.name', name:'lot.name'},
+                {data: 'stage.name', name:'stage.name'},
+                {data: 'location.name', name:'location.name'},
+                {data: 'project_area.name', name:'projectArea.name'},
+                {data: 'company.name', name:'company.name'},
+                {data: 'front.name', name:'front.name'},
+                {data: 'action', name:'action', orderable: false, searchable: false, className: 'not-export-col'},
+            ],
+            // columnDefs : [
+            //     { 'visible': false, 'targets': [6] }
+            // ],
+            dom: 'Bfrtlip',
+            buttons: [
+                {
+                    text: '<i class="fa-solid fa-download"></i> &nbsp; Descargar Excel',
+                    extend: 'excelHtml5',
+                    exportOptions: {
+                        columns: ':not(.not-export-col)'
+                    },
+                    title:  'PUNTOS VERDES_' + moment().format("YY-MM-DD_hh-mm-ss"),
+                    filename: 'puntos-verdes_' + moment().format("YY-MM-DD_hh-mm-ss"),
+                }   
+            ],
         });
 
         $('#registerWarehouseBtn').on('click', function(e){
@@ -967,7 +998,7 @@ $(function() {
                         });
                         loadSpinner.toggleClass('active');
                         $('#RegisterWarehouseModal').modal('hide')
-                        warehousesTable.draw();
+                        warehousesTable.ajax.reload();
                     }
                 })
             }
@@ -1067,7 +1098,7 @@ $(function() {
                     });
                     loadSpinner.toggleClass('active');
                     $('#EditWarehouseModal').modal('hide');
-                    warehousesTable.draw();
+                    warehousesTable.ajax.reload();
                 },
                 error: function(data){
                     console.log('Error', data)
@@ -1093,7 +1124,7 @@ $(function() {
                         dataType: 'JSON',
                         success: function(result){
                             if(result.success == true){
-                                warehousesTable.draw();
+                                warehousesTable.ajax.reload();
                                 Swal.fire({
                                     toast: true,
                                     icon: 'success',
@@ -1148,8 +1179,8 @@ $(function() {
                 var getDataLotsUrl = lotsTableEle.data('url');
                     lotsTable = lotsTableEle.DataTable({
                     language: DataTableEs,
-                    serverSide: true,
-                    processing: true,
+                    // serverSide: true,
+                    // processing: true,
                     ajax: {
                         "url": getDataLotsUrl,
                         "data" : {
@@ -1159,9 +1190,21 @@ $(function() {
                     columns:[
                         {data: 'id', name:'id'},
                         {data: 'name', name:'name'},
-                        {data: 'action', name:'action', orderable: false, searchable: false},
-                    ]
-                });
+                        {data: 'action', name:'action', orderable: false, searchable: false, className: 'not-export-col'},
+                    ],
+                    dom: 'Bfrtlip',
+                    buttons: [
+                            {
+                                text: '<i class="fa-solid fa-download"></i> &nbsp; Descargar Excel',
+                                extend: 'excelHtml5',
+                                exportOptions: {
+                                    columns: ':not(.not-export-col)'
+                                },
+                                title:  'LOTES_' + moment().format("YY-MM-DD_hh-mm-ss"),
+                                filename: 'lotes_' + moment().format("YY-MM-DD_hh-mm-ss"),
+                            }   
+                        ],
+                    });
             }
         })
 
@@ -1219,7 +1262,7 @@ $(function() {
                         form.trigger('reset');
                         $('#RegisterLotsModal').modal('hide');
 
-                        lotsTable.draw();
+                        lotsTable.ajax.reload();
                     },
                     error: function(data){
                         console.log('Error', data)
@@ -1276,7 +1319,7 @@ $(function() {
                     });
                     loadSpinner.toggleClass('active');
                     $('#EditLotModal').modal('hide');
-                    lotsTable.draw();
+                    lotsTable.ajax.reload();
                 },
                 error: function(data){
                     console.log('Error', data)
@@ -1302,7 +1345,7 @@ $(function() {
                         dataType: 'JSON',
                         success: function(result){
                             if(result.success == true){
-                                lotsTable.draw();
+                                lotsTable.ajax.reload();
                                 Swal.fire({
                                     toast: true,
                                     icon: 'success',
@@ -1356,8 +1399,8 @@ $(function() {
                 var getDataStagesUrl = stageTableEle.data('url');
                     stagesTable = stageTableEle.DataTable({
                     language: DataTableEs,
-                    serverSide: true,
-                    processing: true,
+                    // serverSide: true,
+                    // processing: true,
                     ajax: {
                         "url": getDataStagesUrl,
                         "data" : {
@@ -1367,8 +1410,20 @@ $(function() {
                     columns:[
                         {data: 'id', name:'id'},
                         {data: 'name', name:'name'},
-                        {data: 'action', name:'action', orderable: false, searchable: false},
-                    ]
+                        {data: 'action', name:'action', orderable: false, searchable: false, className: 'not-export-col'},
+                    ],
+                    dom: 'Bfrtlip',
+                    buttons: [
+                        {
+                            text: '<i class="fa-solid fa-download"></i> &nbsp; Descargar Excel',
+                            extend: 'excelHtml5',
+                            exportOptions: {
+                                columns: ':not(.not-export-col)'
+                            },
+                            title:  'ETAPAS_' + moment().format("YY-MM-DD_hh-mm-ss"),
+                            filename: 'etapas_' + moment().format("YY-MM-DD_hh-mm-ss"),
+                        }   
+                    ],
                 });
             }
         })  
@@ -1427,7 +1482,7 @@ $(function() {
                         form.trigger('reset');
                         $('#RegisterStagesModal').modal('hide');
 
-                        stagesTable.draw();
+                        stagesTable.ajax.reload();
                     },
                     error: function(data){
                         console.log('Error', data)
@@ -1484,7 +1539,7 @@ $(function() {
                     });
                     loadSpinner.toggleClass('active');
                     $('#EditStageModal').modal('hide');
-                    stagesTable.draw();
+                    stagesTable.ajax.reload();
                 },
                 error: function(data){
                     console.log('Error', data)
@@ -1510,7 +1565,7 @@ $(function() {
                         dataType: 'JSON',
                         success: function(result){
                             if(result.success == true){
-                                stagesTable.draw();
+                                stagesTable.ajax.reload();
                                 Swal.fire({
                                     toast: true,
                                     icon: 'success',
@@ -1564,8 +1619,8 @@ $(function() {
                 var getDataLocationsUrl = locationTableEle.data('url');
                     locationsTable = locationTableEle.DataTable({
                     language: DataTableEs,
-                    serverSide: true,
-                    processing: true,
+                    // serverSide: true,
+                    // processing: true,
                     ajax: {
                         "url": getDataLocationsUrl,
                         "data" : {
@@ -1575,8 +1630,20 @@ $(function() {
                     columns:[
                         {data: 'id', name:'id'},
                         {data: 'name', name:'name'},
-                        {data: 'action', name:'action', orderable: false, searchable: false},
-                    ]
+                        {data: 'action', name:'action', orderable: false, searchable: false, className: 'not-export-col'},
+                    ],
+                    dom: 'Bfrtlip',
+                    buttons: [
+                        {
+                            text: '<i class="fa-solid fa-download"></i> &nbsp; Descargar Excel',
+                            extend: 'excelHtml5',
+                            exportOptions: {
+                                columns: ':not(.not-export-col)'
+                            },
+                            title:  'Locaciones_' + moment().format("YY-MM-DD_hh-mm-ss"),
+                            filename: 'locaciones_' + moment().format("YY-MM-DD_hh-mm-ss"),
+                        }   
+                    ],
                 });
             }
         })
@@ -1635,7 +1702,7 @@ $(function() {
                         form.trigger('reset');
                         $('#RegisterLocationsModal').modal('hide');
 
-                        locationsTable.draw();
+                        locationsTable.ajax.reload();
                     },
                     error: function(data){
                         console.log('Error', data)
@@ -1692,7 +1759,7 @@ $(function() {
                     });
                     loadSpinner.toggleClass('active');
                     $('#EditLocationModal').modal('hide');
-                    locationsTable.draw();
+                    locationsTable.ajax.reload();
                 },
                 error: function(data){
                     console.log('Error', data)
@@ -1718,7 +1785,7 @@ $(function() {
                         dataType: 'JSON',
                         success: function(result){
                             if(result.success == true){
-                                locationsTable.draw();
+                                locationsTable.ajax.reload();
                                 Swal.fire({
                                     toast: true,
                                     icon: 'success',
@@ -1772,8 +1839,8 @@ $(function() {
                 var getDataProjectsUrl = projectTableEle.data('url');
                     projectTable = projectTableEle.DataTable({
                     language: DataTableEs,
-                    serverSide: true,
-                    processing: true,
+                    // serverSide: true,
+                    // processing: true,
                     ajax: {
                         "url": getDataProjectsUrl,
                         "data" : {
@@ -1783,8 +1850,20 @@ $(function() {
                     columns:[
                         {data: 'id', name:'id'},
                         {data: 'name', name:'name'},
-                        {data: 'action', name:'action', orderable: false, searchable: false},
-                    ]
+                        {data: 'action', name:'action', orderable: false, searchable: false, className: 'not-export-col'},
+                    ],
+                    dom: 'Bfrtlip',
+                    buttons: [
+                        {
+                            text: '<i class="fa-solid fa-download"></i> &nbsp; Descargar Excel',
+                            extend: 'excelHtml5',
+                            exportOptions: {
+                                columns: ':not(.not-export-col)'
+                            },
+                            title:  'ÁREA-PROYECTO_' + moment().format("YY-MM-DD_hh-mm-ss"),
+                            filename: 'area-proyecto_' + moment().format("YY-MM-DD_hh-mm-ss"),
+                        }   
+                    ],
                 });
             }
         })
@@ -1843,7 +1922,7 @@ $(function() {
                         form.trigger('reset');
                         $('#RegisterProjectsModal').modal('hide');
 
-                        projectTable.draw();
+                        projectTable.ajax.reload();
                     },
                     error: function(data){
                         console.log('Error', data)
@@ -1902,7 +1981,7 @@ $(function() {
                     });
                     loadSpinner.toggleClass('active');
                     $('#EditProjectModal').modal('hide');
-                    projectTable.draw();
+                    projectTable.ajax.reload();
                 },
                 error: function(data){
                     console.log('Error', data)
@@ -1928,7 +2007,7 @@ $(function() {
                         dataType: 'JSON',
                         success: function(result){
                             if(result.success == true){
-                                projectTable.draw();
+                                projectTable.ajax.reload();
                                 Swal.fire({
                                     toast: true,
                                     icon: 'success',
@@ -1983,8 +2062,8 @@ $(function() {
                 var getDataCompanysUrl = companyTableEle.data('url');
                     companyTable = companyTableEle.DataTable({
                     language: DataTableEs,
-                    serverSide: true,
-                    processing: true,
+                    // serverSide: true,
+                    // processing: true,
                     ajax: {
                         "url": getDataCompanysUrl,
                         "data" : {
@@ -1995,8 +2074,20 @@ $(function() {
                         {data: 'id', name:'id'},
                         {data: 'name', name:'name'},
                         {data: 'ruc', name:'ruc'},
-                        {data: 'action', name:'action', orderable: false, searchable: false},
-                    ]
+                        {data: 'action', name:'action', orderable: false, searchable: false, className: 'not-export-col'},
+                    ],
+                    dom: 'Bfrtlip',
+                    buttons: [
+                        {
+                            text: '<i class="fa-solid fa-download"></i> &nbsp; Descargar Excel',
+                            extend: 'excelHtml5',
+                            exportOptions: {
+                                columns: ':not(.not-export-col)'
+                            },
+                            title:  'EMPRESAS_' + moment().format("YY-MM-DD_hh-mm-ss"),
+                            filename: 'empresas_' + moment().format("YY-MM-DD_hh-mm-ss"),
+                        }   
+                    ],
                 });
             }
         })
@@ -2056,7 +2147,7 @@ $(function() {
                         form.trigger('reset');
                         $('#RegisterCompaniesModal').modal('hide');
 
-                        companyTable.draw();
+                        companyTable.ajax.reload();
                     },
                     error: function(data){
                         console.log('Error', data)
@@ -2114,7 +2205,7 @@ $(function() {
                     });
                     loadSpinner.toggleClass('active');
                     $('#EditCompanyModal').modal('hide');
-                    companyTable.draw();
+                    companyTable.ajax.reload();
                 },
                 error: function(data){
                     console.log('Error', data)
@@ -2140,7 +2231,7 @@ $(function() {
                         dataType: 'JSON',
                         success: function(result){
                             if(result.success == true){
-                                companyTable.draw();
+                                companyTable.ajax.reload();
                                 Swal.fire({
                                     toast: true,
                                     icon: 'success',
@@ -2194,8 +2285,8 @@ $(function() {
                 var getDataFrontsUrl = frontTableEle.data('url');
                     frontTable = frontTableEle.DataTable({
                     language: DataTableEs,
-                    serverSide: true,
-                    processing: true,
+                    // serverSide: true,
+                    // processing: true,
                     ajax: {
                         "url": getDataFrontsUrl,
                         "data" : {
@@ -2205,8 +2296,20 @@ $(function() {
                     columns:[
                         {data: 'id', name:'id'},
                         {data: 'name', name:'name'},
-                        {data: 'action', name:'action', orderable: false, searchable: false},
-                    ]
+                        {data: 'action', name:'action', orderable: false, searchable: false, className: 'not-export-col'},
+                    ],
+                    dom: 'Bfrtlip',
+                    buttons: [
+                        {
+                            text: '<i class="fa-solid fa-download"></i> &nbsp; Descargar Excel',
+                            extend: 'excelHtml5',
+                            exportOptions: {
+                                columns: ':not(.not-export-col)'
+                            },
+                            title:  'FRENTES_' + moment().format("YY-MM-DD_hh-mm-ss"),
+                            filename: 'frentes_' + moment().format("YY-MM-DD_hh-mm-ss"),
+                        }   
+                    ],
                 });
             }
         })
@@ -2265,7 +2368,7 @@ $(function() {
                         form.trigger('reset');
                         $('#RegisterFrontsModal').modal('hide');
 
-                        frontTable.draw();
+                        frontTable.ajax.reload();
                     },
                     error: function(data){
                         console.log('Error', data)
@@ -2322,7 +2425,7 @@ $(function() {
                     });
                     loadSpinner.toggleClass('active');
                     $('#EditFrontModal').modal('hide');
-                    frontTable.draw();
+                    frontTable.ajax.reload();
                 },
                 error: function(data){
                     console.log('Error', data)
@@ -2348,7 +2451,7 @@ $(function() {
                         dataType: 'JSON',
                         success: function(result){
                             if(result.success == true){
-                                frontTable.draw();
+                                frontTable.ajax.reload();
                                 Swal.fire({
                                     toast: true,
                                     icon: 'success',
@@ -2402,8 +2505,8 @@ $(function() {
     var getDataUrl = wasteClassTableEle.data('url');
     var wasteClassTable = wasteClassTableEle.DataTable({
         language: DataTableEs,
-        serverSide: true,
-        processing: true,
+        // serverSide: true,
+        // processing: true,
         ajax: {
             "url": getDataUrl,
             "data": {
@@ -2415,8 +2518,25 @@ $(function() {
             {data: 'name', name:'name'},
             {data: 'symbol', name:'symbol'},
             {data: 'types', name:'types', orderable: false},
-            {data: 'action', name:'action', orderable: false, searchable: false},
-        ]
+            {data: 'action', name:'action', orderable: false, searchable: false, className: 'not-export-col'},
+        ],
+        dom: 'Bfrtlip',
+        buttons: [
+            {
+                text: '<i class="fa-solid fa-download"></i> &nbsp; Descargar Excel',
+                extend: 'excelHtml5',
+                exportOptions: {
+                    format: {
+                        body: function ( data, row, column, node ) {
+                            return column == 3 ? data.replace(/<br>/g, String.fromCharCode(10)) : data;
+                        }
+                    },
+                    columns: ':not(.not-export-col)',
+                },
+                title:  'CLASES DE RESIDUO_' + moment().format("YY-MM-DD_hh-mm-ss"),
+                filename: 'clases-de-residuo_' + moment().format("YY-MM-DD_hh-mm-ss"),
+            }   
+        ],
     });
 
 
@@ -2494,7 +2614,7 @@ $(function() {
                 $('#RegisterClassModal').modal('hide');
                 $('#registerWasteTypesSelect').val([]).trigger('change');
 
-                wasteClassTable.draw();
+                wasteClassTable.ajax.reload();
             },
             error: function(data){
                 console.log(data)
@@ -2526,7 +2646,7 @@ $(function() {
                     dataType: 'JSON',
                     success: function(result){
                         if(result.success === true){
-                            wasteClassTable.draw();
+                            wasteClassTable.ajax.reload();
                             Swal.fire({
                                 toast: true,
                                 icon: 'success',
@@ -2649,7 +2769,7 @@ $(function() {
 
                 loadSpinner.toggleClass('active');
                 $('#EditClassModal').modal('hide');
-                wasteClassTable.draw();
+                wasteClassTable.ajax.reload();
             },
             error: function(data){
                 console.log(data);
@@ -2667,20 +2787,32 @@ $(function() {
         var wasteTypeTableEle = $('#waste-type-table');
         var getTypeUrl = wasteTypeTableEle.data('url');
         var wasteTypeTable = wasteTypeTableEle.DataTable({
-        language: DataTableEs,
-        serverSide: true,
-        processing: true,
-        ajax: {
-            "url": getTypeUrl,
-            "data": {
-                "table": "type"
-            }
-        },
-        columns:[
-            {data: 'id', name:'id'},
-            {data: 'name', name:'name', className:"columnType"},
-            {data: 'action', name:'action', orderable: false, searchable: false, className:"btnWasteType"},
-        ]
+                            language: DataTableEs,
+                            // serverSide: true,
+                            // processing: true,
+                            ajax: {
+                                "url": getTypeUrl,
+                                "data": {
+                                    "table": "type"
+                                }
+                            },
+                            columns:[
+                                {data: 'id', name:'id'},
+                                {data: 'name', name:'name', className:"columnType"},
+                                {data: 'action', name:'action', orderable: false, searchable: false, className:"btnWasteType not-export-col"},
+                            ],
+                            dom: 'Bfrtlip',
+                            buttons: [
+                                {
+                                    text: '<i class="fa-solid fa-download"></i> &nbsp; Descargar Excel',
+                                    extend: 'excelHtml5',
+                                    exportOptions: {
+                                        columns: ':not(.not-export-col)',
+                                    },
+                                    title:  'TIPOS DE RESIDUO_' + moment().format("YY-MM-DD_hh-mm-ss"),
+                                    filename: 'tipos-de-residuo_' + moment().format("YY-MM-DD_hh-mm-ss"),
+                                }   
+                            ],
         })
 
         /* ----------- REGISTER ------------*/
@@ -2714,7 +2846,7 @@ $(function() {
                 loadSpinner.toggleClass('active');
                 $('#registerWasteTypeForm').trigger('reset');
 
-                wasteTypeTable.draw();
+                wasteTypeTable.ajax.reload();
             },
             error: function(data)
             {
@@ -2807,7 +2939,7 @@ $(function() {
                             }
                     });
 
-                    wasteTypeTable.draw();
+                    wasteTypeTable.ajax.reload();
                 },
                 error: function(result){
                     console.log(result)
@@ -2839,7 +2971,7 @@ $(function() {
                     dataType: 'JSON',
                     success: function(result){
                         if(result.success == true){
-                            wasteTypeTable.draw();
+                            wasteTypeTable.ajax.reload();
                             Swal.fire({
                                 toast: true,
                                 icon: 'success',
@@ -2907,17 +3039,29 @@ $(function() {
         var packageTypeTableEle = $('#package-type-table');
         var getTypeUrl = packageTypeTableEle.data('url');
         var packageTypeTable = packageTypeTableEle.DataTable({
-        language: DataTableEs,
-        serverSide: true,
-        processing: true,
-        ajax: {
-            "url": getTypeUrl,
-        },
-        columns:[
-            {data: 'id', name:'id'},
-            {data: 'name', name:'name', className:"columnType"},
-            {data: 'action', name:'action', orderable: false, searchable: false, className:"btnPackageType"},
-        ]
+                                language: DataTableEs,
+                                // serverSide: true,
+                                // processing: true,
+                                ajax: {
+                                    "url": getTypeUrl,
+                                },
+                                columns:[
+                                    {data: 'id', name:'id'},
+                                    {data: 'name', name:'name', className:"columnType"},
+                                    {data: 'action', name:'action', orderable: false, searchable: false, className:"btnPackageType not-export-col"},
+                                ],
+                                dom: 'Bfrtlip',
+                                buttons: [
+                                    {
+                                        text: '<i class="fa-solid fa-download"></i> &nbsp; Descargar Excel',
+                                        extend: 'excelHtml5',
+                                        exportOptions: {
+                                            columns: ':not(.not-export-col)',
+                                        },
+                                        title:  'TIPOS DE EMBALAJE_' + moment().format("YY-MM-DD_hh-mm-ss"),
+                                        filename: 'tipos-de-embalaje_' + moment().format("YY-MM-DD_hh-mm-ss"),
+                                    }   
+                                ],
         })
 
     /* ----------- REGISTER ------------*/
@@ -2951,7 +3095,7 @@ $(function() {
                 loadSpinner.toggleClass('active');
                 $('#registerPackageTypeForm').trigger('reset');
 
-                packageTypeTable.draw();
+                packageTypeTable.ajax.reload();
             },
             error: function(data)
             {
@@ -3046,7 +3190,7 @@ $(function() {
                         }
                 });
 
-                packageTypeTable.draw();
+                packageTypeTable.ajax.reload();
             },
             error: function(result){
                 console.log(result)
@@ -3078,7 +3222,7 @@ $(function() {
                     dataType: 'JSON',
                     success: function(result){
                         if(result.success == true){
-                            packageTypeTable.draw();
+                            packageTypeTable.ajax.reload();
                             Swal.fire({
                                 toast: true,
                                 icon: 'success',

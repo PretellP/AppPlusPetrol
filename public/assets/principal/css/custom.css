@@ -993,6 +993,11 @@ body.sidebar-mini
 }
 
 
+.principal-container.card-body
+{
+    overflow-x: scroll;
+}
+
 
 /* ---------- USER STYLES ---------*/
 
@@ -1103,9 +1108,9 @@ ul.select2-selection__rendered {
     width: 50%;
 }
 
-.container-create-guide
+.principal-container.container-create-guide
 {
-    overflow: hidden;
+    overflow: hidden !important;
 }
 
 .code-container
@@ -1521,6 +1526,18 @@ ul.select2-selection__rendered {
 .context-home-text
 {
     font-size: 1.3em;
+    font-weight: bolder;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 100%;
+}
+
+.context-home-text
+.count-text-home
+{
+    font-size: 1.1em;
     font-weight: bolder;
 }
 
