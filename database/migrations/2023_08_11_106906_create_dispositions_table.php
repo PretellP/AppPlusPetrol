@@ -24,8 +24,8 @@ class CreateDispositionsTable extends Migration
             $table->string('code_invoice');
             $table->string('code_certification');
             $table->string('plate');
-            $table->string('managment_report');
-            $table->string('observations');
+            $table->string('managment_report')->nullable();
+            $table->string('observations')->nullable();
             $table->timestamps();
         });
     }
