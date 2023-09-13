@@ -256,7 +256,7 @@
 
                     <div class="form-row">
                         <div class="form-group col-md-6">
-                            <label for="inputProfile">Locación *</label>
+                            <label for="inputProfile">Site / Locación *</label>
 
                             <select name="location_id" class="form-control select2 required-input" id="registerLocationSelect"
                                 required>
