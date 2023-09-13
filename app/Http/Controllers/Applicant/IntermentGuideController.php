@@ -32,18 +32,18 @@ class IntermentGuideController extends Controller
         {
             if($request['table'] == 'pending'){
                 $guidesApplicant = $user->applicantGuides()->where('stat_rejected', 0)
-                                                        ->where(function($query){
-                                                            $query->where('stat_approved', 0)
-                                                                ->orWhere('stat_recieved', 0)
-                                                                ->orWhere('stat_verified', 0);
-                                                        })
-                                                        ->with(['warehouse.lot',
-                                                                'warehouse.stage',
-                                                                'warehouse.location',
-                                                                'warehouse.projectArea',
-                                                                'warehouse.company',
-                                                                'warehouse.front'
-                                                        ]);
+                                                            ->where(function($query){
+                                                                $query->where('stat_approved', 0)
+                                                                    ->orWhere('stat_recieved', 0)
+                                                                    ->orWhere('stat_verified', 0);
+                                                            })
+                                                            ->with(['warehouse.lot',
+                                                                    'warehouse.stage',
+                                                                    'warehouse.location',
+                                                                    'warehouse.projectArea',
+                                                                    'warehouse.company',
+                                                                    'warehouse.front'
+                                                            ]);
 
                 $allGuides = DataTables::of($guidesApplicant)
                 ->editColumn('created_at', function($guide){
@@ -171,8 +171,17 @@ class IntermentGuideController extends Controller
     
                     return $btn;
                 })
-                ->rawColumns(['stat_approved','stat_recieved','stat_verified','action'])
+                ->addColumn('pdf', function($guide){
+                    $btn ='<a href="'.route('generateIntermentGuidePdf', $guide).'" target="BLANK"
+                            data-original-title="show" class="icon-pdf-generate">
+                                <i class="fa-solid fa-file-pdf fa-xl"></i>
+                            </a>';
+
+                    return $btn;
+                }) 
+                ->rawColumns(['stat_approved','stat_recieved','stat_verified','action','pdf'])
                 ->make(true);
+                
                 return $allGuides;
             }
             elseif($request['table'] == 'rejected')

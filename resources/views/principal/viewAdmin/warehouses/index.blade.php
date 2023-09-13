@@ -43,7 +43,7 @@
                 <li class="nav-item">
                     <a class="nav-link" id="projects-tab" data-toggle="tab" href="#projects" role="tab"
                         aria-controls="projects" aria-selected="false">
-                        <i class="fa-solid fa-building"></i> &nbsp; Área Proyecto</a>
+                        <i class="fa-solid fa-building"></i> &nbsp; Área / Proyecto</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="companies-tab" data-toggle="tab" href="#companies" role="tab"
@@ -73,11 +73,11 @@
                     <table id="warehouses-table" class="table table-hover" data-url="{{route('warehouses.index')}}">
                         <thead>
                             <tr>
-                                <th>#ID</th>
+                                <th>N°</th>
                                 <th>Lote</th>
                                 <th>Etapa</th>
                                 <th>Locación</th>
-                                <th>Área Proyecto</th>
+                                <th>Área / Proyecto</th>
                                 <th>Empresa</th>
                                 <th>Frente</th>
                                 <th>Acciones</th>
@@ -98,7 +98,7 @@
                     <table id="lots-table" class="table table-hover" data-url="{{route('warehouses.index')}}">
                         <thead>
                             <tr>
-                                <th>#ID</th>
+                                <th>N°</th>
                                 <th>Descripción lote</th>
                                 <th>Acciones</th>
                             </tr>
@@ -116,7 +116,7 @@
                     <table id="stage-table" class="table table-hover" data-url="{{route('warehouses.index')}}">
                         <thead>
                             <tr>
-                                <th>#ID</th>
+                                <th>N°</th>
                                 <th>Descripción etapa</th>
                                 <th>Acciones</th>
                             </tr>
@@ -135,7 +135,7 @@
                     <table id="location-table" class="table table-hover" data-url="{{route('warehouses.index')}}">
                         <thead>
                             <tr>
-                                <th>#ID</th>
+                                <th>N°</th>
                                 <th>Descripción locación</th>
                                 <th>Acciones</th>
                             </tr>
@@ -154,8 +154,8 @@
                     <table id="project-table" class="table table-hover" data-url="{{route('warehouses.index')}}">
                         <thead>
                             <tr>
-                                <th>#ID</th>
-                                <th>Descripción área proyecto</th>
+                                <th>N°</th>
+                                <th>Descripción área / proyecto</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -173,8 +173,8 @@
                     <table id="company-table" class="table table-hover" data-url="{{route('warehouses.index')}}">
                         <thead>
                             <tr>
-                                <th>#ID</th>
-                                <th>Descripción compañía</th>
+                                <th>N°</th>
+                                <th>Descripción empresa</th>
                                 <th>No. RUC</th>
                                 <th>Acciones</th>
                             </tr>
@@ -192,7 +192,7 @@
                     <table id="front-table" class="table table-hover" data-url="{{route('warehouses.index')}}">
                         <thead>
                             <tr>
-                                <th>#ID</th>
+                                <th>N°</th>
                                 <th>Descripción frente</th>
                                 <th>Acciones</th>
                             </tr>
@@ -256,7 +256,7 @@
 
                     <div class="form-row">
                         <div class="form-group col-md-6">
-                            <label for="inputProfile">Locación *</label>
+                            <label for="inputProfile">Site / Locación *</label>
 
                             <select name="location_id" class="form-control select2 required-input" id="registerLocationSelect"
                                 required>
@@ -264,7 +264,7 @@
                             </select>
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="inputProfile">Área de proyecto *</label>
+                            <label for="inputProfile">Área / Proyecto *</label>
 
                             <select name="project_id" class="form-control select2 required-input" id="registerProjectSelect">
                                 <option value=""></option>
@@ -355,7 +355,7 @@
                             </select>
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="editProjectSelect">Área de proyecto *</label>
+                            <label for="editProjectSelect">Área / Proyecto *</label>
 
                             <select name="project_id" class="form-control select2" id="editProjectSelect" required>
                                 <option value=""></option>

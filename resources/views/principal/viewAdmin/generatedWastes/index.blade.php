@@ -39,13 +39,13 @@
                         <th>Clase</th>
                         <th>Nombre de residuo</th>
                         <th>Tipo de empaque</th>
-                        <th>Peso Original(kg)</th>
+                        <th>Peso Real (kg)</th>
                         <th>Nro. de bultos</th>
                         <th>Empresa</th>
+                        <th>Volumen de la carga</th>
                         <th>Fecha de verificación</th>
                         <th>Fecha de salida del residuo</th>
                         <th>Fecha de salida Malvinas</th>
-                        <th>Volumen de la carga</th>
                     </tr>
                 </thead>
             </table>

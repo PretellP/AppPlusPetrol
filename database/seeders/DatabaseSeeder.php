@@ -162,21 +162,21 @@ class DatabaseSeeder extends Seeder
         }
 
         $dataCompanies = [
-            ['name' => 'Acoinsa'],
-            ['name' => 'Administración'],
-            ['name' => 'Asuntos Ambientales'],
-            ['name' => 'CNSAC'],
-            ['name' => 'Cominco'],
-            ['name' => 'Confipetrol'],
-            ['name' => 'Geología'],
-            ['name' => 'Geología y Logística'],
-            ['name' => 'Laboratorio'],
-            ['name' => 'Logística'],
-            ['name' => 'Mantto Mina y Overprime'],
-            ['name' => 'Mantto Planta'],
-            ['name' => 'Mantto Planta y Proyectos'],
-            ['name' => 'Master Energy'],
-            ['name' => 'MGA y Unicontrol'],
+            ['name' => 'Acoinsa', 'ruc' => '89439608523'],
+            ['name' => 'Administración', 'ruc' => '89439608523'],
+            ['name' => 'Asuntos Ambientales', 'ruc' => '89439608523'],
+            ['name' => 'CNSAC', 'ruc' => '89439608523'],
+            ['name' => 'Cominco', 'ruc' => '89439608523'],
+            ['name' => 'Confipetrol', 'ruc' => '89439608523'],
+            ['name' => 'Geología', 'ruc' => '89439608523'],
+            ['name' => 'Geología y Logística', 'ruc' => '89439608523'],
+            ['name' => 'Laboratorio', 'ruc' => '89439608523'],
+            ['name' => 'Logística', 'ruc' => '89439608523'],
+            ['name' => 'Mantto Mina y Overprime', 'ruc' => '89439608523'],
+            ['name' => 'Mantto Planta', 'ruc' => '89439608523'],
+            ['name' => 'Mantto Planta y Proyectos', 'ruc' => '89439608523'],
+            ['name' => 'Master Energy', 'ruc' => '89439608523'],
+            ['name' => 'MGA y Unicontrol', 'ruc' => '89439608523'],
         ];
 
         foreach($dataCompanies as $company){

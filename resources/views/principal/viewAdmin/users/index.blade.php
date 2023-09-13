@@ -25,12 +25,13 @@
             <table id="users-table" class="table table-hover" data-url="{{route('users.index')}}">
                 <thead>
                     <tr>
-                        <th>No</th>
+                        <th>N°</th>
                         <th>Nombre</th>
                         <th>Email</th>
                         <th>Num. cel</th>
                         <th>Perfil</th>
                         <th>Empresa</th>
+                        <th>Notas / Obervaciones</th>
                         <th>Estado</th>
                         <th>Acciones</th>
                     </tr>

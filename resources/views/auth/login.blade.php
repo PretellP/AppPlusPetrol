@@ -62,6 +62,12 @@
 					</form>
 
 				</div>
+
+
+				<span class="copy-txt-login">
+					&copy; GREEN CARE
+				</span>
+
 			</div>
 		</div>
 	</div>

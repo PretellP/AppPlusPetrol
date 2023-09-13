@@ -698,6 +698,7 @@ table.dataTable
 }
 
 
+
 /* ---------- NAVBAR STYLES -------*/
 
 .navbar-bg
@@ -993,6 +994,11 @@ body.sidebar-mini
 }
 
 
+.principal-container.card-body
+{
+    overflow-x: scroll;
+}
+
 
 /* ---------- USER STYLES ---------*/
 
@@ -1103,9 +1109,9 @@ ul.select2-selection__rendered {
     width: 50%;
 }
 
-.container-create-guide
+.principal-container.container-create-guide
 {
-    overflow: hidden;
+    overflow: hidden !important;
 }
 
 .code-container
@@ -1522,6 +1528,18 @@ ul.select2-selection__rendered {
 {
     font-size: 1.3em;
     font-weight: bolder;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 100%;
+}
+
+.context-home-text
+.count-text-home
+{
+    font-size: 1.1em;
+    font-weight: bolder;
 }
 
 .link-box
@@ -1576,6 +1594,14 @@ ul.select2-selection__rendered {
 {
     padding-left: 9px !important;
 }
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice, 
+.select2-container--default .select2-results__option[aria-selected=true], 
+.select2-container--default .select2-results__option--highlighted[aria-selected]
+{
+    background-color: var(--first-color);
+}
+
 
 /* ----- DATATABLES BUTTONS ---------*/
 

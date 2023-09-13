@@ -70,7 +70,7 @@
                     <th>Clase</th>
                     <th>Nom. Residuo</th>
                     <th>Tipo de embalaje</th>
-                    <th>Peso Original (Kg)</th>
+                    <th>Peso Real (Kg)</th>
                     <th>N° Bultos</th>
                     <th>Empresa</th>
 
@@ -145,7 +145,7 @@
                                 <th>Clase</th>
                                 <th>Nom. Residuo</th>
                                 <th>Tipo de embalaje</th>
-                                <th>Peso Original (Kg)</th>
+                                <th>Peso Real (Kg)</th>
                                 <th>N° Bultos</th>
                                 <th>Destino</th>
                                 <th>Placa camión Pucallpa</th>
@@ -247,12 +247,12 @@
 
                     <div class="form-row">
                         <div class="form-group col-6">
-                            <label>Reporte Gestión *</label>
-                            <input type="text" name="report" class="form-control" required>
+                            <label>Reporte Gestión (opcional)</label>
+                            <input type="text" name="report" class="form-control">
                         </div>
                         <div class="form-group col-6">
-                            <label>Observación DF *</label>
-                            <input type="text" name="observation" class="form-control" required>
+                            <label>Observación DF (opcional)</label>
+                            <input type="text" name="observation" class="form-control">
                         </div>
                     </div>
 

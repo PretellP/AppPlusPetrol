@@ -160,7 +160,7 @@ class AdminIntermentGuideController extends Controller
                                 return $btn;
                             })  
                             ->addColumn('pdf', function($guide){
-                                $btn ='<a href="'.route('generateIntermentGuidePdf.admin', $guide).'" target="BLANK"
+                                $btn ='<a href="'.route('generateIntermentGuidePdf', $guide).'" target="BLANK"
                                         data-original-title="show" class="icon-pdf-generate">
                                             <i class="fa-solid fa-file-pdf fa-xl"></i>
                                         </a>';

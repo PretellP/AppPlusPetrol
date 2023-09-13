@@ -41,7 +41,7 @@ class WarehouseController extends Controller
                                         $btn.= '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.
                                                 $warehouse->id.'" data-original-title="delete"
                                                 data-url="'.route('warehouses.delete', $warehouse).'" class="ms-3 edit btn btn-danger btn-sm
-                                                deleteWarehousse"><i class="fa-solid fa-trash-can"></i></a>';
+                                                deleteWarehouse"><i class="fa-solid fa-trash-can"></i></a>';
                                         return $btn;
                                     })
                                     ->rawColumns(['action'])
