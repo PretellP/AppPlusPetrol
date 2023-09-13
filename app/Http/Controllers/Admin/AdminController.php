@@ -31,7 +31,7 @@ class AdminController extends Controller
             $routeWastes = route('generatedWastesApproving.index');
             $countApproved = $user->approvantGuides()->where('stat_approved', 1)
                                                     ->count();
-            $countPending = $user->approvantGuides->where('stat_approved', 0)
+            $countPending = $user->approvantGuides()->where('stat_approved', 0)
                                                 ->where('stat_rejected', 0)
                                                 ->whereHas('applicant.company', function($query) use($user){
                                                     $query->where('id', $user->company->id);

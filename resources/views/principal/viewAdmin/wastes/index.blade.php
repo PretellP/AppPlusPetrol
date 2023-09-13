@@ -34,7 +34,7 @@
             <table id="waste-class-table" class="table table-hover" data-url="{{route('wastes.index')}}">
                 <thead>
                     <tr>
-                        <th>#ID</th>
+                        <th>N°</th>
                         <th>Clase</th>
                         <th>Símbolo</th>
                         <th>Tipos de residuo</th>
@@ -228,7 +228,7 @@
                 <table id="waste-type-table" class="table table-hover" data-url="{{route('wastes.index')}}">
                     <thead>
                         <tr>
-                            <th>#ID</th>
+                            <th>N°</th>
                             <th>Nombre</th>
                             <th>Acciones</th>
                         </tr>
@@ -291,7 +291,7 @@
                 <table id="package-type-table" class="table table-hover" data-url="{{route('packages.index')}}">
                     <thead>
                         <tr>
-                            <th>#ID</th>
+                            <th>N°</th>
                             <th>Nombre</th>
                             <th>Acciones</th>
                         </tr>

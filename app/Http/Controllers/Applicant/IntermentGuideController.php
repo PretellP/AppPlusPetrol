@@ -171,8 +171,17 @@ class IntermentGuideController extends Controller
     
                     return $btn;
                 })
-                ->rawColumns(['stat_approved','stat_recieved','stat_verified','action'])
+                ->addColumn('pdf', function($guide){
+                    $btn ='<a href="'.route('generateIntermentGuidePdf', $guide).'" target="BLANK"
+                            data-original-title="show" class="icon-pdf-generate">
+                                <i class="fa-solid fa-file-pdf fa-xl"></i>
+                            </a>';
+
+                    return $btn;
+                }) 
+                ->rawColumns(['stat_approved','stat_recieved','stat_verified','action','pdf'])
                 ->make(true);
+                
                 return $allGuides;
             }
             elseif($request['table'] == 'rejected')

@@ -3293,8 +3293,8 @@ $(function() {
         var guideAdminApprovedTable = guideAdminApprovedTableEle.DataTable({
             order: [[1, 'desc']],
             language: DataTableEs,
-            serverSide: true,
-            processing: true,
+            // serverSide: true,
+            // processing: true,
             ajax:  {
                 "url": getDataUrl,
                 "data": {
@@ -3304,18 +3304,30 @@ $(function() {
             columns:[
                 {data: 'code', name:'code'},
                 {data: 'created_at', name:'created_at'},
-                {data: 'warehouse.lot.name', name:'warehouse.lot.name', orderable: false},
-                {data: 'warehouse.stage.name', name:'warehouse.stage.name', orderable: false},
-                {data: 'warehouse.location.name', name:'warehouse.location.name', orderable: false},
-                {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name', orderable: false},
-                {data: 'warehouse.company.name', name:'warehouse.company.name', orderable: false},
-                {data: 'warehouse.front.name', name:'warehouse.front.name', orderable: false},
-                {data: 'stat_approved', name:'stat_approved', orderable: false},
-                {data: 'stat_recieved', name:'stat_recieved', orderable: false},
-                {data: 'stat_verified', name:'stat_verified', orderable: false},
-                {data: 'action', name:'action', orderable: false, searchable: false},
-                {data: 'pdf', name:'pdf', orderable: false, searchable: false, className: 'text-center'},
-            ]
+                {data: 'warehouse.lot.name', name:'warehouse.lot.name'},
+                {data: 'warehouse.stage.name', name:'warehouse.stage.name'},
+                {data: 'warehouse.location.name', name:'warehouse.location.name'},
+                {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name'},
+                {data: 'warehouse.company.name', name:'warehouse.company.name'},
+                {data: 'warehouse.front.name', name:'warehouse.front.name'},
+                {data: 'stat_approved', name:'stat_approved'},
+                {data: 'stat_recieved', name:'stat_recieved'},
+                {data: 'stat_verified', name:'stat_verified'},
+                {data: 'action', name:'action', orderable: false, searchable: false, className: 'not-export-col'},
+                {data: 'pdf', name:'pdf', orderable: false, searchable: false, className: 'text-center not-export-col'},
+            ],
+            dom: 'Bfrtlip',
+            buttons: [
+                {
+                    text: '<i class="fa-solid fa-download"></i> &nbsp; Descargar Excel',
+                    extend: 'excelHtml5',
+                    title:    'GUÍAS DE INTERNAMIENTO APROBADAS_' + moment().format("YY-MM-DD_hh-mm-ss"),
+                    filename: 'guías-de-internamiento-aprobadas'+ moment().format("YY-MM-DD_hh-mm-ss"),
+                    exportOptions: {
+                        columns: ':not(.not-export-col)'
+                    },
+                }   
+            ],
         });
     }   
 
@@ -3326,8 +3338,8 @@ $(function() {
         var guideAdminPendingTable = guideAdminPendingTableEle.DataTable({
             order: [[1, 'desc']],
             language: DataTableEs,
-            serverSide: true,
-            processing: true,
+            // serverSide: true,
+            // processing: true,
             ajax:  {
                 "url": getDataUrl,
                 "data": {
@@ -3337,17 +3349,29 @@ $(function() {
             columns:[
                 {data: 'code', name:'code'},
                 {data: 'created_at', name:'created_at'},
-                {data: 'warehouse.lot.name', name:'warehouse.lot.name', orderable: false},
-                {data: 'warehouse.stage.name', name:'warehouse.stage.name', orderable: false},
-                {data: 'warehouse.location.name', name:'warehouse.location.name', orderable: false},
-                {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name', orderable: false},
-                {data: 'warehouse.company.name', name:'warehouse.company.name', orderable: false},
-                {data: 'warehouse.front.name', name:'warehouse.front.name', orderable: false},
-                {data: 'stat_approved', name:'stat_approved', orderable: false},
-                {data: 'stat_recieved', name:'stat_recieved', orderable: false},
-                {data: 'stat_verified', name:'stat_verified', orderable: false},
-                {data: 'action', name:'action', orderable: false, searchable: false},
-            ]
+                {data: 'warehouse.lot.name', name:'warehouse.lot.name'},
+                {data: 'warehouse.stage.name', name:'warehouse.stage.name'},
+                {data: 'warehouse.location.name', name:'warehouse.location.name'},
+                {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name'},
+                {data: 'warehouse.company.name', name:'warehouse.company.name'},
+                {data: 'warehouse.front.name', name:'warehouse.front.name'},
+                {data: 'stat_approved', name:'stat_approved'},
+                {data: 'stat_recieved', name:'stat_recieved'},
+                {data: 'stat_verified', name:'stat_verified'},
+                {data: 'action', name:'action', orderable: false, searchable: false, className: 'not-export-col'},
+            ],
+            dom: 'Bfrtlip',
+            buttons: [
+                {
+                    text: '<i class="fa-solid fa-download"></i> &nbsp; Descargar Excel',
+                    extend: 'excelHtml5',
+                    title:    'GUÍAS DE INTERNAMIENTO PENDIENTES_' + moment().format("YY-MM-DD_hh-mm-ss"),
+                    filename: 'guías-de-internamiento-pendientes'+ moment().format("YY-MM-DD_hh-mm-ss"),
+                    exportOptions: {
+                        columns: ':not(.not-export-col)'
+                    },
+                }   
+            ],
         });
     }
 
@@ -3358,8 +3382,8 @@ $(function() {
         var guideAdminRejectedTable = guideAdminRejectedTableEle.DataTable({
             order: [[1, 'desc']],
             language: DataTableEs,
-            serverSide: true,
-            processing: true,
+            // serverSide: true,
+            // processing: true,
             ajax:  {
                 "url": getDataUrl,
                 "data": {
@@ -3369,17 +3393,29 @@ $(function() {
             columns:[
                 {data: 'code', name:'code'},
                 {data: 'created_at', name:'created_at'},
-                {data: 'warehouse.lot.name', name:'warehouse.lot.name', orderable: false},
-                {data: 'warehouse.stage.name', name:'warehouse.stage.name', orderable: false},
-                {data: 'warehouse.location.name', name:'warehouse.location.name', orderable: false},
-                {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name', orderable: false},
-                {data: 'warehouse.company.name', name:'warehouse.company.name', orderable: false},
-                {data: 'warehouse.front.name', name:'warehouse.front.name', orderable: false},
-                {data: 'stat_approved', name:'stat_approved', orderable: false},
-                {data: 'stat_recieved', name:'stat_recieved', orderable: false},
-                {data: 'stat_verified', name:'stat_verified', orderable: false},
-                {data: 'action', name:'action', orderable: false, searchable: false},
-            ]
+                {data: 'warehouse.lot.name', name:'warehouse.lot.name'},
+                {data: 'warehouse.stage.name', name:'warehouse.stage.name'},
+                {data: 'warehouse.location.name', name:'warehouse.location.name'},
+                {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name'},
+                {data: 'warehouse.company.name', name:'warehouse.company.name'},
+                {data: 'warehouse.front.name', name:'warehouse.front.name'},
+                {data: 'stat_approved', name:'stat_approved'},
+                {data: 'stat_recieved', name:'stat_recieved'},
+                {data: 'stat_verified', name:'stat_verified'},
+                {data: 'action', name:'action', orderable: false, searchable: false, className: 'not-export-col'},
+            ],
+            dom: 'Bfrtlip',
+            buttons: [
+                {
+                    text: '<i class="fa-solid fa-download"></i> &nbsp; Descargar Excel',
+                    extend: 'excelHtml5',
+                    title:    'GUÍAS DE INTERNAMIENTO RECHAZADAS_' + moment().format("YY-MM-DD_hh-mm-ss"),
+                    filename: 'guías-de-internamiento-rechazadas'+ moment().format("YY-MM-DD_hh-mm-ss"),
+                    exportOptions: {
+                        columns: ':not(.not-export-col)'
+                    },
+                }   
+            ],
         });
     }
 
@@ -3424,7 +3460,7 @@ $(function() {
         var generatedWastesAdminTableEle = $('#generated-wastes-table-admin');
         var getDataUrl = generatedWastesAdminTableEle.data('url');
         var generatedWastesAdminTable = generatedWastesAdminTableEle.DataTable({
-            order: [[9, 'desc']],
+            order: [[10, 'desc']],
             language: DataTableEs,
             ajax: {
                 "url": getDataUrl,
@@ -3443,13 +3479,13 @@ $(function() {
                 {data: 'actual_weight', name:'actual_weight', orderable: false},//
                 {data: 'package_quantity', name:'package_quantity', orderable: false},////
                 {data: 'guide.warehouse.company.name', name:'guide.warehouse.company.name'},//
+                {data: 'packing_guide.volum', name:'packingGuide.volum', orderable: false, searchable: false},//
                 {data: 'guide.date_verified', name:'guide.date_verified'}, 
                 {data: 'packing_guide.date_guides_departure', name:'packingGuide.date_guides_departure'}, // FECHA SALIDA DEL RESIDUO
                 {data: 'date_departure', name:'date_departure', orderable: false, searchable: false},  // FECHA SALIDA MALVINAS
-                {data: 'packing_guide.volum', name:'packingGuide.volum', orderable: false, searchable: false},//
             ],
             columnDefs : [
-                { 'visible': false, 'targets': [10, 11] }
+                { 'visible': false, 'targets': [11, 12] }
             ],
             dom: 'Bfrtip',
             buttons: [
@@ -3482,7 +3518,7 @@ $(function() {
 
                     var min = moment($('#daterange-btn-wastes-admin').data('daterangepicker').startDate.format('YYYY-MM-DD')).toDate();
                     var max = moment($('#daterange-btn-wastes-admin').data('daterangepicker').endDate.format('YYYY-MM-DD')).toDate();
-                    var startDate = moment(data[9]).toDate();
+                    var startDate = moment(data[10]).toDate();
 
                     console.log(startDate)
                     if (min == null && max == null) { return true; }
@@ -3565,6 +3601,7 @@ $(function() {
                 {data: 'stat_recieved', name:'stat_recieved', orderable: false},
                 {data: 'stat_verified', name:'stat_verified', orderable: false},
                 {data: 'action', name:'action', orderable: false, searchable: false},
+                {data: 'pdf', name:'pdf', orderable: false, searchable: false, className: 'text-center'},
             ]
         });
     }
@@ -3901,7 +3938,7 @@ $(function() {
         var generatedWastesApplicantTableEle = $('#generated-wastes-table-applicant');
         var getDataUrl = generatedWastesApplicantTableEle.data('url');
         var generatedWastesApplicantTable = generatedWastesApplicantTableEle.DataTable({
-            order: [[9, 'desc']],
+            order: [[10, 'desc']],
             language: DataTableEs,
             ajax: {
                 "url": getDataUrl,
@@ -3920,13 +3957,13 @@ $(function() {
                 {data: 'actual_weight', name:'actual_weight', orderable: false},//
                 {data: 'package_quantity', name:'package_quantity', orderable: false},////
                 {data: 'guide.warehouse.company.name', name:'guide.warehouse.company.name'},//
+                {data: 'packing_guide.volum', name:'packingGuide.volum', orderable: false, searchable: false},//
                 {data: 'guide.date_verified', name:'guide.date_verified'}, 
                 {data: 'packing_guide.date_guides_departure', name:'packingGuide.date_guides_departure'}, // FECHA SALIDA DEL RESIDUO
                 {data: 'date_departure', name:'date_departure', orderable: false, searchable: false},  // FECHA SALIDA MALVINAS
-                {data: 'packing_guide.volum', name:'packingGuide.volum', orderable: false, searchable: false},//
             ],
             columnDefs : [
-                { 'visible': false, 'targets': [10, 11] }
+                { 'visible': false, 'targets': [11, 12] }
             ],
             dom: 'Bfrtip',
             buttons: [
@@ -3959,7 +3996,7 @@ $(function() {
 
                     var min = moment($('#daterange-btn-wastes-applicant').data('daterangepicker').startDate.format('YYYY-MM-DD')).toDate();
                     var max = moment($('#daterange-btn-wastes-applicant').data('daterangepicker').endDate.format('YYYY-MM-DD')).toDate();
-                    var startDate = moment(data[9]).toDate();
+                    var startDate = moment(data[10]).toDate();
 
                     console.log(startDate)
                     if (min == null && max == null) { return true; }
@@ -4163,7 +4200,7 @@ $(function() {
         var generatedWastesApproverTableEle = $('#generated-wastes-table-approver');
         var getDataUrl = generatedWastesApproverTableEle.data('url');
         var generatedWastesApproverTable = generatedWastesApproverTableEle.DataTable({
-            order: [[9, 'desc']],
+            order: [[10, 'desc']],
             language: DataTableEs,
             ajax: {
                 "url": getDataUrl,
@@ -4173,7 +4210,7 @@ $(function() {
                 // }
             },
             columnDefs : [
-                { 'visible': false, 'targets': [10, 11] }
+                { 'visible': false, 'targets': [11, 12] }
             ],
             columns:[
                 {data: 'id', name:'id'}, 
@@ -4185,10 +4222,10 @@ $(function() {
                 {data: 'actual_weight', name:'actual_weight', orderable: false},//
                 {data: 'package_quantity', name:'package_quantity', orderable: false},////
                 {data: 'guide.warehouse.company.name', name:'guide.warehouse.company.name'},//
+                {data: 'packing_guide.volum', name:'packingGuide.volum', orderable: false, searchable: false},//
                 {data: 'guide.date_verified', name:'guide.date_verified'}, 
                 {data: 'packing_guide.date_guides_departure', name:'packingGuide.date_guides_departure'}, // FECHA SALIDA DEL RESIDUO
                 {data: 'date_departure', name:'date_departure', orderable: false, searchable: false},  // FECHA SALIDA MALVINAS
-                {data: 'packing_guide.volum', name:'packingGuide.volum', orderable: false, searchable: false},//
             ],
             dom: 'Bfrtip',
             buttons: [
@@ -4221,7 +4258,7 @@ $(function() {
 
                     var min = moment($('#daterange-btn-wastes-approver').data('daterangepicker').startDate.format('YYYY-MM-DD')).toDate();
                     var max = moment($('#daterange-btn-wastes-approver').data('daterangepicker').endDate.format('YYYY-MM-DD')).toDate();
-                    var startDate = moment(data[9]).toDate();
+                    var startDate = moment(data[10]).toDate();
 
                     console.log(startDate)
                     if (min == null && max == null) { return true; }
@@ -4445,7 +4482,7 @@ $(function() {
         var generatedWastesRecieverTableEle = $('#generated-wastes-table-reciever');
         var getDataUrl = generatedWastesRecieverTableEle.data('url');
         var generatedWastesRecieverTable = generatedWastesRecieverTableEle.DataTable({
-            order: [[9, 'desc']],
+            order: [[10, 'desc']],
             language: DataTableEs,
             ajax: {
                 "url": getDataUrl
@@ -4460,10 +4497,13 @@ $(function() {
                 {data: 'actual_weight', name:'actual_weight', orderable: false},//
                 {data: 'package_quantity', name:'package_quantity', orderable: false},////
                 {data: 'guide.warehouse.company.name', name:'guide.warehouse.company.name'},//
+                {data: 'packing_guide.volum', name:'packingGuide.volum', orderable: false, searchable: false},//
                 {data: 'guide.date_verified', name:'guide.date_verified'}, 
                 {data: 'packing_guide.date_guides_departure', name:'packingGuide.date_guides_departure'}, // FECHA SALIDA DEL RESIDUO
                 {data: 'date_departure', name:'date_departure', orderable: false, searchable: false},  // FECHA SALIDA MALVINAS
-                {data: 'packing_guide.volum', name:'packingGuide.volum', orderable: false, searchable: false},//
+            ],
+            columnDefs : [
+                { 'visible': false, 'targets': [11, 12] }
             ],
             dom: 'Bfrtip',
             buttons: [
@@ -4496,7 +4536,7 @@ $(function() {
 
                     var min = moment($('#daterange-btn-wastes-reciever').data('daterangepicker').startDate.format('YYYY-MM-DD')).toDate();
                     var max = moment($('#daterange-btn-wastes-reciever').data('daterangepicker').endDate.format('YYYY-MM-DD')).toDate();
-                    var startDate = moment(data[9]).toDate();
+                    var startDate = moment(data[10]).toDate();
 
                     console.log(startDate)
                     if (min == null && max == null) { return true; }
@@ -4653,6 +4693,7 @@ $(function() {
                 {data: 'warehouse.company.name', name:'warehouse.company.name'},
                 {data: 'warehouse.front.name', name:'warehouse.front.name'},
                 {data: 'action', name:'action', orderable: false, searchable: false},
+                {data: 'pdf', name:'pdf', orderable: false, searchable: false, className: 'text-center'},
             ]
         });
      }
@@ -4690,7 +4731,7 @@ $(function() {
         var generatedWastesCheckerTableEle = $('#generated-wastes-table-verificator');
         var getDataUrl = generatedWastesCheckerTableEle.data('url');
         var generatedWastesCheckerTable = generatedWastesCheckerTableEle.DataTable({
-            order: [[9, 'desc']],
+            order: [[10, 'desc']],
             language: DataTableEs,
             ajax: {
                 "url": getDataUrl
@@ -4705,12 +4746,15 @@ $(function() {
                 {data: 'actual_weight', name:'actual_weight', orderable: false},//
                 {data: 'package_quantity', name:'package_quantity', orderable: false},////
                 {data: 'guide.warehouse.company.name', name:'guide.warehouse.company.name'},//
+                {data: 'packing_guide.volum', name:'packingGuide.volum', orderable: false, searchable: false},//
                 {data: 'guide.date_verified', name:'guide.date_verified'}, 
                 {data: 'packing_guide.date_guides_departure', name:'packingGuide.date_guides_departure'}, // FECHA SALIDA DEL RESIDUO
                 {data: 'date_departure', name:'date_departure', orderable: false, searchable: false},  // FECHA SALIDA MALVINAS
-                {data: 'packing_guide.volum', name:'packingGuide.volum', orderable: false, searchable: false},//
             ],
             dom: 'Bfrtip',
+            columnDefs : [
+                { 'visible': false, 'targets': [11, 12] }
+            ],
             buttons: [
                 {
                     text: '<i class="fa-solid fa-download"></i> &nbsp; Descargar Excel',
@@ -4741,7 +4785,7 @@ $(function() {
 
                     var min = moment($('#daterange-btn-wastes-verificator').data('daterangepicker').startDate.format('YYYY-MM-DD')).toDate();
                     var max = moment($('#daterange-btn-wastes-verificator').data('daterangepicker').endDate.format('YYYY-MM-DD')).toDate();
-                    var startDate = moment(data[9]).toDate();
+                    var startDate = moment(data[10]).toDate();
 
                     console.log(startDate)
                     if (min == null && max == null) { return true; }
@@ -4903,7 +4947,7 @@ $(function() {
             columnDefs : [
                 { 'visible': false, 'targets': [10] }
             ],
-            dom: 'lBfrtip',
+            dom: 'Bfrtlip',
             buttons: [
                 {
                     text: '<i class="fa-solid fa-download"></i> &nbsp; Descargar Excel',
@@ -4990,7 +5034,7 @@ $(function() {
             columnDefs : [
                 { 'visible': false, 'targets': [2, 10, 11, 12] }
             ],
-            dom: 'lBfrtip',
+            dom: 'Bfrtlip',
             buttons: [
                 {
                     text: '<i class="fa-solid fa-download"></i> &nbsp; Descargar Excel',
@@ -5595,7 +5639,7 @@ $(function() {
             columnDefs : [
                 { 'visible': false, 'targets': [10,11,12,13,14,15,16,17,18] }
             ],
-            dom: 'lBfrtip',
+            dom: 'Bfrtlip',
             buttons: [
                 {
                     text: '<i class="fa-solid fa-download"></i> &nbsp; Descargar Excel',
@@ -6039,7 +6083,7 @@ $(function() {
             columnDefs : [
                 { 'visible': false, 'targets': [8,9,10,11,12,18,19,20,21,22,23,24,25,26,27,28] }
             ],
-            dom: 'lBfrtip',
+            dom: 'Bfrtlip',
             buttons: [
                 {
                     text: '<i class="fa-solid fa-download"></i> &nbsp; Descargar Excel',

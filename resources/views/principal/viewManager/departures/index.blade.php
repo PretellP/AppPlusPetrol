@@ -95,7 +95,7 @@
                     <th>clase</th>
                     <th>Nom. Residuo</th>
                     <th>Tipo de embalaje</th>
-                    <th>Peso Original (Kg)</th>
+                    <th>Peso Real (Kg)</th>
                     <th>N° Bultos</th>
                     <th>Empresa</th>
                     <th>Fecha de salida Malvinas</th>
@@ -158,7 +158,7 @@
                                 <th>Clase</th>
                                 <th>Nom. Residuo</th>
                                 <th>Tipo de embalaje</th>
-                                <th>Peso Original (Kg)</th>
+                                <th>Peso Real (Kg)</th>
                                 <th>N° Bultos</th>
                                 <th>Empresa</th>
                                 <th>Fecha de salida Malvinas</th>
@@ -261,7 +261,7 @@
                                 <th>Clase</th>
                                 <th>Nom. Residuo</th>
                                 <th>Tipo de embalaje</th>
-                                <th>Peso Original (Kg)</th>
+                                <th>Peso Real (Kg)</th>
                                 <th>N° Bultos</th>
                                 <th>Empresa</th>
                             </tr>

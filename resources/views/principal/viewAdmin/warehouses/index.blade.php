@@ -43,7 +43,7 @@
                 <li class="nav-item">
                     <a class="nav-link" id="projects-tab" data-toggle="tab" href="#projects" role="tab"
                         aria-controls="projects" aria-selected="false">
-                        <i class="fa-solid fa-building"></i> &nbsp; Área Proyecto</a>
+                        <i class="fa-solid fa-building"></i> &nbsp; Área / Proyecto</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="companies-tab" data-toggle="tab" href="#companies" role="tab"
@@ -77,7 +77,7 @@
                                 <th>Lote</th>
                                 <th>Etapa</th>
                                 <th>Locación</th>
-                                <th>Área Proyecto</th>
+                                <th>Área / Proyecto</th>
                                 <th>Empresa</th>
                                 <th>Frente</th>
                                 <th>Acciones</th>
@@ -155,7 +155,7 @@
                         <thead>
                             <tr>
                                 <th>N°</th>
-                                <th>Descripción área proyecto</th>
+                                <th>Descripción área / proyecto</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -174,7 +174,7 @@
                         <thead>
                             <tr>
                                 <th>N°</th>
-                                <th>Descripción compañía</th>
+                                <th>Descripción empresa</th>
                                 <th>No. RUC</th>
                                 <th>Acciones</th>
                             </tr>

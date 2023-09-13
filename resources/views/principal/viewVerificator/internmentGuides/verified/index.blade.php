@@ -28,6 +28,7 @@
                         <th>Empresa</th>
                         <th>Frente</th>
                         <th>Ver</th>
+                        <th class="text-center">Generar PDF</th>
                     </tr>
                 </thead>
             </table>

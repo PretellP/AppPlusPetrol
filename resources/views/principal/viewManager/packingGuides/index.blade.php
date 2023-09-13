@@ -69,7 +69,7 @@
                         <th>clase</th>
                         <th>Nom. Residuo</th>
                         <th>Tipo de embalaje</th>
-                        <th>Peso Original (Kg)</th>
+                        <th>Peso Real (Kg)</th>
                         <th>Nro. Bultos</th>
                         <th>Empresa</th>
                         <th>Fecha de verificación</th>
@@ -137,7 +137,7 @@
                         <th>Clase</th>
                         <th>Nombre de residuo</th>
                         <th>Tipo de embalaje</th>
-                        <th>Peso Original (Kg)</th>
+                        <th>Peso Real (Kg)</th>
                         <th>Nro. Bultos</th>
                         <th>Empresa</th>
                         <th>Fecha de salida del residuo</th>
@@ -195,7 +195,7 @@
                                 <th>clase</th>
                                 <th>Nom. Residuo</th>
                                 <th>Tipo de embalaje</th>
-                                <th>Peso Original (Kg)</th>
+                                <th>Peso Real (Kg)</th>
                                 <th>Nro. Bultos</th>
                                 <th>Empresa</th>
                                 <th>Fecha de verificación</th>
@@ -324,7 +324,7 @@
                             <th>Clase</th>
                             <th>Nom. Residuo</th>
                             <th>Tipo de embalaje</th>
-                            <th>Peso Original (Kg)</th>
+                            <th>Peso Real (Kg)</th>
                             <th>Nro. Bultos</th>
                             <th>Empresa</th>
                             <th>Fecha de verificación</th>
@@ -379,7 +379,7 @@
                                 <th>Clase</th>
                                 <th>Nombre de residuo</th>
                                 <th>Tipo de embalaje</th>
-                                <th>Peso Original (Kg)</th>
+                                <th>Peso Real (Kg)</th>
                                 <th>Nro. de bultos</th>
                                 <th>Empresa</th>
                                 <th>Fecha de salida del residuo</th>

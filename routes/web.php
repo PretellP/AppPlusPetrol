@@ -60,6 +60,9 @@ Route::group(['middleware' => ['auth', 'check.valid.user']], function(){
 
     Route::get('/inicio', [AdminController::class, 'index'])->name('home.index');
 
+
+    Route::get('/generar-pdf/guía-de-internamiento/{guide}', [PDFController::class, 'internmentGuidePdf'])->name('generateIntermentGuidePdf');
+
    
     Route::group(['middleware' => 'check.role:ADMINISTRADOR,SOLICITANTE'], function(){
 
@@ -172,7 +175,6 @@ Route::group(['middleware' => ['auth', 'check.valid.user']], function(){
             Route::get('/administrador/guías-de-internamiento/rechazadas/ver/{guide}', 'rejectedShow')->name('guidesAdminRejected.show');
         });
 
-        Route::get('/administrador/guía-de-internamiento/{guide}/pdf', [PDFController::class, 'internmentGuidePdf'])->name('generateIntermentGuidePdf.admin');
 
 
 
