@@ -113,12 +113,14 @@ class DepartureController extends Controller
 
         foreach($wastes as $waste)
         {
-            $waste->update([
-                "stat_arrival" => 1,
-                "date_arrival" => $request['date-arrival'],
-                "date_retirement" => $request['date-retreat'],
-                "gc_code" => $request['n-guide-gc']
-            ]);
+            if($waste->stat_arrival == 0){
+                $waste->update([
+                    "stat_arrival" => 1,
+                    "date_arrival" => $request['date-arrival'],
+                    "date_retirement" => $request['date-retreat'],
+                    "gc_code" => $request['n-guide-gc']
+                ]);
+            }
         }
 
         return response()->json([
@@ -128,25 +130,36 @@ class DepartureController extends Controller
 
     public function updateWastesDeparture(Request $request)
     {   
-        $departure = Departure::create([
-            "code_green_care" => $request['n-green-care-guide'],
-            "date_departure" => $request['date-departure'],
-            "destination" => $request['destination'],
-            "plate" => $request['plate'],
-            "weigth" => $request['retrieved-weight'],
-            "weigth_diff" => $request['weight-diff']
-        ]);
-
         $wastes = GuideWaste::whereIn('id', $request['wastes-departure-ids'])->get();
+        $statStore = false;
 
-        foreach($wastes as $waste)
-        {
-            $waste->update([
-                "stat_transport_departure" => 1,
-                "id_departure" => $departure->id
-            ]);
+        foreach($wastes as $waste){
+            if($waste->stat_transport_departure == 1){
+                $statStore = true;
+                break;
+            }
         }
 
+        if(!$statStore){
+            
+            $departure = Departure::create([
+                "code_green_care" => $request['n-green-care-guide'],
+                "date_departure" => $request['date-departure'],
+                "destination" => $request['destination'],
+                "plate" => $request['plate'],
+                "weigth" => $request['retrieved-weight'],
+                "weigth_diff" => $request['weight-diff']
+            ]);
+    
+            foreach($wastes as $waste)
+            {
+                $waste->update([
+                    "stat_transport_departure" => 1,
+                    "id_departure" => $departure->id
+                ]);
+            }    
+        }
+        
         return response()->json([
             "success" => true
         ]);

@@ -21,9 +21,16 @@ class WasteController extends Controller
                 $allClasses = DataTables::of($wasteClasses)
                     ->addColumn('types', function($class){
                         $types = $class->classesWastes;
+                        $countTypes = $types->count();
+                        $count = 1;
                         $typesList = '';
                         foreach($types as $type){
-                            $typesList.= $type->name.' <br> ';
+                            if($count == $countTypes){
+                                $typesList.= $type->name;
+                            }else{
+                                $typesList.= $type->name.'<br>';
+                            } 
+                            $count++;
                         }
                         // $typesList.='</ul>';
 

@@ -116,28 +116,40 @@ class DispositionController extends Controller
 
     public function update(Request $request)
     {
-        $disposition = Disposition::create([
-            "code_dff" => $request['n-ddff-guide'],
-            "date_arrival" => $request['date-arrival'],
-            "date_dff" => $request['date-ddff'],
-            "weigth" => $request['ddff-weight'],
-            "weigth_diff" => $request['weight-diff'],
-            "disposition_place" => $request['disposition-place'],
-            "code_invoice" => $request['n-invoice'],
-            "code_certification" => $request['n-certification'],
-            "plate" => $request['plate'],
-            "managment_report" => $request['report'],
-            "observations" => $request['observation'],
-        ]);
-
         $wastes = GuideWaste::whereIn('id', $request['wastes-disposition-ids'])->get();
+        $statStore = false;
 
-        foreach($wastes as $waste)
-        {
-            $waste->update([
-                "stat_disposition" => 1,
-                "id_disposition" => $disposition->id
+        foreach($wastes as $waste){
+            if($waste->stat_disposition == 1){
+                $statStore = true;
+                break;
+            }
+        }
+
+        if(!$statStore){
+
+            $disposition = Disposition::create([
+                "code_dff" => $request['n-ddff-guide'],
+                "date_arrival" => $request['date-arrival'],
+                "date_dff" => $request['date-ddff'],
+                "weigth" => $request['ddff-weight'],
+                "weigth_diff" => $request['weight-diff'],
+                "disposition_place" => $request['disposition-place'],
+                "code_invoice" => $request['n-invoice'],
+                "code_certification" => $request['n-certification'],
+                "plate" => $request['plate'],
+                "managment_report" => $request['report'],
+                "observations" => $request['observation'],
             ]);
+    
+    
+            foreach($wastes as $waste)
+            {
+                $waste->update([
+                    "stat_disposition" => 1,
+                    "id_disposition" => $disposition->id
+                ]);
+            }
         }
 
         return response()->json([

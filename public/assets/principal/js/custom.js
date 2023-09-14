@@ -307,16 +307,26 @@ $(function() {
             columnDefs : [
                 { 'visible': false, 'targets': [6] }
             ],
-            dom: 'lBfrtip',
+            dom: 'Bfrtlip',
             buttons: [
                 {
                     text: '<i class="fa-solid fa-download"></i> &nbsp; Descargar Excel',
                     extend: 'excelHtml5',
                     exportOptions: {
-                        columns: ':not(.not-export-col)'
+                        columns: ':not(.not-export-col)',
+                        format: {
+                            body: function ( data, row, column, node ) {
+                                if(column == 7){
+                                    return data.replace(/(&nbsp;|<([^>]+)>)/ig, "")
+                                }else{
+                                    return column == 5 ? data.replace(/<br>/g, ', \n') : data
+                                }
+                            }
+                        },
                     },
                     title:  'USUARIOS_' + moment().format("YY-MM-DD_hh-mm-ss"),
                     filename: 'usuarios-general_' + moment().format("YY-MM-DD_hh-mm-ss"),
+                  
                 }   
             ],
         });
@@ -334,11 +344,13 @@ $(function() {
             var userCompanySelect = $('#registerCompanySelect');
             userCompanySelect.select2({
                 dropdownParent: $("#registerUserForm"),
-                placeholder: 'Selecciona una empresa'
+                placeholder: 'Selecciona una empresa',
+                // closeOnSelect: false,
             })
 
-            userRegisterSelect.on('change', function(){
+            var selectCompanyCont = $('#select-company-container-register')
 
+            userRegisterSelect.on('change', function(){
                 let modal = $('#RegisterUserModal')
 
                 if($('#RegisterUserModal').hasClass('show')){
@@ -350,14 +362,14 @@ $(function() {
                         url: url,
                         data: {
                             id: value_id,
-                            company_id: userCompanySelect.val(),
+                            // company_id: userCompanySelect.val(),
                             type: 'approving'
                         },
                         dataType: 'JSON',
                         success: function(data){
-                            userCompanySelect.html('');
+                            selectCompanyCont.html('')
 
-                            if(data.valid == 'valid')
+                            if(data.valid == 'applicant')
                             {
                                 if(!($('#selectApprovingsRegister').length))
                                 {
@@ -375,22 +387,45 @@ $(function() {
                                         closeOnSelect: false
                                     })
                                     selectApprovings.append('<option value=""></option>');
-                                    if(data['approvings'] != null)
-                                    {
-                                        $.each( data['approvings'], function( key, value ) {
-                                            selectApprovings.append('<option value="'+value['id']+'">'+value['name']+'</option>');
-                                        })
-                                    }
+                                    // if(data['approvings'] != null)
+                                    // {
+                                    //     $.each( data['approvings'], function( key, value ) {
+                                    //         selectApprovings.append('<option value="'+value['id']+'">'+value['name']+'</option>');
+                                    //     })
+                                    // }
                                 }
                             
                             }else{
                                 $('#selectApprovingsRegister').remove();
                             }
 
-                            userCompanySelect.append('<option></option>');
+                            if(data.valid == 'approver'){
+                                selectCompanyCont.html('<select data-url="'+url+'" name="id_user_company[]" \
+                                                            class="form-control select2" id="registerCompanySelect" required multiple> \
+                                                            <option></option>\
+                                                        </select>')
+
+                                var userCompanySelectGen = $('#registerCompanySelect');
+                                userCompanySelectGen.select2({
+                                    dropdownParent: $("#registerUserForm"),
+                                    placeholder: 'Selecciona una o más empresas',
+                                    closeOnSelect: false
+                                })
+                            }else{
+                                selectCompanyCont.html('<select data-url="'+url+'" name="id_user_company" \
+                                                            class="form-control select2" id="registerCompanySelect" required> \
+                                                            <option></option>\
+                                                        </select>')
+
+                                var userCompanySelectGen = $('#registerCompanySelect');
+                                userCompanySelectGen.select2({
+                                    dropdownParent: $("#registerUserForm"),
+                                    placeholder: 'Selecciona una empresa',
+                                })
+                            }
 
                             $.each(data.companies, function(key, values){
-                                userCompanySelect.append('<option value="'+values.id+'"> '+values.name+' </option>');
+                                userCompanySelectGen.append('<option value="'+values.id+'"> '+values.name+' </option>');
                             })
 
                             if(data['validManager'] == true){
@@ -409,7 +444,8 @@ $(function() {
                 }
             })
 
-            userCompanySelect.on('change', function(){
+            // var userCompanySelectGen = $('#registerCompanySelect')
+            $('body').on('change', '#registerCompanySelect', function(){
 
                 if($('#RegisterUserModal').hasClass('show')){
 
@@ -429,7 +465,7 @@ $(function() {
                             dataType: 'JSON',
                             success: function(data){
                                 
-                                selectApprovings.append('<option value=""></option>');
+                                selectApprovings.append('<option></option>');
                                 $.each( data['approvings'], function( key, value ) {
                                     selectApprovings.append('<option value="'+value['id']+'">'+value['name']+'</option>');
                                 })
@@ -491,7 +527,16 @@ $(function() {
                     $('#RegisterUserModal').modal('hide');
 
                     $('#registerProfileSelect').val('').trigger('change');
-                    $('#registerCompanySelect').val('').trigger('change');
+
+                    $('#select-company-container-register').html('<select data-url="" name="id_user_company" \
+                                                                    class="form-control select2" id="registerCompanySelect" required> \
+                                                                    <option></option>\
+                                                                </select>');
+                    var userCompanySelectGen = $('#registerCompanySelect');
+                    userCompanySelectGen.select2({
+                        dropdownParent: $("#registerUserForm"),
+                        placeholder: 'Selecciona una empresa',
+                    })
 
                     if($('#selectApprovingsRegister').length)
                     {
@@ -654,7 +699,7 @@ $(function() {
                             placeholder: 'Selecciona un aprobante',
                             closeOnSelect: false
                         })
-                        selectApprovings.append('<option value=""></option>');
+                        selectApprovings.append('<option></option>');
                         $.each(data['approvings'], function(key, value){
                             selectApprovings.append('<option value="'+value['id']+'">'+value['name']+'</option>');
                         })
@@ -2528,7 +2573,7 @@ $(function() {
                 exportOptions: {
                     format: {
                         body: function ( data, row, column, node ) {
-                            return column == 3 ? data.replace(/<br>/g, String.fromCharCode(10)) : data;
+                            return column == 3 ? data.replace(/<br>/g, ', \n') : data;
                         }
                     },
                     columns: ':not(.not-export-col)',

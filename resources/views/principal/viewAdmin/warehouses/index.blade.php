@@ -38,7 +38,7 @@
                 <li class="nav-item">
                     <a class="nav-link" id="locations-tab" data-toggle="tab" href="#locations" role="tab"
                         aria-controls="locations" aria-selected="false">
-                        <i class="fa-solid fa-map-location-dot"></i> &nbsp; Locación</a>
+                        <i class="fa-solid fa-map-location-dot"></i> &nbsp; Site / Locación</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="projects-tab" data-toggle="tab" href="#projects" role="tab"
@@ -76,7 +76,7 @@
                                 <th>N°</th>
                                 <th>Lote</th>
                                 <th>Etapa</th>
-                                <th>Locación</th>
+                                <th>Site / Locación</th>
                                 <th>Área / Proyecto</th>
                                 <th>Empresa</th>
                                 <th>Frente</th>
@@ -347,7 +347,7 @@
 
                     <div class="form-row">
                         <div class="form-group col-md-6">
-                            <label for="editLocationSelect">Locación *</label>
+                            <label for="editLocationSelect">Site / Locación *</label>
 
                             <select name="location_id" class="form-control select2" id="editLocationSelect"
                                 required>

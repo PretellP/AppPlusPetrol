@@ -14,18 +14,28 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
+
         if($request->ajax())
         {
-            $allUsers = DataTables::of(User::with(['role', 'company', 'ownerCompany']))
+            $allUsers = DataTables::of(User::with(['role', 'companies', 'ownerCompany']))
                 ->addColumn('company', function($user){
-                    $company = '- -';
-
-                    if($user->company != null){
-                        $company = $user->company->name;
-                    }elseif($user->ownerCompany != null){
-                        $company = $user->ownerCompany->name;
+                    $companies = '';
+                    if($user->ownerCompany != null){
+                        $companies.= $user->ownerCompany->name;
+                    }elseif($user->companies->isNotEmpty()){
+                        $companyCount = $user->companies->count();
+                        $count = 1;
+                        foreach($user->companies as $company){
+                            if($count == $companyCount){
+                                $companies.= $company->name;
+                            }else{
+                                $companies.= $company->name.'<br>';
+                            } 
+                            $count++;
+                        }
                     }
-                    return $company;
+
+                    return $companies;
                 })
                 ->editColumn('status', function($user){
                     $status = $user->status == 1 ? 'Activo': 'Inactivo';
@@ -47,7 +57,7 @@ class UserController extends Controller
                     }
                     return $btn;
                 })
-                ->rawColumns(['status', 'action'])
+                ->rawColumns(['company','status', 'action'])
                 ->make(true);
             return $allUsers;
         }
@@ -71,16 +81,11 @@ class UserController extends Controller
             $approvings = null;
 
             if($role == 'SOLICITANTE'){
-                $status = 'valid';
-
-                if($request['company_id'] != '')
-                {
-                    $approvings = User::whereHas('role', function($query){
-                                    $query->where('name', 'APROBANTE');
-                                })
-                                ->where('id_company', $request['company_id'])->get();
-                }
+                $status = 'applicant';
             }
+            elseif($role == 'APROBANTE'){
+                $status = 'approver';
+            }   
 
             $companies = in_array($role, ['SOLICITANTE', 'APROBANTE']) ? Company::all() : OwnerCompany::all();
 
@@ -98,7 +103,10 @@ class UserController extends Controller
             $approvings = User::whereHas('role', function($query){
                                     $query->where('name', 'APROBANTE');
                                 })
-                                ->where('id_company', $request['id'])->get();
+                                ->whereHas('companies', function($query2) use($request){
+                                    $query2->where('id_company', $request['id']);
+                                })
+                                ->get();
 
             return response()->json([
                 "approvings" => $approvings
@@ -127,13 +135,12 @@ class UserController extends Controller
             $status = 1;
         }
        
-        $company = in_array($request['id_role'], [2, 3]) ? $request['id_user_company'] : null;
+        // $company = in_array($request['id_role'], [2, 3]) ? $request['id_user_company'] : null;
         $ownerCompany = in_array($request['id_role'], [2, 3]) ? null : $request['id_user_company'];
         
         $user = User::create(
                     [
                         "id_role" => $request['id_role'],
-                        "id_company" => $company,
                         "id_owner_company" => $ownerCompany,
                         'user_name' => $request['username'],
                         'password' => Hash::make($request['password']),
@@ -146,21 +153,23 @@ class UserController extends Controller
                     ]
                 );
 
+        if(in_array($request['id_role'], [2, 3])){
+            $user->companies()->sync($request['id_user_company']);
+        }
 
-        if($request->has('id_approvings'))
-        {
+        if($request->has('id_approvings')){
             $user->approvings()->sync($request['id_approvings']);
         }
         
         return response()->json([
-            'success' => 'user added successfully',
+            'success' => true,
         ]);
     }
 
 
     public function edit(User $user)
     {  
-        $user = User::where('id', $user->id)->with(['role', 'approvings', 'company', 'ownerCompany'])->first();  
+        $user = User::where('id', $user->id)->with(['role', 'approvings', 'companies', 'ownerCompany'])->first();  
 
         if($user->url_signature == '' || $user->url_signature == null)
         {
@@ -173,14 +182,17 @@ class UserController extends Controller
         $selectedApprovings = null;
         $approvings = null;
         $role = $user->role->name;
+
         if($role == 'SOLICITANTE')
         {
             $validApplicant = true;
             $selectedApprovings = $user->approvings->pluck('id')->toArray();
             $approvings = User::whereHas('role', function($query){
-                                        $query->where('name', 'APROBANTE');
+                                    $query->where('name', 'APROBANTE');
                                 })
-                                ->where('id_company', $user->id_company)
+                                ->whereHas('companies', function($query2) use($user){
+                                    $query2->where('id_company', $user->companies->first()->id);
+                                })
                                 ->get();
         }
 
@@ -188,13 +200,20 @@ class UserController extends Controller
 
         $last_login = $user->last_login_at == null ? '- -' : getDiffForHumansFromTimestamp($user->last_login_at);
 
-        $companyName = null;
+        $companyName = '';
 
-        if($user->company != null)
-        {
-            $companyName = $user->company->name;
-        }elseif($user->ownerCompany != null){
-            $companyName = $user->ownerCompany->name;
+        if($user->ownerCompany != null){
+            $companyName.= $user->ownerCompany->name;
+        }elseif($user->companies->isNotEmpty()){
+            $compCount = 1;
+            foreach($user->companies as $company){
+                if($compCount == 1){
+                    $companyName.= $company->name;
+                }else{
+                    $companyName.= ', '.$company->name;
+                }
+                $compCount++;
+            }
         }
 
         return response()->json([
@@ -209,8 +228,8 @@ class UserController extends Controller
             "profile" => $user->role->name,
             "company" => $companyName,
             "validApplicant" => $validApplicant,
-            "selectedApprovings" => $selectedApprovings,
             'approvings' => $approvings,
+            "selectedApprovings" => $selectedApprovings,
             'is_admin' => $isAdmin
         ]);
     }
@@ -273,9 +292,12 @@ class UserController extends Controller
     {
         $signature_path = $user->url_signature;
 
-        if($user->approvings->isNotEmpty())
-        {
+        if($user->approvings->isNotEmpty()){
             $user->approvings()->detach();
+        }
+
+        if($user->companies->isNotEmpty()){
+            $user->companies()->detach();
         }
 
         $user->delete();

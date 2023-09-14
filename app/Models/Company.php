@@ -19,6 +19,6 @@ class Company extends Model
 
     public function users()
     {
-        return $this->hasMany(User::class, 'id_company', 'id');
+        return $this->belongsToMany(User::class, 'user_companies', 'id_company', 'id_user')->withTimestamps();
     }
 }

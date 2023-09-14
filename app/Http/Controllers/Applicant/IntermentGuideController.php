@@ -9,12 +9,13 @@ use DataTables;
 use DB;
 use Carbon\Carbon;
 use Validator;
-use App\Models\{Warehouse,
-                WasteClass,
-                WasteType,
-                IntermentGuide,
-                PackageType,
-                GuideWaste
+use App\Models\{
+        Warehouse,
+        WasteClass,
+        WasteType,
+        IntermentGuide,
+        PackageType,
+        GuideWaste
             };
 use App\Mail\{
     NotificationApproverMail
@@ -275,7 +276,7 @@ class IntermentGuideController extends Controller
         }
 
         $warehouses = Warehouse::with('front')
-                                ->where('id_company', $user->id_company)->get();
+                                ->where('id_company', $user->companies->first()->id)->get();
         $wasteClasses = WasteClass::all();
 
         $guide_code = 'GI-'.Carbon::now()->format('Y').'-'.$guide_code.$id_str;
@@ -301,12 +302,12 @@ class IntermentGuideController extends Controller
                 ->where('id', $request['id'])->first();
     
                 return response()->json([
-                'lot' => $warehouse->lot->name,
-                'stage' => $warehouse->stage->name,
-                'location' => $warehouse->location->name,
-                'proyect' => $warehouse->projectArea->name,
-                'company' => $warehouse->company->name,
-                'front' => $warehouse->front->name
+                    'lot' => $warehouse->lot->name,
+                    'stage' => $warehouse->stage->name,
+                    'location' => $warehouse->location->name,
+                    'proyect' => $warehouse->projectArea->name,
+                    'company' => $warehouse->company->name,
+                    'front' => $warehouse->front->name
                 ]);
             }
             elseif($request['type'] == 'wasteClass')
