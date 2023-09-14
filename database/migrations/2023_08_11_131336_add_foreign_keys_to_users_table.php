@@ -15,7 +15,6 @@ class AddForeignKeysToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->foreignId('id_role')->constrained('roles');
-            $table->foreignId('id_company')->nullable()->constrained('companies');
             $table->foreignId('id_owner_company')->nullable()->constrained('owner_companies');
         });
     }
@@ -29,7 +28,6 @@ class AddForeignKeysToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropForeign(['id_role']);
-            $table->dropForeign(['id_company']);
             $table->dropForeign(['id_owner_company']);
         });
     }

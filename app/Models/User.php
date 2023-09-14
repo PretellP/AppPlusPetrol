@@ -76,9 +76,9 @@ class User extends Authenticatable
         return $this->hasMany(IntermentGuide::class, 'id_checker', 'id');
     }
 
-    public function company()
+    public function companies()
     {
-        return $this->belongsTo(Company::class, 'id_company', 'id');
+        return $this->belongsToMany(Company::class, 'user_companies', 'id_user', 'id_company')->withTimestamps();
     }
 
     public function ownerCompany()

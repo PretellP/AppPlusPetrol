@@ -32,11 +32,8 @@ class AdminController extends Controller
             $countApproved = $user->approvantGuides()->where('stat_approved', 1)
                                                     ->count();
             $countPending = $user->approvantGuides()->where('stat_approved', 0)
-                                                ->where('stat_rejected', 0)
-                                                ->whereHas('applicant.company', function($query) use($user){
-                                                    $query->where('id', $user->company->id);
-                                                })
-                                                ->count();
+                                                    ->where('stat_rejected', 0)
+                                                    ->count();
             $countRejected = $user->approvantGuides()->where('stat_rejected', 1)
                                                         ->where('stat_approved', 0)
                                                         ->count();

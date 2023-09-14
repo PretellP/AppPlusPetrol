@@ -14,7 +14,6 @@ class ApproverGeneratedWastesController extends Controller
     {
         $user = Auth::user();
 
-
         if($request->ajax())
         {
             $wastes = GuideWaste::whereHas('guide', function($query) use($user){
@@ -46,7 +45,6 @@ class ApproverGeneratedWastesController extends Controller
 
             return $allWastes;
         }
-
 
         return view('principal.viewApproving.generatedWastes.index');
     }

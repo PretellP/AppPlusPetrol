@@ -140,7 +140,7 @@
 
                             <select data-url="{{route('users.getApprovings')}}" name="id_role"
                                 class="form-control select2" id="registerProfileSelect" required>
-                                <option value=""></option>
+                                <option></option>
                                 @foreach ($roles as $role)
                                 <option value="{{$role->id}}"> {{$role->name}} </option>
                                 @endforeach
@@ -151,10 +151,13 @@
                         <div class="form-group col-12">
                             <label for="inputProfile">Empresa *</label>
 
-                            <select data-url="{{route('users.getApprovings')}}" name="id_user_company"
-                                class="form-control select2" id="registerCompanySelect" required>
-                                <option></option>
-                            </select>
+                            <div id="select-company-container-register">
+                                <select data-url="" name="id_user_company"
+                                    class="form-control select2" id="registerCompanySelect" required>
+                                    <option></option>
+                                </select>
+                            </div>
+                            
                         </div>
                     </div>
 

@@ -202,21 +202,33 @@ class PackingGuideController extends Controller
 
     public function storePackageGuide(Request $request)
     {
-        $packingGuide = PackingGuide::create([
-            "cod_guide" => $request['code'],
-            "date_guides_departure" => $request['date'],
-            "volum" =>  $request['volume'],
-        ]);
-
+        $statStore = false;
         $wastes = GuideWaste::whereIn('id', $request['guides-pg-ids'])->get();
 
-        foreach($wastes as $waste)
-        {
-            $waste->update([
-                "stat_stock" => 1,
-                "id_packing_guide" => $packingGuide->id,
+        foreach($wastes as $waste){
+            if($waste->stat_stock == 1){
+                $statStore = true;
+                break;
+            }
+        }
+
+        if(!$statStore){
+            $packingGuide = PackingGuide::create([
+                "cod_guide" => $request['code'],
+                "date_guides_departure" => $request['date'],
+                "volum" =>  $request['volume'],
             ]);
-        }   
+
+            $wastes = GuideWaste::whereIn('id', $request['guides-pg-ids'])->get();
+
+            foreach($wastes as $waste)
+            {
+                $waste->update([
+                    "stat_stock" => 1,
+                    "id_packing_guide" => $packingGuide->id,
+                ]);
+            }   
+        }
 
         return response()->json([
             "success" => "store successfully"
@@ -252,14 +264,16 @@ class PackingGuideController extends Controller
         $wastes = GuideWaste::whereIn('id', $request['wastes-departure-selected'])->get();
 
         foreach($wastes as $waste){
-            $waste->update([
-                "stat_departure" => 1,
-                "date_departure" => $request['date'],
-                "shipping_type" => $request['transport-type'],
-                "destination" => $request['destination'],
-                "ppc_code" => $request['n-guideppc'],
-                "manifest_code" => $request['n-manifest']
-            ]);
+            if($waste->stat_departure == 0){
+                $waste->update([
+                    "stat_departure" => 1,
+                    "date_departure" => $request['date'],
+                    "shipping_type" => $request['transport-type'],
+                    "destination" => $request['destination'],
+                    "ppc_code" => $request['n-guideppc'],
+                    "manifest_code" => $request['n-manifest']
+                ]);
+            }
         }
 
         return response()->json([

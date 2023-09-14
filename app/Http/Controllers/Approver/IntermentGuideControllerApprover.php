@@ -27,9 +27,6 @@ class IntermentGuideControllerApprover extends Controller
                 $guidesPending = $user->approvantGuides()
                                         ->where('stat_approved', 0)
                                         ->where('stat_rejected', 0)
-                                        ->whereHas('applicant.company', function($query) use($user){
-                                            $query->where('id', $user->company->id);
-                                        })
                                         ->with(['warehouse.lot',
                                                 'warehouse.stage',
                                                 'warehouse.location',
@@ -61,7 +58,7 @@ class IntermentGuideControllerApprover extends Controller
                                                         'warehouse.projectArea',
                                                         'warehouse.company',
                                                         'warehouse.front'
-                                                ]);
+                                                    ]);
 
                 $allGuides = DataTables::of($guidesApproved)
                             ->editColumn('created_at', function($guide){

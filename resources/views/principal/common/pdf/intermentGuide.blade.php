@@ -182,7 +182,7 @@
                         Fecha: 
                     </span>
                     <span class="date">
-                        <?php setlocale(LC_TIME, 'es_es.UTF-8'); ?>
+                        <?php setlocale(LC_TIME, 'es_ES.UTF-8'); ?>
                         {{ strftime('%A, %e de %B, %Y %H:%M', time()) }}
                     </span>
                 </div>
@@ -299,7 +299,7 @@
                                     </tr>
                                     <tr>
                                         <td>Empresa: </td>
-                                        <td>{{getUserCompany($guide->applicant)}}</td>
+                                        <td>{{getUserCompany($guide->applicant, $guide)}}</td>
                                     </tr>
                                     <tr>
                                         <td>Tipo de Usuario: </td>
@@ -332,7 +332,7 @@
                                     </tr>
                                     <tr>
                                         <td>Empresa: </td>
-                                        <td>{{getUserCompany($guide->reciever)}}</td>
+                                        <td>{{getUserCompany($guide->reciever, $guide)}}</td>
                                     </tr>
                                     <tr>
                                         <td>Tipo de Usuario: </td>
@@ -369,7 +369,7 @@
                                     </tr>
                                     <tr>
                                         <td>Empresa: </td>
-                                        <td>{{getUserCompany($guide->approvant)}}</td>
+                                        <td>{{getUserCompany($guide->approvant, $guide)}}</td>
                                     </tr>
                                     <tr>
                                         <td>Tipo de Usuario: </td>
@@ -403,7 +403,7 @@
                                     </tr>
                                     <tr>
                                         <td>Empresa: </td>
-                                        <td>{{getUserCompany($guide->checker)}}</td>
+                                        <td>{{getUserCompany($guide->checker, $guide)}}</td>
                                     </tr>
                                     <tr>
                                         <td>Tipo de Usuario: </td>
