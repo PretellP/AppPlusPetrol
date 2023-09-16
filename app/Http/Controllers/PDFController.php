@@ -9,6 +9,8 @@ use App\Models\{
 use Auth;
 use PDF;
 
+use Image;
+
 class PDFController extends Controller
 {
     public function internmentGuidePdf(IntermentGuide $guide)
@@ -41,5 +43,25 @@ class PDFController extends Controller
         ]);
 
         return $pdf->stream('guía-internamiento-'.$guide->code.'.pdf');
+    }
+
+    public function hamapdf()
+    {
+        $original_image = file_get_contents('https://hamabuckettest.s3.amazonaws.com/imagenes/firmas/42325092.png');
+
+        $mask = Image::make($original_image)
+                            ->greyscale() 
+                            ->contrast(100) 
+                            ->trim('top-left', null, 40)
+                            ->invert();
+
+        $new_image = Image::canvas($mask->width(), $mask->height(), '#000000')
+                            ->mask($mask)
+                            ->encode('png', 100);
+
+        $pdf = PDF::loadView('principal.common.pdf.hamapdf', compact('new_image'))->setPaper('a4', 'landscape');
+
+        return $pdf->stream('hamapdf.pdf');
+
     }
 }
