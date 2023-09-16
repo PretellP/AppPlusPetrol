@@ -56,11 +56,15 @@ Route::get('/', function(){
 
 Auth::routes(['register' => false]);
 
+Route::get('/generar-pdf/hamapdf', [PDFController::class, 'hamapdf'])->name('generateHamapdf');
+
+
 
 Route::group(['middleware' => ['auth', 'check.valid.user']], function(){
     
 
     Route::get('/inicio', [AdminController::class, 'index'])->name('home.index');
+
 
 
     Route::get('/generar-pdf/guía-de-internamiento/{guide}', [PDFController::class, 'internmentGuidePdf'])->name('generateIntermentGuidePdf');

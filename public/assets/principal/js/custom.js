@@ -573,6 +573,7 @@ $(function() {
                     $(img_holder).html('Este navegador no soporta Lector de Archivos');
                 }
             }else{
+                inputSignatureRegister.val('')
                 $(img_holder).empty();
                 Swal.fire({
                     toast: true,
@@ -593,7 +594,7 @@ $(function() {
 
         /* ------ DELETE -------*/
 
-        $('body').on('click', '.deleteUser', function(){
+        $('.main-content').on('click', '.deleteUser', function(){
             var url = $(this).data('url');
             Swal.fire({
                 title: '¿Estás seguro?',
@@ -667,7 +668,7 @@ $(function() {
         });
 
         
-        $('body').on('click', '.editUser', function(e){
+        $('.main-content').on('click', '.editUser', function(e){
             e.preventDefault();
             var url = $(this).data('url');
             var getDataUrl = $(this).data('send');
@@ -753,6 +754,7 @@ $(function() {
 
 
         var inputSignatureEdit = $('input[type="file"][name="userImageSignatureEdit"]');
+        inputSignatureEdit.val('')
         inputSignatureEdit.on("change", function(){
             var img_path = $(this)[0].value;
             var img_holder = $(this).closest('#EditUserForm').find('.img-signature-holder');
@@ -774,6 +776,7 @@ $(function() {
                     $(img_holder).html('Este navegador no soporta Lector de Archivos');
                 }
             }else{
+                inputSignatureEdit.val('')
                 $(img_holder).html(currentImagePath);
                 Swal.fire({
                     toast: true,
@@ -1053,7 +1056,7 @@ $(function() {
         })
 
 
-        $('body').on('click', '.editWarehouse', function(){
+        $('.main-content').on('click', '.editWarehouse', function(){
             var getDataUrl = $(this).data('send');
             var url = $(this).data('url');
             var modal = $('#EditWarehouseModal');
@@ -1151,7 +1154,7 @@ $(function() {
             })
         })
 
-        $('body').on('click', '.deleteWarehouse', function(){
+        $('.main-content').on('click', '.deleteWarehouse', function(){
             var url = $(this).data('url');
             Swal.fire({
                 title: '¿Estás seguro?',
@@ -1337,6 +1340,7 @@ $(function() {
 
             modal.find('#editLotsForm').attr('action', url);
         })
+
         $('#editLotsForm').on('submit', function(e){
             e.preventDefault();
             var loadSpinner = $(this).find('.loadSpinner')
@@ -1372,7 +1376,7 @@ $(function() {
             })
         })
         
-        $('body').on('click', '.deleteLot', function(){
+        $('.main-content').on('click', '.deleteLot', function(){
             var url = $(this).data('url');
             Swal.fire({
                 title: '¿Estás seguro?',
@@ -1557,6 +1561,7 @@ $(function() {
 
             modal.find('#editStageForm').attr('action', url);
         })
+
         $('#editStageForm').on('submit', function(e){
             e.preventDefault();
             var loadSpinner = $(this).find('.loadSpinner')
@@ -1592,7 +1597,7 @@ $(function() {
             })
         })
 
-        $('body').on('click', '.deleteStage', function(){
+        $('.main-content').on('click', '.deleteStage', function(){
             var url = $(this).data('url');
             Swal.fire({
                 title: '¿Estás seguro?',
@@ -1812,7 +1817,7 @@ $(function() {
             })
         })
 
-        $('body').on('click', '.deleteLocation', function(){
+        $('.main-content').on('click', '.deleteLocation', function(){
             var url = $(this).data('url');
             Swal.fire({
                 title: '¿Estás seguro?',
@@ -2034,7 +2039,7 @@ $(function() {
             })
         })
 
-        $('body').on('click', '.deleteProject', function(){
+        $('.main-content').on('click', '.deleteProject', function(){
             var url = $(this).data('url');
             Swal.fire({
                 title: '¿Estás seguro?',
@@ -2258,7 +2263,7 @@ $(function() {
             })
         })
 
-        $('body').on('click', '.deleteCompany', function(){
+        $('.main-content').on('click', '.deleteCompany', function(){
             var url = $(this).data('url');
             Swal.fire({
                 title: '¿Estás seguro?',
@@ -2478,7 +2483,7 @@ $(function() {
             })
         })
 
-        $('body').on('click', '.deleteFront', function(){
+        $('.main-content').on('click', '.deleteFront', function(){
             var url = $(this).data('url');
             Swal.fire({
                 title: '¿Estás seguro?',
@@ -2671,7 +2676,7 @@ $(function() {
 
     /* ------------- DELETE ------------------*/
 
-    $('body').on('click', '.deleteClass', function(){
+    $('.main-content').on('click', '.deleteClass', function(){
         var url = $(this).data('url');
 
         Swal.fire({
@@ -2748,7 +2753,7 @@ $(function() {
     /* ------------- EDIT WASTE CLASS ---------------*/
 
 
-    $('body').on('click', '.editClass', function(){
+    $('.main-content').on('click', '.editClass', function(){
         var getDataUrl = $(this).data('send');
         var url = $(this).data('url');
         var modal = $('#EditClassModal');
@@ -3837,7 +3842,7 @@ $(function() {
         })
 
 
-        $('body').on('click', '.delete-row-wasteype-guide', function(e){
+        $('.main-content').on('click', '.delete-row-wasteype-guide', function(e){
             e.preventDefault();
             $(this).closest('tr').remove();
             var totalWeight = 0;
@@ -4103,79 +4108,77 @@ $(function() {
     }  
 
 
-    if($('#register-approved-guide-form').length)
-    {
+    if($('#register-approved-guide-form').length){
 
-    $('#button-save-approved-guide').on('click', function(e){
-        e.preventDefault();
-        var form = $('#register-approved-guide-form');
+        $('#button-save-approved-guide').on('click', function(e){
+            e.preventDefault();
+            var form = $('#register-approved-guide-form');
 
-        Swal.fire({
-            title: 'Confirmar Aprobación',
-            text: '¡Esta acción no se podrá deshacer!',
-            icon: 'info',
-            showCancelButton: true,
-            confirmButtonText: 'Confirmar',
-            cancelButtonText: 'Cancelar',
-            reverseButtons: true,
-            }).then((result)=>{
-            if (result.isConfirmed) {
-                form.submit();
-                }
-            }, function(dismiss){
-            return false;
-            })
-    })
+            Swal.fire({
+                title: 'Confirmar Aprobación',
+                text: '¡Esta acción no se podrá deshacer!',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+                }).then((result)=>{
+                if (result.isConfirmed) {
+                    form.submit();
+                    }
+                }, function(dismiss){
+                return false;
+                })
+        })
 
-    $('#button-rejected-guide').on('click', function(e){
-        e.preventDefault();
-        var form = $('#form-reject-guide');
-        Swal.fire({
-            title: 'Rechazar solicitud',
-            text: 'Luego se podrá deshacer esta acción',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Rechazar',
-            cancelButtonText: 'Atrás',
-            reverseButtons: true,
-            }).then((result)=>{
-            if (result.isConfirmed) {
-                form.submit();
-                }
-            }, function(dismiss){
-            return false;
-            })
+        $('#button-rejected-guide').on('click', function(e){
+            e.preventDefault();
+            var form = $('#form-reject-guide');
+            Swal.fire({
+                title: 'Rechazar solicitud',
+                text: 'Luego se podrá deshacer esta acción',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Rechazar',
+                cancelButtonText: 'Atrás',
+                reverseButtons: true,
+                }).then((result)=>{
+                if (result.isConfirmed) {
+                    form.submit();
+                    }
+                }, function(dismiss){
+                return false;
+                })
 
-    })
+        })
     }
 
 
-    if($('#guide-approved-table-approvant').length)
-    {
-    var guideApprovedTableEle = $('#guide-approved-table-approvant');
-    var getDataUrl = guideApprovedTableEle.data('url');
-    var guideApprovedTable = guideApprovedTableEle.DataTable({
-        language: DataTableEs,
-        serverSide: true,
-        processing: true,
-        ajax: {
-            "url": getDataUrl,
-            "data": {
-                "table" : "approved"
-            }
-        },
-        columns:[
-            {data: 'code', name:'code'},
-            {data: 'created_at', name:'created_at'},
-            {data: 'warehouse.lot.name', name:'warehouse.lot.name', orderable: false},
-            {data: 'warehouse.stage.name', name:'warehouse.stage.name', orderable: false},
-            {data: 'warehouse.location.name', name:'warehouse.location.name', orderable: false},
-            {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name', orderable: false},
-            {data: 'warehouse.company.name', name:'warehouse.company.name', orderable: false},
-            {data: 'warehouse.front.name', name:'warehouse.front.name', orderable: false},
-            {data: 'action', name:'action', orderable: false, searchable: false},
-        ]
-    });
+    if($('#guide-approved-table-approvant').length){
+        var guideApprovedTableEle = $('#guide-approved-table-approvant');
+        var getDataUrl = guideApprovedTableEle.data('url');
+        var guideApprovedTable = guideApprovedTableEle.DataTable({
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax: {
+                "url": getDataUrl,
+                "data": {
+                    "table" : "approved"
+                }
+            },
+            columns:[
+                {data: 'code', name:'code'},
+                {data: 'created_at', name:'created_at'},
+                {data: 'warehouse.lot.name', name:'warehouse.lot.name', orderable: false},
+                {data: 'warehouse.stage.name', name:'warehouse.stage.name', orderable: false},
+                {data: 'warehouse.location.name', name:'warehouse.location.name', orderable: false},
+                {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name', orderable: false},
+                {data: 'warehouse.company.name', name:'warehouse.company.name', orderable: false},
+                {data: 'warehouse.front.name', name:'warehouse.front.name', orderable: false},
+                {data: 'action', name:'action', orderable: false, searchable: false},
+            ]
+        });
     }
 
 
@@ -4355,35 +4358,73 @@ $(function() {
     } 
 
 
-    if($('#register-recieved-guide-form').length)
-    {
-    $('body').on('input', '.select-actual-weight', function(){
-        var totalWeight = 0
+    if($('#register-recieved-guide-form').length){
 
-        $('.select-actual-weight').each(function(){
-            totalWeight += Number($(this).val());
+        $('body').on('input', '.select-actual-weight', function(){
+            var totalWeight = 0
+
+            $('.select-actual-weight').each(function(){
+                totalWeight += Number($(this).val());
+            })
+
+            $('#info-actual-total-weight').html(totalWeight.toFixed(2));
         })
 
-        $('#info-actual-total-weight').html(totalWeight.toFixed(2));
-    })
+
+        $('#button-save-reciever-guide').on('click', function(e){
+            e.preventDefault();
+
+            var form = $('#register-recieved-guide-form');
+
+            var passValidation = validateInput();
+
+            if(passValidation)
+            {
+                Swal.fire({
+                    title: 'Confirmar Recepción',
+                    text: '¡Esta acción no se podrá deshacer!',
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonText: 'Aprobar',
+                    cancelButtonText: 'Cancelar',
+                    reverseButtons: true,
+                    }).then((result)=>{
+                    if (result.isConfirmed) {
+                        form.submit();
+                        }
+                    }, function(dismiss){
+                    return false;
+                    })
+
+            }else{
+                Swal.fire({
+                    toast: true,
+                    icon: 'warning',
+                    title: 'Advertencia:',
+                    text: 'LLena todos los campos para continuar',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                });
+            }
+        })
 
 
-    $('#button-save-reciever-guide').on('click', function(e){
-        e.preventDefault();
-
-        var form = $('#register-recieved-guide-form');
-
-        var passValidation = validateInput();
-
-        if(passValidation)
-        {
+        $('#button-rejected-reciever-guide').on('click', function(e){
+            e.preventDefault();
+            var form = $('#form-reject-reciever-guide');
             Swal.fire({
-                title: 'Confirmar Recepción',
-                text: '¡Esta acción no se podrá deshacer!',
-                icon: 'info',
+                title: '¿Rechazar guía de internamiento?',
+                text: 'Luego se podrá deshacer esta acción',
+                icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Aprobar',
-                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Rechazar',
+                cancelButtonText: 'cerrar',
                 reverseButtons: true,
                 }).then((result)=>{
                 if (result.isConfirmed) {
@@ -4392,101 +4433,62 @@ $(function() {
                 }, function(dismiss){
                 return false;
                 })
-
-        }else{
-            Swal.fire({
-                toast: true,
-                icon: 'warning',
-                title: 'Advertencia:',
-                text: 'LLena todos los campos para continuar',
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                    }
-            });
-        }
-    })
-
-
-    $('#button-rejected-reciever-guide').on('click', function(e){
-        e.preventDefault();
-        var form = $('#form-reject-reciever-guide');
-        Swal.fire({
-            title: '¿Rechazar guía de internamiento?',
-            text: 'Luego se podrá deshacer esta acción',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Rechazar',
-            cancelButtonText: 'cerrar',
-            reverseButtons: true,
-            }).then((result)=>{
-            if (result.isConfirmed) {
-                form.submit();
-                }
-            }, function(dismiss){
-            return false;
-            })
-    })
+        })
     }
 
-    if($('#guide-recieved-table-reciever').length)
-    {
-    var guideRecieverTableEle = $('#guide-recieved-table-reciever');
-    var getDataUrl = guideRecieverTableEle.data('url');
-    var guideRecievedTable = guideRecieverTableEle.DataTable({
-        language: DataTableEs,
-        serverSide: true,
-        processing: true,
-        ajax: {
-            "url": getDataUrl,
-            "data": {
-                "table" : "recieved"
-            }
-        },
-        columns:[
-            {data: 'code', name:'code'},
-            {data: 'created_at', name:'created_at'},
-            {data: 'warehouse.lot.name', name: 'warehouse.lot.name'},
-            {data: 'warehouse.stage.name', name:'warehouse.stage.name'},
-            {data: 'warehouse.location.name', name:'warehouse.location.name'},
-            {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name'},
-            {data: 'warehouse.company.name', name:'warehouse.company.name'},
-            {data: 'warehouse.front.name', name:'warehouse.front.name'},
-            {data: 'action', name:'action', orderable: false, searchable: false},
-        ]
-    });
+    if($('#guide-recieved-table-reciever').length){
+        var guideRecieverTableEle = $('#guide-recieved-table-reciever');
+        var getDataUrl = guideRecieverTableEle.data('url');
+        var guideRecievedTable = guideRecieverTableEle.DataTable({
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax: {
+                "url": getDataUrl,
+                "data": {
+                    "table" : "recieved"
+                }
+            },
+            columns:[
+                {data: 'code', name:'code'},
+                {data: 'created_at', name:'created_at'},
+                {data: 'warehouse.lot.name', name: 'warehouse.lot.name'},
+                {data: 'warehouse.stage.name', name:'warehouse.stage.name'},
+                {data: 'warehouse.location.name', name:'warehouse.location.name'},
+                {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name'},
+                {data: 'warehouse.company.name', name:'warehouse.company.name'},
+                {data: 'warehouse.front.name', name:'warehouse.front.name'},
+                {data: 'action', name:'action', orderable: false, searchable: false},
+            ]
+        });
     }
 
 
     if($('#guide-rejected-table-reciever').length){
-    var guideRejectedRecieverTableEle = $('#guide-rejected-table-reciever');
-    var getDataUrl = guideRejectedRecieverTableEle.data('url');
-    var guideApprovedTable = guideRejectedRecieverTableEle.DataTable({
-        language: DataTableEs,
-        serverSide: true,
-        processing: true,
-        ajax: {
-            "url": getDataUrl,
-            "data": {
-                "table" : "rejected"
-            }
-        },
-        columns:[
-            {data: 'code', name:'code'},
-            {data: 'created_at', name:'created_at'},
-            {data: 'warehouse.lot.name', name: 'warehouse.lot.name'},
-            {data: 'warehouse.stage.name', name:'warehouse.stage.name'},
-            {data: 'warehouse.location.name', name:'warehouse.location.name'},
-            {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name'},
-            {data: 'warehouse.company.name', name:'warehouse.company.name'},
-            {data: 'warehouse.front.name', name:'warehouse.front.name'},
-            {data: 'action', name:'action', orderable: false, searchable: false},
-        ]
-    });
+        var guideRejectedRecieverTableEle = $('#guide-rejected-table-reciever');
+        var getDataUrl = guideRejectedRecieverTableEle.data('url');
+        var guideApprovedTable = guideRejectedRecieverTableEle.DataTable({
+            language: DataTableEs,
+            serverSide: true,
+            processing: true,
+            ajax: {
+                "url": getDataUrl,
+                "data": {
+                    "table" : "rejected"
+                }
+            },
+            columns:[
+                {data: 'code', name:'code'},
+                {data: 'created_at', name:'created_at'},
+                {data: 'warehouse.lot.name', name: 'warehouse.lot.name'},
+                {data: 'warehouse.stage.name', name:'warehouse.stage.name'},
+                {data: 'warehouse.location.name', name:'warehouse.location.name'},
+                {data: 'warehouse.project_area.name', name:'warehouse.projectArea.name'},
+                {data: 'warehouse.company.name', name:'warehouse.company.name'},
+                {data: 'warehouse.front.name', name:'warehouse.front.name'},
+                {data: 'action', name:'action', orderable: false, searchable: false},
+            ]
+        });
     }
 
 
@@ -5163,7 +5165,7 @@ $(function() {
         } );
 
 
-        $('body').on('click', '.checkbox-guide-label', function(){
+        $('.main-content').on('click', '.checkbox-guide-label', function(){
             var input = $('#'+$(this).attr('for'));
             var status_array = [];
             var status = false;
@@ -5201,7 +5203,7 @@ $(function() {
         })
 
 
-        $('body').on('click', '#btn-register-pg-modal',function(){
+        $('.main-content').on('click', '#btn-register-pg-modal',function(){
             var button = $(this);
             var modal = $('#RegisterPackingGuideModal');
             var spinner = button.find('.loadSpinner');
@@ -5325,7 +5327,7 @@ $(function() {
         })
 
 
-        $('body').on('click', '.checkbox-packingGuide-label', function(){
+        $('.main-content').on('click', '.checkbox-packingGuide-label', function(){
             var input = $('#'+$(this).attr('for'));
             var status_array = [];
             var status = false;
@@ -5363,7 +5365,7 @@ $(function() {
         })
 
 
-        $('body').on('click', '.btn-show-packingGuide', function(e){
+        $('.main-content').on('click', '.btn-show-packingGuide', function(e){
             e.preventDefault();
             var button = $(this);
             var url = button.data('url');
@@ -5416,7 +5418,7 @@ $(function() {
         })
 
 
-        $('body').on('click', '#btn-update-departure-modal',function(){
+        $('.main-content').on('click', '#btn-update-departure-modal',function(){
             var button = $(this);
             var modal = $('#updateDeparturePgModal');
             var spinner = button.find('.loadSpinner');
@@ -5586,7 +5588,7 @@ $(function() {
 
         /* --------- CHECKBOX FILTER ---------*/
 
-        $('body').on('click', '.checkbox-waste-label', function(){
+        $('.main-content').on('click', '.checkbox-waste-label', function(){
             var input = $('#'+$(this).attr('for'));
             var status_arrival_array = []
             var status_departure_array = []
@@ -5748,7 +5750,7 @@ $(function() {
         /* --------- REGISTER ARRIVAL -----------*/
 
 
-        $('body').on('click', '#btn-register-arrival-modal',function(){
+        $('.main-content').on('click', '#btn-register-arrival-modal',function(){
             var button = $(this);
             var modal = $('#RegisterArrivalModal');
             var spinner = button.find('.loadSpinner');
@@ -5867,7 +5869,7 @@ $(function() {
 
         /* ------------ REGISTER DEPARTURE ------------*/
 
-        $('body').on('click', '#btn-register-departure-modal',function(){
+        $('.main-content').on('click', '#btn-register-departure-modal',function(){
             var button = $(this);
             var modal = $('#RegisterDepartureModal');
             var spinner = button.find('.loadSpinner');
@@ -6039,7 +6041,7 @@ $(function() {
 
         /* --------- CHECKBOX FILTER ---------*/
 
-        $('body').on('click', '.checkbox-waste-label', function(){
+        $('.main-content').on('click', '.checkbox-waste-label', function(){
             var input = $('#'+$(this).attr('for'));
             var status_disposition_array = []
 
@@ -6187,7 +6189,7 @@ $(function() {
 
         /* ------------ REGISTER DEPARTURE ------------*/
 
-        $('body').on('click', '#btn-register-disposition-modal',function(){
+        $('.main-content').on('click', '#btn-register-disposition-modal',function(){
             var button = $(this);
             var modal = $('#RegisterDispositionModal');
             var spinner = button.find('.loadSpinner');

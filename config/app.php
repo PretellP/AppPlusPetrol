@@ -177,7 +177,8 @@ return [
         Yajra\DataTables\DataTablesServiceProvider::class,
         Yajra\DataTables\ButtonsServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
-    
+        Intervention\Image\ImageServiceProvider::class
+        
     ],
 
     /*
@@ -231,6 +232,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Datatables' => Yajra\DataTables\Facades\DataTables::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
+        // 'Image' => Intervention\Image\Facades\Image::class,
+        'Image' => Intervention\Image\ImageManagerStatic::class,
     ],
 
 ];
